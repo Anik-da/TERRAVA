@@ -4,6 +4,25 @@
 
 ---
 
+## 🧠 Machine Learning Models & Implementation References
+
+TERRAVA Ag-OS uses state-of-the-art machine learning models for remote reasoning, diagnostic detection, OCR, and voice synthesis. Below are the specific models utilized and their direct implementation lines:
+
+*   **Phi-4 Chat Diagnostics**: `microsoft/Phi-4-mini-instruct` — Bypasses remote APIs to run locally when offline.
+    *   👉 [farm_doctor.py (Line 15)](https://github.com/Anik-da/TERRAVA/blob/master/backend/ai/farm_doctor.py#L15)
+*   **Plant Disease Classification**: `linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification` — Real-time botanical pathogen scanning.
+    *   👉 [plant_disease.py (Line 16)](https://github.com/Anik-da/TERRAVA/blob/master/backend/ai/plant_disease.py#L16)
+*   **Animal Disease Visual Embedding**: `facebook/dinov2-base` — Generates structural visual embeddings for livestock health assessment.
+    *   👉 [animal_disease.py (Line 17)](https://github.com/Anik-da/TERRAVA/blob/master/backend/ai/animal_disease.py#L17)
+*   **Speech-to-Text Transcription**: `openai/whisper-large-v3-turbo` — Transcribes spoken farmer queries dynamically.
+    *   👉 [speech_to_text.py (Line 13)](https://github.com/Anik-da/TERRAVA/blob/master/backend/ai/speech_to_text.py#L13)
+*   **Text-to-Speech Synthesis**: `facebook/mms-tts` — Converts response text to regional audio dialect outputs.
+    *   👉 [text_to_speech.py (Line 16-20)](https://github.com/Anik-da/TERRAVA/blob/master/backend/ai/text_to_speech.py#L16-L20)
+*   **Optical Character Recognition (OCR)**: `microsoft/trocr-base-printed` — Scans printed soil reports and invoices.
+    *   👉 [ocr.py (Line 15)](https://github.com/Anik-da/TERRAVA/blob/master/backend/ai/ocr.py#L15)
+
+---
+
 ## 🚀 Key Achievements & Innovations
 
 ### 1. Hybrid Generative & Self-Healing AI Diagnostic Engine
