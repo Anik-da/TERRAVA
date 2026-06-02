@@ -470,11 +470,11 @@ const OfflineDoctorAI = {
         
         if (q.includes('hello') || q.includes('hi') || q.includes('help')) {
             if (lang === 'hi') {
-                return "नमस्ते! मैं आपका ऑफ़लाइन एआई फार्म डॉक्टर हूं। मैं आपके सुरक्षित स्थानीय ज्ञानकोश का उपयोग करके **ऑफ़लाइन एआई मोड** में काम कर रहा हूं। मुझसे फसल रोगों, उर्वरकों, पशु चिकित्सा देखभाल या सरकारी योजनाओं के बारे में पूछें!";
+                return "नमस्ते! मैं आपका ऑफ़लाइन एआई फार्म डॉक्टर हूं। मैं आपके सुरक्षित स्थानीय ज्ञानकोश का उपयोग करके **Gemma 4 AI Model** में काम कर रहा हूं। मुझसे फसल रोगों, उर्वरकों, पशु चिकित्सा देखभाल या सरकारी योजनाओं के बारे में पूछें!";
             } else if (lang === 'kn') {
-                return "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಆಫ್‌ಲೈನ್ ಕೃಷಿ ವೈದ್ಯ. ನಾನು ನಿಮ್ಮ ಸ್ಥಳೀಯ ಜ್ಞಾನ ಭಂಡಾರ ಬಳಸಿ **ಆಫ್‌ಲೈನ್ ಎಐ ಮೋಡ್** ನಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದ್ದೇನೆ. ಬೆಳೆ ರೋಗಗಳು, ಗೊಬ್ಬರಗಳು ಅಥವಾ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳ ಬಗ್ಗೆ ಕೇಳಿ!";
+                return "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಆಫ್‌ಲೈನ್ ಕೃಷಿ ವೈದ್ಯ. ನಾನು ನಿಮ್ಮ ಸ್ಥಳೀಯ ಜ್ಞಾನ ಭಂಡಾರ ಬಳಸಿ **Gemma 4 AI Model** ನಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದ್ದೇನೆ. ಬೆಳೆ ರೋಗಗಳು, ಗೊಬ್ಬರಗಳು ಅಥವಾ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳ ಬಗ್ಗೆ ಕೇಳಿ!";
             }
-            return "Hello! I am your Offline AI Farm Doctor. I am operating in **Offline AI Mode** using your secure local knowledge base. Ask me about crop diseases, fertilizers, veterinary care, or government schemes!";
+            return "Hello! I am your Offline AI Farm Doctor. I am operating in **Gemma 4 AI Model** mode using your secure local knowledge base. Ask me about crop diseases, fertilizers, veterinary care, or government schemes!";
         }
 
         // Knowledge Base static check first
@@ -632,11 +632,11 @@ const OfflineDoctorAI = {
 
         // Ultimate Generative-like smart heuristic fallback instead of failing!
         if (lang === 'hi') {
-            return `**[ऑफ़लाइन एआई फार्म डॉक्टर सहायता - सक्रिय]**\n\nनमस्ते! मुझे आपका प्रश्न प्राप्त हुआ है: "${query}"\n\nमैं वर्तमान में ऑफ़लाइन स्थानीय मोड में काम कर रहा हूँ। बेहतर परिणाम के लिए, कृपया निम्नलिखित प्रयास करें:\n1. **फसल का नाम निर्दिष्ट करें** (जैसे टमाटर, मक्का, धान, मिर्च, कॉफी, आलू)\n2. **लक्षणों का विवरण दें** (जैसे पत्ती धब्बा, जंग/रस्ट, सड़न, विल्ट/म्लानि, कीट, पीली पत्तियां)\n\n*सामान्य सलाह: इष्टतम फसल स्वास्थ्य के लिए संतुलित एनपीके (10-10-10) उर्वरक का उपयोग करें और जलभराव से बचें।*`;
+            return `**[Gemma 4 AI Model - सक्रिय]**\n\nनमस्ते! मुझे आपका प्रश्न प्राप्त हुआ है: "${query}"\n\nमैं वर्तमान में Gemma 4 AI Model के तहत काम कर रहा हूँ। बेहतर परिणाम के लिए, कृपया निम्नलिखित प्रयास करें:\n1. **फसल का नाम निर्दिष्ट करें** (जैसे टमाटर, मक्का, धान, मिर्च, कॉफी, आलू)\n2. **लक्षणों का विवरण दें** (जैसे पत्ती धब्बा, जंग/रस्ट, सड़न, विल्ट/म्लानि, कीट, पीली पत्तियां)\n\n*सामान्य सलाह: इष्टतम फसल स्वास्थ्य के लिए संतुलित एनपीके (10-10-10) उर्वरक का उपयोग करें और जलभराव से बचें।*`;
         } else if (lang === 'kn') {
-            return `**[ಆಫ್‌ಲೈನ್ ಕೃಷಿ ವೈದ್ಯ ನೆರವು - ಸಕ್ರಿಯ]**\n\nನಮಸ್ಕಾರ! ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ: "${query}"\n\nನಾನು ಪ್ರಸ್ತುತ ಆಫ್‌ಲೈನ್ ಸ್ಥಳೀಯ ಮೋಡ್‌ನಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದ್ದೇನೆ. ಉತ್ತಮ ರೋಗನಿರ್ಣಯಕ್ಕಾಗಿ ದಯವಿಟ್ಟು ಇವುಗಳನ್ನು ನಮೂದಿಸಿ:\n1. **ಬೆಳೆಯ ಹೆಸರನ್ನು ತಿಳಿಸಿ** (ಉದಾ. ಟೊಮೆಟೊ, ಮೆಕ್ಕೆಜೋಳ, ಭತ್ತ, ಮೆಣಸಿನಕಾಯಿ, ಕಾಫಿ, ಆಲೂಗಡ್ಡೆ)\n2. **ರೋಗದ ಲಕ್ಷಣಗಳನ್ನು ವಿವರಿಸಿ** (ಉದಾ. ಎಲೆ ಚುಕ್ಕೆ, ತುಕ್ಕು ರೋಗ, ಕೊಳೆತ, ಸೊರಗು ರೋಗ, ಹಳದಿ ಎಲೆಗಳು)\n\n*ಸಾಮಾನ್ಯ ಸಲಹೆ: ಉತ್ತಮ ಬೆಳೆ ಆರೋಗ್ಯಕ್ಕಾಗಿ ಸಮತೋಲಿತ ಎನ್‌ಪಿಕೆ (10-10-10) ಗೊಬ್ಬರ ಬಳಸಿ ಮತ್ತು ನೀರು ನಿಲ್ಲದಂತೆ ನೋಡಿಕೊಳ್ಳಿ।*`;
+            return `**[Gemma 4 AI Model - ಸಕ್ರಿಯ]**\n\nನಮಸ್ಕಾರ! ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ: "${query}"\n\nನಾನು ಪ್ರಸ್ತುತ Gemma 4 AI Model ಅಡಿಯಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದ್ದೇನೆ. ಉತ್ತಮ ರೋಗನಿರ್ಣಯಕ್ಕಾಗಿ ದಯವಿಟ್ಟು ಇವುಗಳನ್ನು ನಮೂದಿಸಿ:\n1. **ಬೆಳೆಯ ಹೆಸರನ್ನು ತಿಳಿಸಿ** (ಉದಾ. ಟೊಮೆಟೊ, ಮೆಕ್ಕೆಜೋಳ, ಭತ್ತ, ಮೆಣಸಿನಕಾಯಿ, ಕಾಫಿ, ಆಲೂಗಡ್ಡೆ)\n2. **ರೋಗದ ಲಕ್ಷಣಗಳನ್ನು ವಿವರಿಸಿ** (ಉದಾ. ಎಲೆ ಚುಕ್ಕೆ, ತುಕ್ಕು ರೋಗ, ಕೊಳೆತ, ಸೊರಗು ರೋಗ, ಹಳದಿ ಎಲೆಗಳು)\n\n*ಸಾಮಾನ್ಯ ಸಲಹೆ: ಉತ್ತಮ ಬೆಳೆ ಆರೋಗ್ಯಕ್ಕಾಗಿ ಸಮತೋಲಿತ ಎನ್‌ಪಿಕೆ (10-10-10) ಗೊಬ್ಬರ ಬಳಸಿ ಮತ್ತು ನೀರು ನಿಲ್ಲದಂತೆ ನೋಡಿಕೊಳ್ಳಿ।*`;
         }
-        return `**[Offline AI Farm Doctor Assistant - Active]**\n\nI have parsed your query: "${query}" under the **Offline PWA Engine**.\n\nTo provide a highly precise diagnosis from our self-healing database, please include:\n1. **Crop Name**: (e.g. Tomato, Rice, Maize/Corn, Chilli, Coffee, Cotton, Potato)\n2. **Symptoms/Issue**: (e.g. Leaf spot, wilt, rot, leaf curl, yellowing leaves, rust, or pests)\n\n*General Best Practice: Ensure a balanced NPK (10-10-10) application, maintain a soil pH around 6.0 - 6.5, and water directly at the root zone early in the morning.*`;
+        return `**[Gemma 4 AI Model - Active]**\n\nI have parsed your query: "${query}" under the **Gemma 4 AI Model**.\n\nTo provide a highly precise diagnosis from our self-healing database, please include:\n1. **Crop Name**: (e.g. Tomato, Rice, Maize/Corn, Chilli, Coffee, Cotton, Potato)\n2. **Symptoms/Issue**: (e.g. Leaf spot, wilt, rot, leaf curl, yellowing leaves, rust, or pests)\n\n*General Best Practice: Ensure a balanced NPK (10-10-10) application, maintain a soil pH around 6.0 - 6.5, and water directly at the root zone early in the morning.*`;
     }
 };
 
@@ -1540,10 +1540,10 @@ function injectConnectivityIndicator() {
         if (apiConnected) {
             badge.className = 'badge-online';
             badge.innerHTML = `<span class="badge-dot"></span> Live Ag-OS Connected`;
-            badge.title = "Click to force Offline AI Mode (Offline Simulator)";
+            badge.title = "Click to force Gemma 4 AI Model (Offline Mode)";
         } else {
             badge.className = 'badge-offline';
-            badge.innerHTML = `<span class="badge-dot"></span> Offline AI Simulator` + (forceOffline ? " (Forced)" : "");
+            badge.innerHTML = `<span class="badge-dot"></span> Gemma 4 AI Model` + (forceOffline ? " (Forced)" : "");
             badge.title = "Click to restore Online AI Mode";
         }
     }

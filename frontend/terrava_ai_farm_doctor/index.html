@@ -669,7 +669,7 @@
                         user_query: queryText || "Voice Question",
                         response: localReply,
                         audio_response_b64: null,
-                        engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud AI)" : "Offline AI Mode"
+                        engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud AI)" : "Gemma 4 AI Model"
                     };
                 }
             }
@@ -860,7 +860,7 @@
                 indicator.innerText = "Online AI Mode";
                 indicator.className = "text-[10px] font-code-sm text-primary font-bold";
             } else {
-                indicator.innerText = forceOffline ? "Offline AI Mode (Forced)" : "Offline AI Mode";
+                indicator.innerText = forceOffline ? "Gemma 4 AI Model (Forced)" : "Gemma 4 AI Model";
                 indicator.className = "text-[10px] font-code-sm text-error font-bold";
             }
         }
@@ -880,7 +880,7 @@
                 headerStatusText.className = "font-code-sm text-xs font-bold text-primary uppercase tracking-wider";
             } else {
                 headerPulseDot.className = "w-2.5 h-2.5 rounded-full bg-error animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]";
-                headerStatusText.innerText = forceOffline ? "AI Farm Doctor: Offline (Forced)" : "AI Farm Doctor: Offline";
+                headerStatusText.innerText = forceOffline ? "Gemma 4 AI: Offline (Forced)" : "Gemma 4 AI: Offline";
                 headerStatusText.className = "font-code-sm text-xs font-bold text-error uppercase tracking-wider";
             }
         }
@@ -892,15 +892,8 @@
         toggleOfflineBtn.addEventListener('click', () => {
             const currentlyForced = localStorage.getItem('terrava_force_offline') === 'true';
             localStorage.setItem('terrava_force_offline', currentlyForced ? 'false' : 'true');
-            
-            // Add a beautiful dynamic warning message directly into the chat flow!
-            if (!currentlyForced) {
-                appendMessage("[FORCED OFFLINE MODE ACTIVATED]: Cloud API bypassed. The AI Farm Doctor is now running entirely on the self-healing Local Offline knowledge base.", false);
-            } else {
-                appendMessage("[ONLINE MODE RESTORED]: Connection to Cloud Gemini AI re-established successfully.", false);
-            }
-            
-            updateAIModeIndicator();
+            // Reload page to apply online/offline settings across the whole application cleanly!
+            location.reload();
         });
     }
 
@@ -909,8 +902,7 @@
     if (goOnlineBtn) {
         goOnlineBtn.addEventListener('click', () => {
             localStorage.setItem('terrava_force_offline', 'false');
-            appendMessage("[ONLINE MODE RESTORED]: Connection to Cloud Gemini AI re-established successfully.", false);
-            updateAIModeIndicator();
+            location.reload();
         });
     }
 

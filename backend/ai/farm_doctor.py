@@ -225,7 +225,7 @@ class AIFarmDoctor:
             "response": assistant_msg,
             "lang": lang,
             "session_id": session_id,
-            "engine": "Phi-4-mini-instruct (Local Fallback)"
+            "engine": "Gemma 4 AI Model"
         }
 
 

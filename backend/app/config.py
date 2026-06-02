@@ -26,9 +26,9 @@ class Settings(BaseSettings):
     @property
     def hf_token(self) -> str:
         """Return the active HuggingFace token, preferring HF_TOKEN over HUGGINGFACE_API_KEY."""
-        if self.HF_TOKEN and not self.HF_TOKEN.startswith("demo_"):
+        if self.HF_TOKEN:
             return self.HF_TOKEN
-        if self.HUGGINGFACE_API_KEY and not self.HUGGINGFACE_API_KEY.startswith("demo_"):
+        if self.HUGGINGFACE_API_KEY:
             return self.HUGGINGFACE_API_KEY
         return ""
 
