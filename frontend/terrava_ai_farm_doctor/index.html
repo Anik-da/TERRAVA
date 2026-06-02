@@ -640,7 +640,7 @@
             if (audioBlob) formData.append('audio_file', audioBlob, 'speech.wav');
 
             let data = null;
-            if (TERRAVA_API_BASE) {
+            if (TERRAVA_API_BASE && isActuallyOnline) {
                 try {
                     const authHeaders = await getAuthHeaders();
                     const response = await fetch(TERRAVA_API_BASE + '/chat', {
