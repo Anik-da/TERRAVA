@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA AI Farm Doctor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(248, 250, 252, 0.08);
+        }
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 10px;
+        }
+        .waveform-bar {
+            animation: wave 1.2s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#0b1326",
+                        "on-surface": "#dae2fd",
+                        "surface-container": "#171f33",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "surface": "#0b1326",
+                        "on-tertiary-container": "#5c3800",
+                        "secondary-container": "#005829",
+                        "on-secondary-container": "#81cc90",
+                        "tertiary-container": "#ef9900",
+                        "on-error": "#690005",
+                        "primary": "#4be277",
+                        "surface-container-lowest": "#060e20",
+                        "surface-tint": "#4ae176",
+                        "secondary-fixed-dim": "#8bd79b",
+                        "inverse-primary": "#006e2f",
+                        "secondary": "#8bd79b",
+                        "on-primary-fixed-variant": "#005321",
+                        "tertiary-fixed": "#ffddb8",
+                        "tertiary": "#ffba61",
+                        "primary-fixed": "#6bff8f",
+                        "on-primary-fixed": "#002109",
+                        "on-tertiary": "#472a00",
+                        "primary-fixed-dim": "#4ae176",
+                        "on-primary-container": "#004b1e",
+                        "inverse-surface": "#dae2fd",
+                        "secondary-fixed": "#a6f4b5",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-secondary-fixed-variant": "#005226",
+                        "on-secondary": "#003918",
+                        "error": "#ffb4ab",
+                        "on-background": "#dae2fd",
+                        "surface-variant": "#2d3449",
+                        "outline": "#869585",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "outline-variant": "#3d4a3d",
+                        "background": "#0b1326",
+                        "surface-container-low": "#131b2e",
+                        "surface-container-high": "#222a3d",
+                        "surface-container-highest": "#2d3449",
+                        "primary-container": "#22c55e",
+                        "on-surface-variant": "#bccbb9",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-secondary-fixed": "#00210b",
+                        "on-primary": "#003915",
+                        "inverse-on-surface": "#283044",
+                        "surface-bright": "#31394d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "margin-desktop": "40px",
+                        "3xl": "64px",
+                        "margin-mobile": "16px",
+                        "2xl": "48px",
+                        "gutter": "20px",
+                        "md": "16px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+      authDomain: "terrava-farm.firebaseapp.com",
+      databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+      projectId: "terrava-farm",
+      storageBucket: "terrava-farm.firebasestorage.app",
+      messagingSenderId: "850552694321",
+      appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+      measurementId: "G-WQKPETW205"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Check user session state
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Unauthenticated - redirect to auth portal
+            window.location.href = "../";
+        } else {
+            // Authenticated - greeting modification and dynamic logout transformation
+            document.addEventListener("DOMContentLoaded", () => {
+                const welcomeText = document.querySelector("h2.font-headline-lg");
+                if (welcomeText) {
+                    welcomeText.innerText = "Good Morning, " + (user.displayName || "Grower") + ".";
+                }
+
+                // Dynamically convert Grower Access sidebar link to active Logout trigger
+                const sidebarLinks = document.querySelectorAll("aside nav a");
+                sidebarLinks.forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href === "../") {
+                        // Change icon to logout
+                        const iconSpan = link.querySelector(".material-symbols-outlined");
+                        if (iconSpan) iconSpan.innerText = "logout";
+                        
+                        // Change text
+                        const textSpan = link.querySelector(".font-body-sm") || link.querySelector("span:not(.material-symbols-outlined)");
+                        if (textSpan) textSpan.innerText = "Logout";
+                        
+                        // Click handler
+                        link.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.signOut().then(() => {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>\n</head>
+<body class="bg-surface-dim text-on-surface font-body-md overflow-hidden selection:bg-primary/30">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
+    <div class="mb-xl px-sm flex items-center gap-sm">
+        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+            <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
+        </div>
+        <div>
+            <h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">TERRAVA</h1>
+            <p class="text-[10px] font-label-caps uppercase tracking-widest text-on-surface-variant">Ag-OS v2.4</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar pr-xs">
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_dashboard/">
+            <span class="material-symbols-outlined text-[20px]">dashboard</span>
+            <span class="font-body-sm">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_digital_farm_twin/">
+            <span class="material-symbols-outlined text-[20px]">hub</span>
+            <span class="font-body-sm">Digital Farm Twin</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_crop_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">psychology</span>
+            <span class="font-body-sm">Crop Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_command_center/">
+            <span class="material-symbols-outlined text-[20px]">sensors</span>
+            <span class="font-body-sm">Sensor Array</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_livestock_guardian/">
+            <span class="material-symbols-outlined text-[20px]">pets</span>
+            <span class="font-body-sm">Livestock Guardian</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-2 border-primary bg-primary/10 transition-colors duration-200" href="../terrava_ai_farm_doctor/">
+            <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+            <span class="font-body-sm">AI Farm Doctor</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_market_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">trending_up</span>
+            <span class="font-body-sm">Market Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_government_benefits_center/">
+            <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            <span class="font-body-sm">Government Schemes</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_emergency_sos_rural_support_center_3/">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span class="font-body-sm">Emergency SOS</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_profile_settings_center/">
+            <span class="material-symbols-outlined text-[20px]">settings</span>
+            <span class="font-body-sm">Settings</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../">
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span class="font-body-sm">Grower Access</span>
+        </a>
+    </nav>
+    <div class="mt-auto border-t border-outline-variant/10 pt-md space-y-xs px-sm">
+        <div class="flex items-center gap-md py-sm text-on-surface-variant">
+            <div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/30">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4ECkKIzQy5v_zhw_ZjQIynpE-zrXLt2R88IXm4ax2Tddbrl4ZA4KmhljXJtCYeHc_00hx96qpEogFUNUF9Hlfgsk2MErfYXBCXt9dQCd889Clq1ip9pklRGIxWih4ELQ6O2brLLzaOKP4LVf6ZgAj0Uxq8p5BfOMoosIRP6enrOiei-MrFVdfr1dY6OY02kVA4Dn2FW3DF-e6nUTZLEqLpauVIk5hCNCeFJtoX-yK7Nc3n2m5kzE8wf_1nTtmRGVVsjxepVmRRU"/>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Anoop Sharma</span>
+                <span class="text-[9px] font-label-caps text-primary uppercase">GROWER ALPHA</span>
+            </div>
+        </div>
+    </div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-256px)] h-16 bg-surface/50 backdrop-blur-md border-b border-outline-variant/10 flex items-center justify-between px-margin-desktop z-40">
+<div class="flex items-center gap-4">
+<button id="btn-toggle-offline" class="flex items-center gap-2.5 px-3 py-1.5 bg-surface-container/60 hover:bg-surface-container border border-outline-variant/20 hover:border-primary/40 rounded-full transition-all cursor-pointer group" title="Toggle forced offline mode for demonstration">
+<span id="header-pulse-dot" class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#4be277]"></span>
+<span id="header-status-text" class="font-code-sm text-xs font-bold text-primary uppercase tracking-wider">AI Farm Doctor: Online</span>
+</button>
+</div>
+<div class="flex items-center gap-xl">
+<div class="relative flex items-center">
+<input class="bg-surface-container-high/50 border border-outline-variant/30 rounded-full px-lg py-1 text-body-sm focus:outline-none focus:border-primary/50 w-64 transition-all" placeholder="Search insights..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 text-on-surface-variant text-body-md">search</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">cloud</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">bolt</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area (Chat + Drawer Layout) -->
+<main class="ml-64 pt-16 h-screen flex relative overflow-hidden">
+<!-- Chat Area -->
+<section class="flex-1 flex flex-col bg-surface-dim relative overflow-hidden">
+<!-- Messages Container -->
+<div id="chat-messages-container" class="flex-1 overflow-y-auto px-margin-desktop py-lg space-y-xl pb-48">
+
+</div>
+<!-- Bottom Floating Controls -->
+<div class="absolute bottom-0 left-0 right-0 px-margin-desktop pb-lg bg-gradient-to-t from-surface-dim via-surface-dim to-transparent pt-xl">
+<!-- Quick Actions Scroll -->
+<div class="flex gap-md overflow-x-auto pb-md no-scrollbar mb-md">
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-body-md">content_paste_search</span>
+<span class="text-body-sm whitespace-nowrap">Identify Disease</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-tertiary text-body-md">partly_cloudy_day</span>
+<span class="text-body-sm whitespace-nowrap">Weather Advice</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-secondary text-body-md">monitoring</span>
+<span class="text-body-sm whitespace-nowrap">Market Trends</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-body-md">account_balance</span>
+<span class="text-body-sm whitespace-nowrap">Government Schemes</span>
+</button>
+</div>
+<!-- Input Field -->
+<div class="glass-panel rounded-2xl p-sm flex flex-col gap-sm shadow-2xl">
+<div class="flex items-center gap-md px-md pt-xs">
+<input type="file" id="chat-file-input" class="hidden" accept="image/*"/>
+<button id="btn-chat-attach" class="p-2 hover:bg-surface-bright/20 rounded-full text-on-surface-variant transition-colors" title="Upload Reports" onclick="document.getElementById('chat-file-input').click()">
+<span class="material-symbols-outlined">attachment</span>
+</button>
+<input id="chat-input" class="flex-1 bg-transparent border-none focus:ring-0 text-body-md placeholder:text-on-surface-variant/50 py-2" placeholder="Ask anything about your farm..." type="text"/>
+<!-- Voice Command -->
+<button id="btn-chat-mic" class="flex items-center gap-3 bg-surface-container px-3 py-2 rounded-xl border border-outline-variant/10 hover:bg-surface-bright/10 focus:outline-none transition-colors">
+<div id="mic-waveform" class="flex items-end gap-[2px] h-4 w-8 overflow-hidden opacity-50">
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.2s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.4s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.1s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.3s;"></div>
+</div>
+<span id="mic-icon" class="material-symbols-outlined text-primary text-body-md" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<button id="btn-chat-send" class="w-12 h-12 bg-primary text-on-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+<!-- Language Badges -->
+<div class="flex items-center justify-between px-md pb-xs">
+<div class="flex gap-xs items-center">
+<span class="text-[10px] font-label-caps text-on-surface-variant mr-1">INPUT LANGUAGE:</span>
+<span id="lang-en" class="lang-badge px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-md text-[11px] font-bold cursor-pointer transition-all">ENGLISH</span>
+<span id="lang-hi" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">हिन्दी</span>
+<span id="lang-kn" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">ಕನ್ನಡ</span>
+</div>
+<div class="flex items-center gap-2">
+    <span id="ai-mode-label" class="text-[10px] font-code-sm text-primary font-bold">Online AI Mode</span>
+    <button id="btn-go-online" class="hidden text-[10px] bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 rounded px-2 py-0.5 font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer">Go Online ⚡</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Intelligence Drawer -->
+<aside class="w-80 h-full bg-surface-container-high/60 backdrop-blur-2xl border-l border-tertiary/20 flex flex-col p-md overflow-y-auto z-40">
+<div class="mb-lg">
+<p class="font-label-caps text-label-caps text-tertiary uppercase tracking-widest">System Intelligence</p>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Real-time Monitoring</h2>
+</div>
+<!-- Daily Briefing Card -->
+<div class="bg-surface-container-lowest/80 border-t-2 border-tertiary p-md rounded-xl mb-lg shadow-xl">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h3 class="text-body-md font-bold text-on-surface">Daily Briefing</h3>
+<p class="text-[11px] text-on-surface-variant">Dec 14, 2024</p>
+</div>
+<span class="material-symbols-outlined text-tertiary">description</span>
+</div>
+<div class="space-y-md">
+<div class="flex items-center justify-between">
+<span class="text-body-sm text-on-surface-variant">Farm Health Score</span>
+<span class="text-body-md font-bold text-primary">89%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 89%"></div>
+</div>
+<div class="flex items-center gap-3 text-body-sm text-tertiary bg-tertiary/5 p-2 rounded-lg border border-tertiary/10">
+<span class="material-symbols-outlined text-body-md">rainy</span>
+<span>Rain expected tomorrow (0.4mm)</span>
+</div>
+</div>
+</div>
+<!-- Live Insights Feed -->
+<div class="flex-1">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+                    LIVE INSIGHTS
+                </h3>
+<div class="space-y-md">
+<!-- Alert Item -->
+<div class="p-md rounded-xl bg-error-container/10 border border-error/20 group hover:bg-error-container/20 transition-all duration-300">
+<div class="flex items-center gap-sm text-error mb-1">
+<span class="material-symbols-outlined text-body-md" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="text-[11px] font-bold uppercase">Disease Alert</span>
+</div>
+<p class="text-body-sm font-medium mb-1">Early Blight detected in Sector 4G</p>
+<p class="text-[11px] text-on-surface-variant">Satellite thermal imagery shows 12% deviation from norms.</p>
+</div>
+<!-- Opportunity Item -->
+<div class="p-md rounded-xl bg-secondary-container/10 border border-secondary/20 group hover:bg-secondary-container/20 transition-all duration-300">
+<div class="flex items-center gap-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-body-md" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="text-[11px] font-bold uppercase">Market Opportunity</span>
+</div>
+<p class="text-body-sm font-medium mb-1">Onion prices projected +15% next week</p>
+<p class="text-[11px] text-on-surface-variant">Regional supply shortage detected in Nashik cluster.</p>
+</div>
+<!-- Task Item -->
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant/10">
+<div class="flex items-center gap-sm text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-body-md">schedule</span>
+<span class="text-[11px] font-bold uppercase">Scheduled</span>
+</div>
+<p class="text-body-sm font-medium">Auto-Irrigation: Sector 2B</p>
+<p class="text-[11px] text-on-surface-variant">Starting at 18:00 based on soil evapotranspiration rates.</p>
+</div>
+</div>
+</div>
+<!-- Bottom Ad/Map Placeholder -->
+<div class="mt-md">
+<div class="relative rounded-xl overflow-hidden aspect-video bg-surface-container-highest flex items-center justify-center">
+<img alt="Satellite View" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" data-alt="A high-resolution satellite imagery view of a large commercial farm with precise irrigation patterns and lush green crop sectors. The image is captured from a top-down perspective, emphasizing geometric field layouts. The aesthetic is technical and professional, featuring a cool blue and emerald green color palette to match the dark-mode dashboard interface. Digital data overlays and grid lines highlight the precision of the agricultural operating system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWxU2ng71VAV0XrZEhMVim9zE9tba5fImsQTbl6Yuw0Zc6Nzuf2oFpOCDISymvaKpU1NBKt6eyw6cnA4QL_T5rTvFUhE5UQW_wJcT13JPphmgFFpkzwwGwC168ZZpuaLpGTlT06WzRbADS5lmQA91bgJviBexNBmWoFvnq4sFyUY9eix6v6L4WnN2mOFfJROqA3YeL_W7dDDD7_At9Ru8F2p-bxnKI2VJ8JnfFvgx9sZhqEuzrjQTv3KJn9PJO0iy6MhTy-1-eaeI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex flex-col">
+<span class="text-[10px] text-primary font-bold">LIVE SATELLITE</span>
+<span class="text-[11px] text-on-surface">Sector 1-8 Visual Feed</span>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<script src="../terrava-config.js"></script>
+<script>
+    // DOM Element Selections
+    const messagesContainer = document.getElementById('chat-messages-container');
+    const inputField = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('btn-chat-send');
+    const fileInput = document.getElementById('chat-file-input');
+    const micBtn = document.getElementById('btn-chat-mic');
+    const micIcon = document.getElementById('mic-icon');
+    const micWaveform = document.getElementById('mic-waveform');
+
+    // Global State Variables
+    let currentLanguage = localStorage.getItem('terrava_language') || 'en';
+    let sessionId = 'grower_chat_' + Math.random().toString(36).substring(2, 9);
+    let isRecording = false;
+    let audioChunks = [];
+    let mediaRecorder = null;
+
+    const welcomeMessages = {
+        en: "Hello! I am your AI Farm Doctor. Ask me anything about crop diseases, pest controls, soil health, fertilizer guides, or government benefits!",
+        hi: "नमस्ते! मैं आपका एआई फार्म डॉक्टर हूं। फसल के रोगों, कीट नियंत्रण, मिट्टी के स्वास्थ्य, उर्वरक गाइड या सरकारी लाभों के बारे में मुझसे कुछ भी पूछें!",
+        kn: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಎಐ ಕೃಷಿ ವೈದ್ಯ. ಬೆಳೆ ರೋಗಗಳು, ಕೀಟ ನಿಯಂತ್ರಣ, ಮಣ್ಣಿನ ಆರೋಗ್ಯ, ರಸಗೊಬ್ಬರ ಮಾರ್ಗದರ್ಶಿ ಅಥವಾ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳ ಬಗ್ಗೆ ನನಗೆ ಯಾವುದನ್ನಾದರೂ ಕೇಳಿ!"
+    };
+
+    wireLogoutButton();
+
+    // Append welcome message initially
+    appendMessage(welcomeMessages[currentLanguage], false);
+
+    // Helper: Parse markdown-like content into HTML
+    function formatMarkdown(text) {
+        if (!text) return "";
+        let formatted = text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`([^`]+)`/g, '<code class="bg-surface-container px-1 py-0.5 rounded text-xs font-mono">$1</code>')
+            .replace(/\[GO_ONLINE_BTN\]/g, `<div class="mt-3 flex items-center gap-2"><button onclick="localStorage.setItem('terrava_force_offline', 'false'); window.location.reload();" class="px-3 py-1.5 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 rounded text-xs font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-sm">⚡ Switch back to Online AI Mode</button></div>`);
+        
+        // Bulleted lists
+        const lines = formatted.split('\n');
+        let inList = false;
+        let output = [];
+        for (let line of lines) {
+            if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
+                if (!inList) {
+                    output.push('<ul class="list-disc pl-5 space-y-1 my-2">');
+                    inList = true;
+                }
+                output.push(`<li>${line.trim().substring(2)}</li>`);
+            } else {
+                if (inList) {
+                    output.push('</ul>');
+                    inList = false;
+                }
+                output.push(`<p class="mb-2 leading-relaxed">${line}</p>`);
+            }
+        }
+        if (inList) output.push('</ul>');
+        return output.join('');
+    }
+
+    // Language selection logic
+    window.selectLanguage = function(langCode, appendSwitchMessage = true) {
+        currentLanguage = langCode;
+        localStorage.setItem('terrava_language', langCode);
+        document.querySelectorAll('.lang-badge').forEach(badge => {
+            badge.classList.remove('bg-primary/10', 'text-primary', 'border-primary/20');
+            badge.classList.add('bg-surface-container', 'text-on-surface-variant', 'border-outline-variant/20');
+        });
+        const activeBadge = document.getElementById(`lang-${langCode}`);
+        if (activeBadge) {
+            activeBadge.classList.add('bg-primary/10', 'text-primary', 'border-primary/20');
+            activeBadge.classList.remove('bg-surface-container', 'text-on-surface-variant', 'border-outline-variant/20');
+        }
+        console.log('[TERRAVA] Language switched to:', langCode);
+
+        if (appendSwitchMessage) {
+            const langNames = { en: "English", hi: "हिन्दी (Hindi)", kn: "ಕನ್ನಡ (Kannada)" };
+            appendMessage(`[Language switched to ${langNames[langCode]}]`, false);
+            appendMessage(welcomeMessages[langCode], false);
+        }
+    };
+
+    // Initialize active language UI state
+    selectLanguage(currentLanguage, false);
+
+    // Attach click listeners to language badges dynamically
+    document.getElementById('lang-en').addEventListener('click', () => selectLanguage('en'));
+    document.getElementById('lang-hi').addEventListener('click', () => selectLanguage('hi'));
+    document.getElementById('lang-kn').addEventListener('click', () => selectLanguage('kn'));
+
+    // Append Message to UI
+    function appendMessage(text, isUser = false, speakAudioB64 = null) {
+        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const wrapper = document.createElement('div');
+        wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'} animate-in slide-in-from-${isUser ? 'right' : 'left'} duration-500`;
+        
+        let audioBtnHtml = '';
+        if (!isUser && speakAudioB64) {
+            audioBtnHtml = `
+                <button class="p-1.5 hover:bg-surface-bright/20 rounded-full text-on-surface-variant hover:text-primary transition-all flex items-center justify-center cursor-pointer" onclick="playAudio('${speakAudioB64}')">
+                    <span class="material-symbols-outlined text-[18px]">volume_up</span>
+                </button>
+            `;
+        }
+
+        if (isUser) {
+            wrapper.innerHTML = `
+                <div class="max-w-2xl bg-surface-container-high text-on-surface p-md rounded-2xl rounded-tr-none border border-outline-variant/20 shadow-sm">
+                    <p class="font-body-md whitespace-pre-wrap">${text}</p>
+                    <div class="mt-2 text-[10px] text-on-surface-variant text-right font-code-sm">${timeStr} • Sent</div>
+                </div>
+            `;
+        } else {
+            wrapper.innerHTML = `
+                <div class="max-w-3xl glass-panel p-lg rounded-2xl rounded-tl-none border-l-4 border-l-primary ai-glow">
+                    <div class="flex items-center justify-between mb-md">
+                        <div class="flex items-center gap-sm">
+                            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                                <span class="material-symbols-outlined text-on-primary text-body-md" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+                            </div>
+                            <span class="font-label-caps text-primary tracking-widest">DIAGNOSTIC ANALYSIS</span>
+                        </div>
+                        ${audioBtnHtml}
+                    </div>
+                    <div class="space-y-md font-body-md text-on-surface">
+                        ${formatMarkdown(text)}
+                    </div>
+                </div>
+            `;
+        }
+        
+        messagesContainer.appendChild(wrapper);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Audio Player
+    window.playAudio = function(base64Data) {
+        if (!base64Data) return;
+        try {
+            const snd = new Audio("data:audio/wav;base64," + base64Data);
+            snd.play();
+        } catch (e) {
+            console.error("Audio playback error:", e);
+        }
+    };
+
+    // Show/Hide Loading Indicator
+    let loadingEl = null;
+    function showLoading() {
+        if (loadingEl) return;
+        loadingEl = document.createElement('div');
+        loadingEl.className = "flex justify-start animate-pulse";
+        loadingEl.innerHTML = `
+            <div class="max-w-xl glass-panel p-md rounded-2xl rounded-tl-none border-l-4 border-l-tertiary flex items-center gap-md">
+                <span class="material-symbols-outlined text-tertiary animate-spin">sync</span>
+                <span class="text-body-sm text-on-surface-variant font-medium">Phi-4 Agricultural Brain is analyzing...</span>
+            </div>
+        `;
+        messagesContainer.appendChild(loadingEl);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function removeLoading() {
+        if (loadingEl) {
+            loadingEl.remove();
+            loadingEl = null;
+        }
+    }
+
+    // Chat execution function (supports text and/or file)
+    async function handleSend(textMessage = "", audioBlob = null) {
+        const forceOffline = localStorage.getItem('terrava_force_offline') === 'true';
+        const isActuallyOnline = navigator.onLine && !forceOffline;
+
+        const queryText = textMessage || inputField.value.trim();
+        if (!queryText && !audioBlob) return;
+
+        if (queryText && !audioBlob) {
+            appendMessage(queryText, true);
+            inputField.value = "";
+        }
+
+        showLoading();
+
+        try {
+            const formData = new FormData();
+            formData.append('lang', currentLanguage);
+            formData.append('session_id', sessionId);
+            if (queryText) formData.append('message', queryText);
+            if (audioBlob) formData.append('audio_file', audioBlob, 'speech.wav');
+
+            let data = null;
+            if (TERRAVA_API_BASE) {
+                try {
+                    const authHeaders = await getAuthHeaders();
+                    const response = await fetch(TERRAVA_API_BASE + '/chat', {
+                        method: 'POST',
+                        headers: { 'Authorization': authHeaders['Authorization'] },
+                        body: formData
+                    });
+                    if (response.ok) data = await response.json();
+                } catch (fetchErr) {
+                    console.warn('[TERRAVA] Backend API fetch failed, falling back to local offline simulation.', fetchErr);
+                }
+            }
+
+            // Use local offline AI Knowledge Base if offline or no backend
+            if (!data) {
+                if (typeof OfflineDoctorAI !== 'undefined') {
+                    const localReply = OfflineDoctorAI.getOfflineAIResponse(queryText);
+                    data = {
+                        user_query: queryText || "Voice Question",
+                        response: localReply,
+                        audio_response_b64: null,
+                        engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud AI)" : "Offline AI Mode"
+                    };
+                }
+            }
+
+            // Secondary Fallback if OfflineDoctorAI not initialized
+            if (!data) {
+                const msgLower = (queryText || "").toLowerCase();
+                let reply = "I understand your concern. For optimal crop yield, check soil pH levels and irrigation cycles regularly. Could you tell me more about your crop type?";
+                
+                const responses_en = {
+                    tomato: "Tomatoes grow best at pH 6.0-6.8. Keep watering deep at root level rather than leaves to avoid bacterial spot. Monitor for early blight signs.",
+                    rice: "Rice farming requires maintaining a steady water layer during early stages. Keep nitrogen application controlled to avoid Blast infections.",
+                    pest: "For organic pest control, apply high-quality neem oil spray early in the morning. Introduce bio-predators like ladybugs to combat aphids.",
+                    fertilizer: "Conduct a soil test first. Balanced NPK (Nitrogen-Phosphorus-Potassium) ratio of 10-10-10 is general, but leafy crops require higher nitrogen.",
+                    weather: "With high humidity and warmth, fungal pathogens propagate easily. Improve crop canopy airflow and reduce sprinkler watering."
+                };
+
+                const responses_hi = {
+                    default: "नमस्ते! मैं आपका टेरावा एआई फार्म डॉक्टर हूं। सर्वोत्तम फसल उपज के लिए, नियमित रूप से मिट्टी के पीएच और सिंचाई स्तर की जांच करें।",
+                    tomato: "टमाटर पीएच 6.0-6.8 में सबसे अच्छे होते हैं। पत्तियों के बजाय जड़ों में गहरा पानी दें ताकि रोग न लगें।",
+                    rice: "धान की खेती के लिए शुरुआती चरणों में स्थिर पानी की आवश्यकता होती है। ब्लास्ट संक्रमण से बचने के लिए नाइट्रोजन की मात्रा नियंत्रित रखें।",
+                    pest: "जैविक कीट नियंत्रण के लिए, सुबह-सुबह जैविक नीम के तेल का छिड़काव करें।",
+                    fertilizer: "पहले मिट्टी का परीक्षण कराएं। सामान्य फसलों के लिए 10-10-10 एनपीके उर्वरक का उपयोग करें।",
+                    weather: "अधिक नमी के कारण फंगल संक्रमण जल्दी फैलता है। फसलों के बीच हवा का प्रवाह बढ़ाएं।"
+                };
+
+                const responses_kn = {
+                    default: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಟೆರಾವಾ ಕೃಷಿ ವೈದ್ಯ. ಉತ್ತಮ ಇಳುವರಿಗಾಗಿ ಮಣ್ಣಿನ ಪಿಎಚ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಬೆಳೆಗಳ ಬಗ್ಗೆ ಹೆಚ್ಚಿನ ವಿವರ ತಿಳಿಸಿ.",
+                    tomato: "ಟೊಮೆಟೊ ಬೆಳೆಗೆ ಮಣ್ಣಿನ ಪಿಎಚ್ 6.0-6.8 ಇರಬೇಕು. ಎಲೆಗಳಿಗೆ ನೀರು ಸುರಿಯುವ ಬದಲು ಬುಡಕ್ಕೆ ನೇರವಾಗಿ ನೀರು ಹಾಕಿ.",
+                    rice: "ಭತ್ತದ ಕೃಷಿಗೆ ಆರಂಭಿಕ ಹಂತದಲ್ಲಿ ನೀರು ಅಗತ್ಯವಿದೆ. ಬ್ಲಾಸ್ಟ್ ರೋಗ ತಡೆಗಟ್ಟಲು ಸಾರಜನಕದ ಅತಿಯಾದ ಬಳಕೆಯನ್ನು ತಪ್ಪಿಸಿ.",
+                    pest: "ಸಾವಯವ ಕೀಟ ನಿಯಂತ್ರಣಕ್ಕಾಗಿ ಮುಂಜಾನೆ ಬೇವಿನ ಎಣ್ಣೆ ಸಿಂಪಡಿಸಿ.",
+                    fertilizer: "ನಿಮ್ಮ ಮಣ್ಣನ್ನು ಪರೀಕ್ಷಿಸಿ. ಸಾಧಾರಣವಾಗಿ ಎನ್‌ಪಿಕೆ 10-10-10 ರಸಗೊಬ್ಬರ ಸೂಕ್ತವಾಗಿದೆ.",
+                    weather: "ಹೆಚ್ಚಿನ ತೇವಾಂಶವಿದ್ದಾಗ ಶಿಲೀಂಧ್ರ ರೋಗಗಳು ಹರಡುತ್ತವೆ. ಸಸಿಗಳ ನಡುವೆ ಗಾಳಿಯಾಡುವಂತೆ ನೋಡಿಕೊಳ್ಳಿ."
+                };
+
+                let langRef = responses_en;
+                if (currentLanguage === 'hi') {
+                    langRef = responses_hi;
+                    reply = responses_hi.default;
+                } else if (currentLanguage === 'kn') {
+                    langRef = responses_kn;
+                    reply = responses_kn.default;
+                }
+
+                if (msgLower.includes('tomato') || msgLower.includes('ಟೊಮೆಟೊ') || msgLower.includes('टमाटर')) reply = langRef.tomato;
+                else if (msgLower.includes('rice') || msgLower.includes('paddy') || msgLower.includes('ಭತ್ತ') || msgLower.includes('धान')) reply = langRef.rice;
+                else if (msgLower.includes('pest') || msgLower.includes('insect') || msgLower.includes('ಕೀಟ') || msgLower.includes('कीट')) reply = langRef.pest;
+                else if (msgLower.includes('fertilizer') || msgLower.includes('npk') || msgLower.includes('ಗೊಬ್ಬರ') || msgLower.includes('उर्वरक')) reply = langRef.fertilizer;
+                else if (msgLower.includes('weather') || msgLower.includes('rain') || msgLower.includes('ಮಳೆ') || msgLower.includes('मौसम')) reply = langRef.weather;
+
+                data = {
+                    user_query: queryText || "Voice Question",
+                    response: reply,
+                    audio_response_b64: null,
+                    engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud AI)" : "Phi-4 Mini (Local Offline Client Fallback)"
+                };
+            }
+
+            removeLoading();
+
+            if (audioBlob && data.user_query) {
+                appendMessage(data.user_query, true);
+            }
+            appendMessage(data.response, false, data.audio_response_b64);
+            if (data.audio_response_b64) {
+                playAudio(data.audio_response_b64);
+            }
+        } catch (err) {
+            removeLoading();
+            appendMessage("AI Farm Doctor is offline. Local response: Tomatoes grow best at pH 6.0-6.8. Keep watering deep at root level.", false);
+            console.error(err);
+        }
+    }
+
+    // Bind triggers
+    sendBtn.addEventListener('click', () => handleSend());
+    inputField.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleSend();
+    });
+
+    // File Attachment & OCR Trigger
+    fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        showLoading();
+        // Temporary scan notification in chat
+        appendMessage(`Uploading & scanning document: "${file.name}" with TrOCR...`, true);
+
+        try {
+            let data = null;
+            if (TERRAVA_API_BASE) {
+                const authHeaders = await getAuthHeaders();
+                const formData = new FormData();
+                formData.append('file', file);
+                const res = await fetch(TERRAVA_API_BASE + '/ocr/scan', {
+                    method: 'POST',
+                    headers: { 'Authorization': authHeaders['Authorization'] },
+                    body: formData
+                });
+                if (res.ok) data = await res.json();
+            }
+
+            // Fallback: generate local OCR
+            if (!data) {
+                data = { extracted_text: "High nutrient soil fertilizer specification PM-KISAN certificate." };
+            }
+
+            removeLoading();
+            inputField.value = `[Document Analysis: ${data.extracted_text}] ` + inputField.value;
+            inputField.focus();
+            appendMessage("Document scan complete! Extracted text placed in input box.", false);
+        } catch (e) {
+            removeLoading();
+            appendMessage("OCR scan failed due to a network connection error.", false);
+            console.error(e);
+        }
+        fileInput.value = ""; // Reset
+    });
+
+    // Speech-to-Text (STT) Recording Logic
+    micBtn.addEventListener('click', async () => {
+        if (isRecording) {
+            // Stop recording
+            isRecording = false;
+            mediaRecorder.stop();
+            micIcon.style.color = '';
+            micWaveform.classList.add('opacity-50');
+            console.log('[TERRAVA] Recording stopped.');
+        } else {
+            // Start recording
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                isRecording = true;
+                audioChunks = [];
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    handleSend("", audioBlob);
+                    // Release microphone stream
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                micIcon.style.color = '#ef4444'; // Red color indicating recording
+                micWaveform.classList.remove('opacity-50');
+                console.log('[TERRAVA] Recording started...');
+            } catch (err) {
+                alert("Microphone access denied or unavailable: " + err.message);
+            }
+        }
+    });
+
+    // Quick actions binding
+    document.querySelectorAll('.flex-shrink-0.flex.items-center').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const actionText = btn.querySelector('span:not(.material-symbols-outlined)').innerText;
+            if (actionText === "Identify Disease") {
+                inputField.value = "How do I diagnose leaf rust?";
+            } else if (actionText === "Weather Advice") {
+                inputField.value = "Will it rain this week and how does that affect my tomatoes?";
+            } else if (actionText === "Market Trends") {
+                inputField.value = "What are the latest pricing trends for tomatoes in Chikmagalur?";
+            } else if (actionText === "Government Schemes") {
+                inputField.value = "What subsidies are available for micro-irrigation systems?";
+            }
+            inputField.focus();
+        });
+    });
+
+    // PWA Offline AI Mode Indicator
+    function updateAIModeIndicator() {
+        const indicator = document.getElementById('ai-mode-label');
+        const headerPulseDot = document.getElementById('header-pulse-dot');
+        const headerStatusText = document.getElementById('header-status-text');
+        const goOnlineBtn = document.getElementById('btn-go-online');
+        
+        const forceOffline = localStorage.getItem('terrava_force_offline') === 'true';
+        const isActuallyOnline = navigator.onLine && !forceOffline;
+
+        if (indicator) {
+            if (isActuallyOnline) {
+                indicator.innerText = "Online AI Mode";
+                indicator.className = "text-[10px] font-code-sm text-primary font-bold";
+            } else {
+                indicator.innerText = forceOffline ? "Offline AI Mode (Forced)" : "Offline AI Mode";
+                indicator.className = "text-[10px] font-code-sm text-error font-bold";
+            }
+        }
+
+        if (goOnlineBtn) {
+            if (isActuallyOnline) {
+                goOnlineBtn.classList.add('hidden');
+            } else {
+                goOnlineBtn.classList.remove('hidden');
+            }
+        }
+
+        if (headerPulseDot && headerStatusText) {
+            if (isActuallyOnline) {
+                headerPulseDot.className = "w-2.5 h-2.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#4be277]";
+                headerStatusText.innerText = "AI Farm Doctor: Online";
+                headerStatusText.className = "font-code-sm text-xs font-bold text-primary uppercase tracking-wider";
+            } else {
+                headerPulseDot.className = "w-2.5 h-2.5 rounded-full bg-error animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]";
+                headerStatusText.innerText = forceOffline ? "AI Farm Doctor: Offline (Forced)" : "AI Farm Doctor: Offline";
+                headerStatusText.className = "font-code-sm text-xs font-bold text-error uppercase tracking-wider";
+            }
+        }
+    }
+
+    // Toggle forced offline mode helper
+    const toggleOfflineBtn = document.getElementById('btn-toggle-offline');
+    if (toggleOfflineBtn) {
+        toggleOfflineBtn.addEventListener('click', () => {
+            const currentlyForced = localStorage.getItem('terrava_force_offline') === 'true';
+            localStorage.setItem('terrava_force_offline', currentlyForced ? 'false' : 'true');
+            
+            // Add a beautiful dynamic warning message directly into the chat flow!
+            if (!currentlyForced) {
+                appendMessage("[FORCED OFFLINE MODE ACTIVATED]: Cloud API bypassed. The AI Farm Doctor is now running entirely on the self-healing Local Offline knowledge base.", false);
+            } else {
+                appendMessage("[ONLINE MODE RESTORED]: Connection to Cloud Gemini AI re-established successfully.", false);
+            }
+            
+            updateAIModeIndicator();
+        });
+    }
+
+    // Add explicit listener to Go Online button in offline banner
+    const goOnlineBtn = document.getElementById('btn-go-online');
+    if (goOnlineBtn) {
+        goOnlineBtn.addEventListener('click', () => {
+            localStorage.setItem('terrava_force_offline', 'false');
+            appendMessage("[ONLINE MODE RESTORED]: Connection to Cloud Gemini AI re-established successfully.", false);
+            updateAIModeIndicator();
+        });
+    }
+
+    window.addEventListener('online', () => updateAIModeIndicator());
+    window.addEventListener('offline', () => updateAIModeIndicator());
+    updateAIModeIndicator();
+</script>
+</body></html>

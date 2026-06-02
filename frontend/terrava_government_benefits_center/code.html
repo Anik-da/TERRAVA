@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ag-OS | Government Benefits Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(248, 250, 252, 0.1);
+        }
+        .glass-modal {
+            background: rgba(51, 65, 85, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-border-active {
+            position: relative;
+        }
+        .gradient-border-active::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(to right, #22C55E, transparent);
+            z-index: -1;
+            border-radius: inherit;
+        }
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0B1326; }
+        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+<!-- Tailwind Config Hook -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-dim": "#0b1326",
+                "surface-bright": "#31394d",
+                "secondary-fixed-dim": "#8bd79b",
+                "on-tertiary-fixed-variant": "#653e00",
+                "inverse-primary": "#006e2f",
+                "tertiary-fixed-dim": "#ffb95f",
+                "primary-fixed-dim": "#4ae176",
+                "surface-tint": "#4ae176",
+                "surface-container": "#171f33",
+                "outline": "#869585",
+                "on-tertiary": "#472a00",
+                "on-tertiary-fixed": "#2a1700",
+                "on-primary-container": "#004b1e",
+                "on-secondary-fixed": "#00210b",
+                "on-primary": "#003915",
+                "tertiary-fixed": "#ffddb8",
+                "on-secondary": "#003918",
+                "primary-fixed": "#6bff8f",
+                "on-secondary-container": "#81cc90",
+                "surface-container-lowest": "#060e20",
+                "secondary": "#8bd79b",
+                "primary": "#4be277",
+                "on-surface": "#dae2fd",
+                "on-surface-variant": "#bccbb9",
+                "surface-container-highest": "#2d3449",
+                "primary-container": "#22c55e",
+                "on-primary-fixed-variant": "#005321",
+                "surface-container-low": "#131b2e",
+                "on-error-container": "#ffdad6",
+                "secondary-fixed": "#a6f4b5",
+                "outline-variant": "#3d4a3d",
+                "on-background": "#dae2fd",
+                "on-tertiary-container": "#5c3800",
+                "on-secondary-fixed-variant": "#005226",
+                "error": "#ffb4ab",
+                "surface": "#0b1326",
+                "on-error": "#690005",
+                "background": "#0b1326",
+                "tertiary-container": "#ef9900",
+                "surface-container-high": "#222a3d",
+                "inverse-on-surface": "#283044",
+                "on-primary-fixed": "#002109",
+                "secondary-container": "#005829",
+                "error-container": "#93000a",
+                "tertiary": "#ffba61",
+                "inverse-surface": "#dae2fd",
+                "surface-variant": "#2d3449"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+              },
+              "spacing": {
+                "margin-desktop": "40px",
+                "lg": "24px",
+                "xl": "32px",
+                "sm": "8px",
+                "gutter": "20px",
+                "2xl": "48px",
+                "unit": "4px",
+                "xs": "4px",
+                "margin-mobile": "16px",
+                "md": "16px",
+                "3xl": "64px"
+              },
+              "fontFamily": {
+                "headline-md": ["Inter"],
+                "body-md": ["Inter"],
+                "display-lg": ["Inter"],
+                "code-sm": ["JetBrains Mono"],
+                "label-caps": ["JetBrains Mono"],
+                "headline-lg": ["Inter"]
+              }
+            }
+          }
+        }
+    </script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+      authDomain: "terrava-farm.firebaseapp.com",
+      databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+      projectId: "terrava-farm",
+      storageBucket: "terrava-farm.firebasestorage.app",
+      messagingSenderId: "850552694321",
+      appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+      measurementId: "G-WQKPETW205"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Check user session state
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Unauthenticated - redirect to auth portal
+            window.location.href = "../";
+        } else {
+            // Authenticated - greeting modification and dynamic logout transformation
+            document.addEventListener("DOMContentLoaded", () => {
+                const welcomeText = document.querySelector("h2.font-headline-lg");
+                if (welcomeText) {
+                    welcomeText.innerText = "Good Morning, " + (user.displayName || "Grower") + ".";
+                }
+
+                // Dynamically convert Grower Access sidebar link to active Logout trigger
+                const sidebarLinks = document.querySelectorAll("aside nav a");
+                sidebarLinks.forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href === "../") {
+                        // Change icon to logout
+                        const iconSpan = link.querySelector(".material-symbols-outlined");
+                        if (iconSpan) iconSpan.innerText = "logout";
+                        
+                        // Change text
+                        const textSpan = link.querySelector(".font-body-sm") || link.querySelector("span:not(.material-symbols-outlined)");
+                        if (textSpan) textSpan.innerText = "Logout";
+                        
+                        // Click handler
+                        link.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.signOut().then(() => {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>\n</head>
+<body class="bg-surface-dim text-on-surface font-body-md selection:bg-primary/30">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-margin-desktop h-16 bg-surface-container/80 backdrop-blur-xl dark:bg-surface-container/80 border-b border-outline-variant/10 shadow-sm">
+<div class="flex items-center gap-md">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Ag-OS</h1>
+<div class="h-6 w-px bg-outline-variant/30 mx-2"></div>
+<p class="font-body-md text-on-surface-variant">Government Benefits Center</p>
+</div>
+<div class="flex items-center gap-xl">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-lowest border border-outline-variant/20 rounded-lg pl-10 pr-4 py-1.5 w-64 focus:ring-1 focus:ring-primary focus:border-primary transition-all text-body-sm outline-none" placeholder="Search schemes..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/10 rounded-full transition-colors cursor-pointer active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/10 rounded-full transition-colors cursor-pointer active:scale-95 duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-lg font-medium text-body-sm hover:brightness-110 active:scale-95 transition-all">Support</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden border border-outline-variant/20">
+<img alt="User" class="w-full h-full object-cover" data-alt="A professional headshot of a modern commercial farmer wearing a clean, high-tech tactical vest in a futuristic indoor agricultural laboratory. The lighting is crisp and blue-toned, emphasizing professional authority and technological mastery in a high-capital agricultural environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV_yMP8H9qEWgWL51cO_2AsRXG14lI5DBNfMmvluz55XVtUFaX6BMBc4pzgMhObUmBpVYIKBMGma8EqMEIRp807m7ai1kGR0fRvyfiLuC0HtjeV7yjD2szReRUlTCsjTrH3Q4HpSRQ_Z3tLPrVUcjJ0uSlpwoSo26KyIQYaOa1ZOH7usCUEytbGhM1WLVc0YotDY_PlcqiAKjDWNWbV7nFL2SNWHtTy2X5pd6y1rGxuiHKnxi1aFmP8x2HyfQom0PmOEzhmGr7sMU"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
+    <div class="mb-xl px-sm flex items-center gap-sm">
+        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+            <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
+        </div>
+        <div>
+            <h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">TERRAVA</h1>
+            <p class="text-[10px] font-label-caps uppercase tracking-widest text-on-surface-variant">Ag-OS v2.4</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar pr-xs">
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_dashboard/">
+            <span class="material-symbols-outlined text-[20px]">dashboard</span>
+            <span class="font-body-sm">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_digital_farm_twin/">
+            <span class="material-symbols-outlined text-[20px]">hub</span>
+            <span class="font-body-sm">Digital Farm Twin</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_crop_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">psychology</span>
+            <span class="font-body-sm">Crop Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_command_center/">
+            <span class="material-symbols-outlined text-[20px]">sensors</span>
+            <span class="font-body-sm">Sensor Array</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_livestock_guardian/">
+            <span class="material-symbols-outlined text-[20px]">pets</span>
+            <span class="font-body-sm">Livestock Guardian</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ai_farm_doctor/">
+            <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+            <span class="font-body-sm">AI Farm Doctor</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_market_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">trending_up</span>
+            <span class="font-body-sm">Market Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-2 border-primary bg-primary/10 transition-colors duration-200" href="../terrava_government_benefits_center/">
+            <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            <span class="font-body-sm">Government Schemes</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_emergency_sos_rural_support_center_3/">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span class="font-body-sm">Emergency SOS</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_profile_settings_center/">
+            <span class="material-symbols-outlined text-[20px]">settings</span>
+            <span class="font-body-sm">Settings</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../">
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span class="font-body-sm">Grower Access</span>
+        </a>
+    </nav>
+    <div class="mt-auto border-t border-outline-variant/10 pt-md space-y-xs px-sm">
+        <div class="flex items-center gap-md py-sm text-on-surface-variant">
+            <div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/30">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4ECkKIzQy5v_zhw_ZjQIynpE-zrXLt2R88IXm4ax2Tddbrl4ZA4KmhljXJtCYeHc_00hx96qpEogFUNUF9Hlfgsk2MErfYXBCXt9dQCd889Clq1ip9pklRGIxWih4ELQ6O2brLLzaOKP4LVf6ZgAj0Uxq8p5BfOMoosIRP6enrOiei-MrFVdfr1dY6OY02kVA4Dn2FW3DF-e6nUTZLEqLpauVIk5hCNCeFJtoX-yK7Nc3n2m5kzE8wf_1nTtmRGVVsjxepVmRRU"/>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Anoop Sharma</span>
+                <span class="text-[9px] font-label-caps text-primary uppercase">GROWER ALPHA</span>
+            </div>
+        </div>
+    </div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:pl-64 pt-16 min-h-screen bg-surface-dim">
+<div class="max-w-[1600px] mx-auto p-margin-desktop">
+<!-- Hero: AI Eligibility Checker -->
+<section class="relative mb-3xl">
+<div class="glass-panel p-xl rounded-2xl flex flex-col md:flex-row items-center gap-2xl overflow-hidden relative">
+<!-- Subtle Background Decoration -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -left-24 w-64 h-64 bg-tertiary/5 rounded-full blur-2xl"></div>
+<div class="relative z-10 flex-1">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-tertiary font-label-caps text-label-caps tracking-widest uppercase">AI Engine Online</span>
+</div>
+<h2 class="font-display-lg text-display-lg mb-md leading-tight">You are eligible for <span class="text-primary">12 schemes.</span></h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-xl max-w-2xl">
+                            Our predictive models have scanned your farm twin, crop history, and livestock data. Total potential support identified: <span class="text-on-surface font-bold">₹2,45,000</span>.
+                        </p>
+<div class="flex items-center gap-lg">
+<button class="bg-primary text-on-primary px-xl py-4 rounded-xl font-bold flex items-center gap-md hover:brightness-110 shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined">rocket_launch</span>
+                                Apply All Schemes
+                            </button>
+<button class="bg-transparent border border-outline-variant/30 text-on-surface px-xl py-4 rounded-xl font-bold hover:bg-surface-bright/10 transition-all">
+                                View Analysis
+                            </button>
+</div>
+</div>
+<div class="relative z-10 w-full md:w-80 shrink-0">
+<div class="glass-modal p-lg rounded-xl border-l-4 border-tertiary ai-glow">
+<div class="text-label-caps font-label-caps text-on-surface-variant mb-sm uppercase tracking-wider">Application Readiness</div>
+<div class="flex items-end gap-md mb-md">
+<span class="text-headline-lg font-headline-lg leading-none">85%</span>
+<span class="text-primary text-body-sm mb-1 flex items-center"><span class="material-symbols-outlined text-[16px]">arrow_upward</span>+12%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full mb-lg overflow-hidden">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant">KYC Verified</span>
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant">Land Records</span>
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant">Sensor Data History</span>
+<span class="material-symbols-outlined text-tertiary text-[18px]">pending</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-gutter items-start">
+<!-- Main Grid Left: Featured Schemes -->
+<div class="col-span-12 xl:col-span-8 space-y-xl">
+<!-- Categories -->
+<div class="flex items-center gap-md overflow-x-auto pb-2 no-scrollbar">
+<button class="px-md py-2 glass-panel rounded-full text-primary border-primary/40 font-medium whitespace-nowrap">All Schemes</button>
+<button class="px-md py-2 glass-panel rounded-full text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">Crop Subsidies</button>
+<button class="px-md py-2 glass-panel rounded-full text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">Irrigation</button>
+<button class="px-md py-2 glass-panel rounded-full text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">Farm Equipment</button>
+<button class="px-md py-2 glass-panel rounded-full text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">Livestock</button>
+<button class="px-md py-2 glass-panel rounded-full text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">Insurance</button>
+</div>
+<!-- Bento Grid of Schemes -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Card 1: PM-KISAN -->
+<div class="glass-panel p-lg rounded-2xl group hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">eco</span>
+</div>
+<span class="bg-secondary/10 text-secondary text-body-sm px-3 py-1 rounded-full font-medium">Auto-Eligible</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-sm">PM-KISAN Samman Nidhi</h3>
+<p class="text-on-surface-variant text-body-sm mb-xl flex-grow">Direct income support for landholding farmers families. Automated land verification completed via Farm Twin.</p>
+<div class="flex items-center justify-between pt-lg border-t border-outline-variant/10">
+<div class="text-primary font-bold">₹6,000 /yr</div>
+<button class="p-2 rounded-lg bg-surface-bright/20 text-on-surface hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Crop Insurance -->
+<div class="glass-panel p-lg rounded-2xl group hover:border-primary/50 transition-all duration-300 flex flex-col h-full">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary">security</span>
+</div>
+<span class="bg-primary/10 text-primary text-body-sm px-3 py-1 rounded-full font-medium">Recommended</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-sm">Pradhan Mantri Fasal Bima</h3>
+<p class="text-on-surface-variant text-body-sm mb-xl flex-grow">Comprehensive risk cover for pre-sowing to post-harvest losses. AI analysis suggests high storm risk this season.</p>
+<div class="flex items-center justify-between pt-lg border-t border-outline-variant/10">
+<div class="text-on-surface font-bold">Max Cover: ₹1,40,000</div>
+<button class="p-2 rounded-lg bg-surface-bright/20 text-on-surface hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Irrigation -->
+<div class="glass-panel p-lg rounded-2xl group hover:border-primary/50 transition-all duration-300 flex flex-col h-full md:col-span-2">
+<div class="flex gap-xl">
+<div class="w-1/3 rounded-xl overflow-hidden hidden md:block">
+<img alt="Irrigation" class="w-full h-full object-cover" data-alt="A high-angle architectural shot of a massive, automated drip irrigation system in a desert agricultural project. The sunlight is warm and golden, casting long shadows across the precision-engineered rows of green crops. The style is futuristic and high-budget, showcasing industrial efficiency and sustainable technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-8yzITKpJRHr-mGpfNrKXKiS3odybbszCXFU1z3Nfzx2e6TgYy7-AojPJOexrkxwX7Tm_CulAa8M9ZdQ4Q-ZP-xScKXE5m2QLb2xx-Kc7OeM-vd1CSQZkZwdbAKEjksFBOsMDm7HqSghGhwk5w1mVu_jbi0Q_D2UcqrGtMrT0--mqCqzSGbLc7i4Eyhk8oW9ESYte39GF_zX622zG0NZH0mpS4YlFK9m561QoXJnVWaoik2ZvWHorY2LZY0U34RpbKS8deG5peXY"/>
+</div>
+<div class="flex-1 flex flex-col py-2">
+<div class="flex justify-between items-start mb-md">
+<h3 class="font-headline-md text-headline-md">Micro-Irrigation Subsidy</h3>
+<span class="bg-tertiary/10 text-tertiary text-body-sm px-3 py-1 rounded-full font-medium">80% Subsidy</span>
+</div>
+<p class="text-on-surface-variant text-body-sm mb-xl">Modernize your farm with precision drip irrigation. Validated against your North Field topography data. Application ready for final e-signature.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex gap-lg">
+<div>
+<div class="text-label-caps font-label-caps text-on-surface-variant uppercase text-[10px]">Your Cost</div>
+<div class="text-on-surface font-bold">₹12,500</div>
+</div>
+<div class="h-8 w-px bg-outline-variant/30"></div>
+<div>
+<div class="text-label-caps font-label-caps text-on-surface-variant uppercase text-[10px]">Benefit Value</div>
+<div class="text-primary font-bold">₹48,000</div>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-lg py-2.5 rounded-lg font-bold hover:brightness-110 active:scale-95 transition-all">Claim Subsidy</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Application Tracker -->
+<div class="glass-panel p-xl rounded-2xl">
+<div class="flex items-center justify-between mb-xl">
+<h3 class="font-headline-md text-headline-md">Application Tracker</h3>
+<button class="text-primary text-body-sm font-medium hover:underline">View History</button>
+</div>
+<div class="space-y-xl relative">
+<!-- Timeline Line -->
+<div class="absolute left-[21px] top-4 bottom-4 w-0.5 bg-outline-variant/30"></div>
+<div class="flex gap-xl relative z-10">
+<div class="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-lg ring-4 ring-surface-dim">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1 glass-panel p-md rounded-xl border-l-2 border-primary">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-bold">PM-KISAN: Installment #8</div>
+<div class="text-body-sm text-on-surface-variant">Direct Deposit Completed</div>
+</div>
+<div class="text-label-caps font-label-caps text-primary uppercase text-[10px] bg-primary/10 px-2 py-0.5 rounded">Approved</div>
+</div>
+<div class="mt-2 text-label-caps font-label-caps text-on-surface-variant text-[10px]">Aug 12, 2024 • ID: OS-PK-9921</div>
+</div>
+</div>
+<div class="flex gap-xl relative z-10">
+<div class="w-11 h-11 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary shadow-lg ring-4 ring-surface-dim">
+<span class="material-symbols-outlined">sync</span>
+</div>
+<div class="flex-1 glass-panel p-md rounded-xl border-l-2 border-tertiary">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-bold">Drip Irrigation Project</div>
+<div class="text-body-sm text-on-surface-variant">Field Inspection Verification in Progress</div>
+</div>
+<div class="text-label-caps font-label-caps text-tertiary uppercase text-[10px] bg-tertiary/10 px-2 py-0.5 rounded">60% Verified</div>
+</div>
+<div class="mt-4 w-full bg-surface-container-highest h-1 rounded-full">
+<div class="bg-tertiary h-full w-[60%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side Panel: AI Advisor & Widgets -->
+<div class="col-span-12 xl:col-span-4 space-y-xl">
+<!-- AI Benefit Advisor -->
+<div class="glass-panel rounded-2xl overflow-hidden flex flex-col">
+<div class="p-lg bg-primary/10 border-b border-primary/20 flex items-center justify-between">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<span class="font-bold">AI Benefit Advisor</span>
+</div>
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+</div>
+<div class="p-lg space-y-lg">
+<div class="text-body-sm text-on-surface-variant leading-relaxed">
+                                "Based on the recent soil moisture data from Sensor Array B, you are now eligible for the <span class="text-on-surface font-bold">Drought Relief Bonus</span>. I recommend submitting the telemetry logs immediately."
+                            </div>
+<button class="w-full bg-surface-bright/20 hover:bg-primary hover:text-on-primary transition-all py-2 rounded-lg font-medium text-body-sm flex items-center justify-center gap-md">
+<span class="material-symbols-outlined text-[20px]">file_upload</span>
+                                Export &amp; Submit Logs
+                            </button>
+</div>
+<div class="p-lg bg-surface-container-highest/30 border-t border-outline-variant/10">
+<h4 class="text-label-caps font-label-caps text-on-surface-variant uppercase text-[10px] mb-md tracking-widest">Upcoming Deadlines</h4>
+<div class="space-y-md">
+<div class="flex items-center gap-md">
+<div class="w-10 text-center">
+<div class="text-error font-bold leading-none">15</div>
+<div class="text-[10px] text-on-surface-variant uppercase">Sep</div>
+</div>
+<div class="flex-1">
+<div class="text-body-sm font-medium">Crop Insurance Renewal</div>
+<div class="text-[10px] text-on-error/80 bg-error/20 px-1.5 py-0.5 rounded inline-block">High Priority</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-10 text-center">
+<div class="text-tertiary font-bold leading-none">28</div>
+<div class="text-[10px] text-on-surface-variant uppercase">Sep</div>
+</div>
+<div class="flex-1">
+<div class="text-body-sm font-medium">Solar Pump Grant</div>
+<div class="text-[10px] text-on-surface-variant">Early Access Phase</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Benefits Calculator Widget -->
+<div class="glass-panel p-xl rounded-2xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-[80px]">calculate</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-xl">Benefits Calculator</h3>
+<div class="space-y-xl">
+<div>
+<div class="flex justify-between text-body-sm mb-md">
+<span class="text-on-surface-variant">Estimated Land (Hectares)</span>
+<span class="font-bold">4.2 ha</span>
+</div>
+<input class="w-full accent-primary bg-surface-container-highest rounded-lg h-1.5 appearance-none cursor-pointer" type="range"/>
+</div>
+<div>
+<div class="flex justify-between text-body-sm mb-md">
+<span class="text-on-surface-variant">Investment Range</span>
+<span class="font-bold">₹5.0L - ₹8.5L</span>
+</div>
+<input class="w-full accent-primary bg-surface-container-highest rounded-lg h-1.5 appearance-none cursor-pointer" type="range"/>
+</div>
+<div class="p-lg bg-surface-container-lowest rounded-xl border border-outline-variant/10 text-center">
+<div class="text-label-caps font-label-caps text-on-surface-variant uppercase text-[10px] mb-1">Projected Total Savings</div>
+<div class="text-display-lg text-[32px] font-bold text-primary">₹3,12,000</div>
+<div class="text-[10px] text-secondary mt-1 font-medium italic">Incl. 45% Tech-Adoption Bonus</div>
+</div>
+</div>
+</div>
+<!-- Interactive Document Center -->
+<div class="glass-panel p-xl rounded-2xl">
+<div class="flex items-center justify-between mb-xl">
+<h3 class="font-headline-md text-headline-md">Document Vault</h3>
+<span class="material-symbols-outlined text-on-surface-variant">folder_managed</span>
+</div>
+<div class="space-y-md">
+<div class="flex items-center justify-between p-md bg-surface-bright/5 rounded-lg border border-outline-variant/10 group hover:border-primary/30 transition-all cursor-pointer">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">description</span>
+<div>
+<div class="text-body-sm font-medium">Land_Titles_2024.pdf</div>
+<div class="text-[10px] text-on-surface-variant">E-Signed • 2.4 MB</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">download</span>
+</div>
+<div class="flex items-center justify-between p-md bg-surface-bright/5 rounded-lg border border-outline-variant/10 group hover:border-primary/30 transition-all cursor-pointer">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">badge</span>
+<div>
+<div class="text-body-sm font-medium">Aadhar_Verified_Link.os</div>
+<div class="text-[10px] text-on-surface-variant">Linked via API</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary">check_circle</span>
+</div>
+<button class="w-full py-3 border-2 border-dashed border-outline-variant/30 rounded-xl text-on-surface-variant text-body-sm font-medium hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-md">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+                                Upload New Document
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action for Notifications/Global Help -->
+<div class="fixed bottom-margin-desktop right-margin-desktop z-50">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer ai-glow group">
+<span class="material-symbols-outlined text-[28px] group-hover:rotate-12 transition-transform">chat_bubble</span>
+</button>
+</div>
+<script>
+        // Micro-interactions and subtle glow effects
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+        
+        // Simple mock for tab switching
+        const tabs = document.querySelectorAll('nav a');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                if(tab.innerText.trim() !== "Government Benefits") {
+                   // In a real app, this would route
+                }
+            });
+        });
+    </script>
+</body></html>

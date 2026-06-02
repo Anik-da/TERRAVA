@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA | Market Intelligence Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(248, 250, 252, 0.1);
+        }
+        .glass-modal {
+            background: rgba(51, 65, 85, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ai-glow {
+            border-top: 2px solid #F59E0B;
+            box-shadow: 0 -4px 20px -5px rgba(245, 158, 11, 0.2);
+        }
+        .trend-up { color: #22C55E; }
+        .trend-down { color: #EF4444; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#4be277",
+                        "on-primary-fixed-variant": "#005321",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-fixed": "#ffddb8",
+                        "inverse-surface": "#dae2fd",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-secondary-fixed": "#00210b",
+                        "on-tertiary-fixed": "#2a1700",
+                        "secondary-fixed": "#a6f4b5",
+                        "on-tertiary-container": "#5c3800",
+                        "on-surface": "#dae2fd",
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#2d3449",
+                        "outline": "#869585",
+                        "on-secondary": "#003918",
+                        "surface-variant": "#2d3449",
+                        "primary-container": "#22c55e",
+                        "tertiary-container": "#ef9900",
+                        "on-primary": "#003915",
+                        "surface-container-lowest": "#060e20",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#81cc90",
+                        "surface-container-low": "#131b2e",
+                        "surface-bright": "#31394d",
+                        "background": "#0b1326",
+                        "surface-container-high": "#222a3d",
+                        "secondary": "#8bd79b",
+                        "on-primary-container": "#004b1e",
+                        "tertiary": "#ffba61",
+                        "surface": "#0b1326",
+                        "surface-tint": "#4ae176",
+                        "on-secondary-fixed-variant": "#005226",
+                        "primary-fixed": "#6bff8f",
+                        "on-primary-fixed": "#002109",
+                        "inverse-primary": "#006e2f",
+                        "secondary-fixed-dim": "#8bd79b",
+                        "secondary-container": "#005829",
+                        "surface-dim": "#0b1326",
+                        "outline-variant": "#3d4a3d",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container": "#171f33",
+                        "on-tertiary": "#472a00",
+                        "on-surface-variant": "#bccbb9",
+                        "on-background": "#dae2fd",
+                        "primary-fixed-dim": "#4ae176"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "gutter": "20px",
+                        "3xl": "64px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "sm": "8px",
+                        "2xl": "48px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+      authDomain: "terrava-farm.firebaseapp.com",
+      databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+      projectId: "terrava-farm",
+      storageBucket: "terrava-farm.firebasestorage.app",
+      messagingSenderId: "850552694321",
+      appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+      measurementId: "G-WQKPETW205"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Check user session state
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Unauthenticated - redirect to auth portal
+            window.location.href = "../";
+        } else {
+            // Authenticated - greeting modification and dynamic logout transformation
+            document.addEventListener("DOMContentLoaded", () => {
+                const welcomeText = document.querySelector("h2.font-headline-lg");
+                if (welcomeText) {
+                    welcomeText.innerText = "Good Morning, " + (user.displayName || "Grower") + ".";
+                }
+
+                // Dynamically convert Grower Access sidebar link to active Logout trigger
+                const sidebarLinks = document.querySelectorAll("aside nav a");
+                sidebarLinks.forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href === "../") {
+                        // Change icon to logout
+                        const iconSpan = link.querySelector(".material-symbols-outlined");
+                        if (iconSpan) iconSpan.innerText = "logout";
+                        
+                        // Change text
+                        const textSpan = link.querySelector(".font-body-sm") || link.querySelector("span:not(.material-symbols-outlined)");
+                        if (textSpan) textSpan.innerText = "Logout";
+                        
+                        // Click handler
+                        link.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.signOut().then(() => {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>\n</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary selection:text-on-primary">
+<!-- Left Sidebar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
+    <div class="mb-xl px-sm flex items-center gap-sm">
+        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+            <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
+        </div>
+        <div>
+            <h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">TERRAVA</h1>
+            <p class="text-[10px] font-label-caps uppercase tracking-widest text-on-surface-variant">Ag-OS v2.4</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar pr-xs">
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_dashboard/">
+            <span class="material-symbols-outlined text-[20px]">dashboard</span>
+            <span class="font-body-sm">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_digital_farm_twin/">
+            <span class="material-symbols-outlined text-[20px]">hub</span>
+            <span class="font-body-sm">Digital Farm Twin</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_crop_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">psychology</span>
+            <span class="font-body-sm">Crop Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_command_center/">
+            <span class="material-symbols-outlined text-[20px]">sensors</span>
+            <span class="font-body-sm">Sensor Array</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_livestock_guardian/">
+            <span class="material-symbols-outlined text-[20px]">pets</span>
+            <span class="font-body-sm">Livestock Guardian</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ai_farm_doctor/">
+            <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+            <span class="font-body-sm">AI Farm Doctor</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-2 border-primary bg-primary/10 transition-colors duration-200" href="../terrava_market_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">trending_up</span>
+            <span class="font-body-sm">Market Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_government_benefits_center/">
+            <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            <span class="font-body-sm">Government Schemes</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_emergency_sos_rural_support_center_3/">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span class="font-body-sm">Emergency SOS</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_profile_settings_center/">
+            <span class="material-symbols-outlined text-[20px]">settings</span>
+            <span class="font-body-sm">Settings</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../">
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span class="font-body-sm">Grower Access</span>
+        </a>
+    </nav>
+    <div class="mt-auto border-t border-outline-variant/10 pt-md space-y-xs px-sm">
+        <div class="flex items-center gap-md py-sm text-on-surface-variant">
+            <div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/30">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4ECkKIzQy5v_zhw_ZjQIynpE-zrXLt2R88IXm4ax2Tddbrl4ZA4KmhljXJtCYeHc_00hx96qpEogFUNUF9Hlfgsk2MErfYXBCXt9dQCd889Clq1ip9pklRGIxWih4ELQ6O2brLLzaOKP4LVf6ZgAj0Uxq8p5BfOMoosIRP6enrOiei-MrFVdfr1dY6OY02kVA4Dn2FW3DF-e6nUTZLEqLpauVIk5hCNCeFJtoX-yK7Nc3n2m5kzE8wf_1nTtmRGVVsjxepVmRRU"/>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Anoop Sharma</span>
+                <span class="text-[9px] font-label-caps text-primary uppercase">GROWER ALPHA</span>
+            </div>
+        </div>
+    </div>
+</aside>
+<!-- Top Navbar -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-surface-dim/70 backdrop-blur-md border-b border-outline-variant/20 flex items-center justify-between px-margin-desktop z-40">
+<div class="flex items-center gap-lg">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="bg-surface-container-low border border-outline-variant/30 rounded-full pl-10 pr-lg py-1.5 text-body-sm w-80 focus:ring-1 focus:ring-primary/50 focus:border-primary transition-all outline-none" placeholder="Search markets, crops, or alerts..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs px-md py-1 border-r border-outline-variant/20 mr-md">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="wifi">wifi</span>
+<span class="text-label-caps text-[10px] text-on-surface-variant">NODE_ALPHA_ACTIVE</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="notifications_active">notifications_active</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="settings_input_component">settings_input_component</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="account_tree">account_tree</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-primary/30">
+<img alt="Chief Agronomist" data-alt="A professional headshot of a senior chief agronomist in a modern workspace. He has a determined expression and is dressed in a smart navy blue tactical field jacket. The background is a soft-focus laboratory with glowing hydroponic systems, reflecting a clean, high-tech, and futuristic agricultural research environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6FsUL1t0J5vFGnAkdZMeS00v5HKOBzfjSarEktuy5gsJQslwFRBZBN6GSOJ8-JIDAKWDC3cXUiFIh7LITB7zWf7L0Y-mDLGg0nfUHlQj6GMy4RQBrGz6Q45vtkY9eusJ8izI_oNGYq-nN4MnEzNI1PBQrQwZk8KuzjpeiAG5KqeAYDJcIrkEM7lI4Lq-cTHmcFiurQfAJ4aY5c0-pmqVuH2YNxnBpyeBb_gNxUO9gfu6EgwTlFuzg9N2ffmrssL50rflj_G6a9Dg"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen p-margin-desktop">
+<!-- Header & Live Status -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-xl">
+<div>
+<h2 class="text-headline-lg font-bold text-on-surface tracking-tight">Market Intelligence Center</h2>
+<p class="text-body-lg text-on-surface-variant">Predict prices. Maximize profits.</p>
+</div>
+<div class="mt-lg md:mt-0 flex gap-gutter">
+<div class="glass-panel px-lg py-sm rounded border-l-4 border-primary">
+<p class="text-label-caps text-[10px] text-on-surface-variant">MARKET TREND</p>
+<div class="flex items-center gap-2">
+<span class="text-headline-md font-bold trend-up">Bullish +2.4%</span>
+<span class="material-symbols-outlined trend-up" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<div class="glass-panel px-lg py-sm rounded border-l-4 border-tertiary">
+<p class="text-label-caps text-[10px] text-on-surface-variant">GLOBAL AGRI-INDEX</p>
+<div class="flex items-center gap-2">
+<span class="text-headline-md font-bold text-on-surface">1,428.50</span>
+<span class="text-body-sm text-tertiary">+0.8%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- KPI Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-xl">
+<div class="glass-panel p-lg rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform"></div>
+<p class="text-label-caps text-on-surface-variant mb-xs">Current Revenue</p>
+<h3 class="text-headline-lg font-bold">₹12.5L</h3>
+<p class="text-body-sm trend-up flex items-center gap-1 mt-md">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_upward">arrow_upward</span> 14.2% vs last month
+                </p>
+</div>
+<div class="glass-panel p-lg rounded-xl relative overflow-hidden group">
+<p class="text-label-caps text-on-surface-variant mb-xs">Expected Revenue</p>
+<h3 class="text-headline-lg font-bold">₹18.2L</h3>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-md overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 72%;"></div>
+</div>
+<p class="text-body-sm text-on-surface-variant mt-sm">72% of target achieved</p>
+</div>
+<div class="glass-panel p-lg rounded-xl border-t-2 border-tertiary/50">
+<p class="text-label-caps text-on-surface-variant mb-xs">Profit Forecast</p>
+<h3 class="text-headline-lg font-bold text-tertiary">₹8.4L</h3>
+<p class="text-body-sm text-on-surface-variant mt-md">AI Confidence: High</p>
+</div>
+<div class="glass-panel p-lg rounded-xl bg-primary/5 border border-primary/20">
+<p class="text-label-caps text-on-surface-variant mb-xs">Market Confidence Score</p>
+<div class="flex items-end justify-between">
+<h3 class="text-display-lg font-bold text-primary">88%</h3>
+<span class="material-symbols-outlined text-primary-fixed-dim text-4xl mb-1" data-icon="verified_user">verified_user</span>
+</div>
+<p class="text-body-sm text-primary mt-sm">Optimal selling window open</p>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left & Center Column (8 Cols) -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<!-- Main Chart Section -->
+<section class="glass-panel rounded-xl p-lg overflow-hidden">
+<div class="flex items-center justify-between mb-xl">
+<div>
+<h4 class="font-bold text-lg">Tomato Price Forecast Center</h4>
+<p class="text-body-sm text-on-surface-variant">30-Day AI Projection &amp; Market Analysis</p>
+</div>
+<div class="flex bg-surface-container-low p-1 rounded-lg">
+<button class="px-md py-1 text-label-caps text-[10px] bg-surface-container-high rounded text-primary">1D</button>
+<button class="px-md py-1 text-label-caps text-[10px] hover:text-primary">1W</button>
+<button class="px-md py-1 text-label-caps text-[10px] hover:text-primary">1M</button>
+<button class="px-md py-1 text-label-caps text-[10px] hover:text-primary">1Y</button>
+</div>
+</div>
+<div class="h-80 w-full relative">
+<!-- Simulated Chart Grid -->
+<div class="absolute inset-0 grid grid-cols-6 grid-rows-4 pointer-events-none opacity-20">
+<div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-r border-b border-outline"></div><div class="border-b border-outline"></div>
+<div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div><div></div>
+</div>
+<!-- Simulated SVG Chart -->
+<svg class="absolute inset-0 w-full h-full" fill="none" viewBox="0 0 800 320">
+<defs>
+<linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#22C55E" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#22C55E" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+<!-- Historical Path -->
+<path d="M0,280 L50,260 L100,270 L150,240 L200,220 L250,235 L300,210 L350,190 L400,205 L450,180 L500,160" fill="none" stroke="#22C55E" stroke-width="3"></path>
+<path d="M0,280 L50,260 L100,270 L150,240 L200,220 L250,235 L300,210 L350,190 L400,205 L450,180 L500,160 L500,320 L0,320 Z" fill="url(#chartGradient)"></path>
+<!-- Forecast Dash -->
+<path d="M500,160 L550,140 L600,150 L650,120 L700,100 L750,110 L800,80" fill="none" stroke="#F59E0B" stroke-dasharray="6,4" stroke-width="3"></path>
+<!-- Indicators -->
+<circle cx="500" cy="160" fill="#22C55E" r="6"></circle>
+<text fill="#dae2fd" font-family="JetBrains Mono" font-size="10" x="510" y="150">CURRENT: ₹42/KG</text>
+<text fill="#F59E0B" font-family="JetBrains Mono" font-size="10" x="700" y="90">AI FORECAST: ₹58/KG</text>
+</svg>
+</div>
+</section>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Hero Recommendation -->
+<div class="glass-panel rounded-xl p-lg ai-glow bg-gradient-to-br from-tertiary/10 to-transparent flex flex-col justify-between">
+<div>
+<span class="bg-tertiary text-on-tertiary text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">AI RECOMMENDATION</span>
+<h4 class="text-headline-md font-bold mt-md">Best Selling Window</h4>
+<p class="text-body-md text-on-surface-variant mt-sm">Based on market volatility and regional demand patterns for Tomatoes.</p>
+</div>
+<div class="mt-lg">
+<div class="flex items-center gap-4">
+<div class="bg-tertiary-container text-on-tertiary-container rounded-lg p-lg flex flex-col items-center min-w-[100px]">
+<span class="text-label-caps text-[10px] opacity-70">SELL IN</span>
+<span class="text-headline-lg font-bold">15</span>
+<span class="text-label-caps text-[10px] opacity-70">DAYS</span>
+</div>
+<div class="space-y-1">
+<p class="text-headline-md font-bold text-primary">+12% Surplus</p>
+<p class="text-body-sm text-on-surface-variant">Projected price surge due to supply chain disruption.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Profit Simulator -->
+<div class="glass-panel rounded-xl p-lg">
+<div class="flex items-center gap-2 mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="calculate">calculate</span>
+<h4 class="font-bold">Profit Simulator</h4>
+</div>
+<div class="space-y-md">
+<div>
+<label class="text-label-caps text-[10px] text-on-surface-variant block mb-1">SELECTED CROP</label>
+<select class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary">
+<option>Tomato (Hybrid)</option>
+<option>Onion (Red)</option>
+<option>Rice (Basmati)</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="text-label-caps text-[10px] text-on-surface-variant block mb-1">EST. YIELD (TONS)</label>
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary" type="number" value="10"/>
+</div>
+<div>
+<label class="text-label-caps text-[10px] text-on-surface-variant block mb-1">TARGET ROI (%)</label>
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary" type="number" value="20"/>
+</div>
+</div>
+<div class="pt-md border-t border-outline-variant/20">
+<div class="flex justify-between items-center mb-1">
+<span class="text-body-sm text-on-surface-variant">Real-time ROI Projection</span>
+<span class="text-primary font-bold">24.8%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 24.8%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Crop Market Board -->
+<section class="glass-panel rounded-xl overflow-hidden">
+<div class="p-lg border-b border-outline-variant/20 flex items-center justify-between">
+<h4 class="font-bold">Live Crop Market Board</h4>
+<button class="text-primary text-body-sm hover:underline">View All Commodities</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low/50">
+<tr>
+<th class="px-lg py-sm text-label-caps text-[10px] text-on-surface-variant">CROP</th>
+<th class="px-lg py-sm text-label-caps text-[10px] text-on-surface-variant">PRICE (₹/KG)</th>
+<th class="px-lg py-sm text-label-caps text-[10px] text-on-surface-variant">24H CHANGE</th>
+<th class="px-lg py-sm text-label-caps text-[10px] text-on-surface-variant">DEMAND SCORE</th>
+<th class="px-lg py-sm text-label-caps text-[10px] text-on-surface-variant">TREND</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-highest/20 transition-colors">
+<td class="px-lg py-md font-bold">Tomato</td>
+<td class="px-lg py-md font-mono">42.50</td>
+<td class="px-lg py-md trend-up font-medium">+3.2%</td>
+<td class="px-lg py-md">
+<span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded border border-primary/20 font-bold uppercase">HIGH</span>
+</td>
+<td class="px-lg py-md">
+<div class="w-20 h-6 flex items-end gap-0.5">
+<div class="bg-primary/30 w-1.5 h-1"></div><div class="bg-primary/30 w-1.5 h-2"></div><div class="bg-primary/30 w-1.5 h-3"></div><div class="bg-primary/30 w-1.5 h-4"></div><div class="bg-primary w-1.5 h-5"></div>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest/20 transition-colors">
+<td class="px-lg py-md font-bold">Onion</td>
+<td class="px-lg py-md font-mono">28.10</td>
+<td class="px-lg py-md trend-down font-medium">-1.4%</td>
+<td class="px-lg py-md">
+<span class="bg-tertiary/10 text-tertiary text-[10px] px-2 py-0.5 rounded border border-tertiary/20 font-bold uppercase">MEDIUM</span>
+</td>
+<td class="px-lg py-md">
+<div class="w-20 h-6 flex items-end gap-0.5">
+<div class="bg-error w-1.5 h-5"></div><div class="bg-error/30 w-1.5 h-4"></div><div class="bg-error/30 w-1.5 h-3"></div><div class="bg-error/30 w-1.5 h-2"></div><div class="bg-error/30 w-1.5 h-1"></div>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest/20 transition-colors">
+<td class="px-lg py-md font-bold">Rice (Basmati)</td>
+<td class="px-lg py-md font-mono">105.00</td>
+<td class="px-lg py-md text-on-surface-variant font-medium">0.0%</td>
+<td class="px-lg py-md">
+<span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded border border-primary/20 font-bold uppercase">HIGH</span>
+</td>
+<td class="px-lg py-md">
+<div class="w-20 h-6 flex items-end gap-0.5">
+<div class="bg-on-surface-variant/30 w-1.5 h-3"></div><div class="bg-on-surface-variant/30 w-1.5 h-3"></div><div class="bg-on-surface-variant/30 w-1.5 h-3"></div><div class="bg-on-surface-variant/30 w-1.5 h-3"></div><div class="bg-on-surface-variant/30 w-1.5 h-3"></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Column (4 Cols) -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- AI Market Advisor -->
+<section class="glass-panel rounded-xl p-lg border-t-4 border-primary">
+<div class="flex items-center gap-2 mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="smart_toy">smart_toy</span>
+<h4 class="font-bold">AI Market Advisor</h4>
+</div>
+<div class="space-y-md">
+<div class="bg-surface-container-low p-md rounded border-l-2 border-primary group hover:bg-surface-container-high transition-colors">
+<p class="text-headline-md font-bold text-primary mb-1">Sell Tomatoes now</p>
+<p class="text-body-sm text-on-surface-variant leading-tight">Prices in the Pune market cluster have peaked. Liquidity is high for the next 48 hours.</p>
+</div>
+<div class="bg-surface-container-low p-md rounded border-l-2 border-tertiary group hover:bg-surface-container-high transition-colors">
+<p class="text-headline-md font-bold text-tertiary mb-1">Store Wheat for 45 days</p>
+<p class="text-body-sm text-on-surface-variant leading-tight">Supply chain constraints detected. Projected 15% price increase by mid-next month.</p>
+</div>
+<div class="bg-surface-container-low p-md rounded border-l-2 border-on-surface-variant group hover:bg-surface-container-high transition-colors">
+<p class="text-headline-md font-bold text-on-surface-variant mb-1">Switch to Sugarcane</p>
+<p class="text-body-sm text-on-surface-variant leading-tight">Next cycle analysis suggests high ethanol-driven demand. Optimal planting window starts in 2 weeks.</p>
+</div>
+</div>
+</section>
+<!-- Demand Heatmap -->
+<section class="glass-panel rounded-xl p-lg">
+<div class="flex items-center justify-between mb-lg">
+<h4 class="font-bold">Demand Heatmap</h4>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="fullscreen">fullscreen</span>
+</div>
+<div class="h-48 bg-surface-container-highest rounded overflow-hidden relative">
+<img alt="Heatmap" class="w-full h-full object-cover opacity-40 mix-blend-overlay" data-alt="A stylized digital map of a geographical region with glowing heatmap overlays in shades of emerald green and amber. The map features high-tech data visualization elements like glowing nodes, thin connecting lines representing trade routes, and abstract topographical data. The aesthetic is clean, sophisticated, and evokes a sense of high-level geographic intelligence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9ql5ITIpxGinTogP8dKpXIdJtBubaG3nacoKRGvpD7-baem8ft89FFfsCM_qszdtf4UGHl4gF2w41N3ApgSYjNw9YKTUbdJsh48k0ulxQeDsMvBVWbKu1jJ19-Hm3ujTwNFMJWfwRNAgn8H1A-2M0ZtHwcanpFbRD28PszQJe8dSI7vVw84J8j4Kvyn5ShekMOPjSqIfh4XpZTB-kRTElys02_EBWz702IKf21fkixXbPzGdWHpfX6G83RVCo-zPu6hzbw0dWlOg"/>
+<div class="absolute inset-0 p-lg flex flex-col justify-end">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary animate-pulse"></div>
+<span class="text-label-caps text-[10px] font-bold">ACTIVE HIGH-DEMAND ZONE</span>
+</div>
+<p class="text-body-sm mt-1">Southern Cluster: +18% Surge</p>
+</div>
+</div>
+</section>
+<!-- Market News Feed -->
+<section class="glass-panel rounded-xl p-lg">
+<h4 class="font-bold mb-lg">Market News Feed</h4>
+<div class="space-y-lg">
+<div class="flex gap-md group cursor-pointer">
+<div class="bg-error/20 p-2 rounded shrink-0 h-fit">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<div>
+<p class="text-label-caps text-[10px] text-error font-bold">SUPPLY CHAIN ALERT</p>
+<p class="text-body-md font-medium group-hover:text-primary transition-colors">Highway blockage in NH4 may delay tomato logistics by 12h.</p>
+<p class="text-[10px] text-on-surface-variant mt-1">20m ago</p>
+</div>
+</div>
+<div class="flex gap-md group cursor-pointer">
+<div class="bg-primary/20 p-2 rounded shrink-0 h-fit">
+<span class="material-symbols-outlined text-primary" data-icon="policy">policy</span>
+</div>
+<div>
+<p class="text-label-caps text-[10px] text-primary font-bold">GOVERNMENT POLICY</p>
+<p class="text-body-md font-medium group-hover:text-primary transition-colors">New MSP (Minimum Support Price) for Wheat announced for Q3.</p>
+<p class="text-[10px] text-on-surface-variant mt-1">2h ago</p>
+</div>
+</div>
+<div class="flex gap-md group cursor-pointer">
+<div class="bg-tertiary/20 p-2 rounded shrink-0 h-fit">
+<span class="material-symbols-outlined text-tertiary" data-icon="public">public</span>
+</div>
+<div>
+<p class="text-label-caps text-[10px] text-tertiary font-bold">GLOBAL TRADE</p>
+<p class="text-body-md font-medium group-hover:text-primary transition-colors">Import duties reduced for essential oilseeds starting next month.</p>
+<p class="text-[10px] text-on-surface-variant mt-1">5h ago</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-xl text-label-caps text-[10px] text-on-surface-variant hover:text-on-surface tracking-widest transition-colors py-sm border border-outline-variant/20 rounded">
+                        VIEW FULL TICKER
+                    </button>
+</section>
+</div>
+</div>
+</main>
+<!-- Floating Action for Quick Optimization (Contextual) -->
+<button class="fixed bottom-lg right-lg bg-primary text-on-primary p-lg rounded-full shadow-2xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+<span class="font-bold">Run AI Simulation</span>
+</button>
+<script>
+        // Micro-interactions and hover effects
+        document.querySelectorAll('.glass-panel').forEach(panel => {
+            panel.addEventListener('mouseenter', () => {
+                panel.style.boxShadow = "0 20px 30px -10px rgba(0,0,0,0.5)";
+                panel.style.borderColor = "rgba(75, 226, 119, 0.2)";
+            });
+            panel.addEventListener('mouseleave', () => {
+                panel.style.boxShadow = "none";
+                panel.style.borderColor = "rgba(248, 250, 252, 0.1)";
+            });
+        });
+
+        // Simple Ticker Animation for live statuses
+        const updateMarketIndices = () => {
+            const indices = document.querySelectorAll('.font-mono');
+            indices.forEach(el => {
+                const currentVal = parseFloat(el.innerText);
+                const variance = (Math.random() - 0.5) * 0.1;
+                el.innerText = (currentVal + variance).toFixed(2);
+            });
+        }
+        setInterval(updateMarketIndices, 3000);
+    </script>
+    <script src="../terrava-config.js"></script>
+</body></html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA Emergency SOS &amp; Rural Support Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Geist:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#2d3449",
+                        "secondary-container": "#00a572",
+                        "surface-container-high": "#222a3d",
+                        "error-container": "#93000a",
+                        "on-surface": "#dae2fd",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "surface-container-highest": "#2d3449",
+                        "outline-variant": "#3a494a",
+                        "on-tertiary": "#68000a",
+                        "primary-fixed-dim": "#00dce5",
+                        "on-primary-fixed": "#002021",
+                        "tertiary-fixed": "#ffdad7",
+                        "surface-container-lowest": "#060e20",
+                        "background": "#0b1326",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary": "#4edea3",
+                        "on-secondary": "#003824",
+                        "on-tertiary-fixed": "#410004",
+                        "inverse-on-surface": "#283044",
+                        "on-background": "#dae2fd",
+                        "tertiary-container": "#ffd3cf",
+                        "on-primary-fixed-variant": "#004f53",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#b9caca",
+                        "error": "#ffb4ab",
+                        "inverse-surface": "#dae2fd",
+                        "on-primary-container": "#006c71",
+                        "primary": "#e9feff",
+                        "inverse-primary": "#00696e",
+                        "surface-tint": "#00dce5",
+                        "primary-fixed": "#63f7ff",
+                        "on-tertiary-container": "#bd1e26",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-secondary-container": "#00311f",
+                        "outline": "#849495",
+                        "tertiary": "#fff8f7",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#131b2e",
+                        "surface": "#0b1326",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "primary-container": "#00f5ff",
+                        "on-primary": "#003739",
+                        "surface-container": "#171f33",
+                        "surface-dim": "#0b1326",
+                        "surface-bright": "#31394d",
+                        "on-secondary-fixed": "#002113",
+                        "emergency-red": "#EF4444"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "control-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Geist"],
+                        "label-mono": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "alert-status": ["Geist"],
+                        "display-sos": ["Geist"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-mono": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "alert-status": ["14px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "display-sos": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}]
+                    },
+                    "animation": {
+                        "pulse-critical": "pulse-critical 1.5s infinite",
+                        "float": "float 3s ease-in-out infinite"
+                    },
+                    "keyframes": {
+                        "pulse-critical": {
+                            "0%, 100%": { boxShadow: "0 0 0px #EF4444" },
+                            "50%": { boxShadow: "0 0 25px #EF4444" }
+                        },
+                        "float": {
+                            "0%, 100%": { transform: "translateY(0)" },
+                            "50%": { transform: "translateY(-10px)" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            background: rgba(23, 31, 51, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3a494a; border-radius: 2px; }
+    </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+      authDomain: "terrava-farm.firebaseapp.com",
+      databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+      projectId: "terrava-farm",
+      storageBucket: "terrava-farm.firebasestorage.app",
+      messagingSenderId: "850552694321",
+      appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+      measurementId: "G-WQKPETW205"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Check user session state
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Unauthenticated - redirect to auth portal
+            window.location.href = "../";
+        } else {
+            // Authenticated - greeting modification and dynamic logout transformation
+            document.addEventListener("DOMContentLoaded", () => {
+                const welcomeText = document.querySelector("h2.font-headline-lg");
+                if (welcomeText) {
+                    welcomeText.innerText = "Good Morning, " + (user.displayName || "Grower") + ".";
+                }
+
+                // Dynamically convert Grower Access sidebar link to active Logout trigger
+                const sidebarLinks = document.querySelectorAll("aside nav a");
+                sidebarLinks.forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href === "../") {
+                        // Change icon to logout
+                        const iconSpan = link.querySelector(".material-symbols-outlined");
+                        if (iconSpan) iconSpan.innerText = "logout";
+                        
+                        // Change text
+                        const textSpan = link.querySelector(".font-body-sm") || link.querySelector("span:not(.material-symbols-outlined)");
+                        if (textSpan) textSpan.innerText = "Logout";
+                        
+                        // Click handler
+                        link.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.signOut().then(() => {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>\n</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden h-screen flex">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
+    <div class="mb-xl px-sm flex items-center gap-sm">
+        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+            <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
+        </div>
+        <div>
+            <h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">TERRAVA</h1>
+            <p class="text-[10px] font-label-caps uppercase tracking-widest text-on-surface-variant">Ag-OS v2.4</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar pr-xs">
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_dashboard/">
+            <span class="material-symbols-outlined text-[20px]">dashboard</span>
+            <span class="font-body-sm">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_digital_farm_twin/">
+            <span class="material-symbols-outlined text-[20px]">hub</span>
+            <span class="font-body-sm">Digital Farm Twin</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_crop_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">psychology</span>
+            <span class="font-body-sm">Crop Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_command_center/">
+            <span class="material-symbols-outlined text-[20px]">sensors</span>
+            <span class="font-body-sm">Sensor Array</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_livestock_guardian/">
+            <span class="material-symbols-outlined text-[20px]">pets</span>
+            <span class="font-body-sm">Livestock Guardian</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ai_farm_doctor/">
+            <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+            <span class="font-body-sm">AI Farm Doctor</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_market_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">trending_up</span>
+            <span class="font-body-sm">Market Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_government_benefits_center/">
+            <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            <span class="font-body-sm">Government Schemes</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-2 border-primary bg-primary/10 transition-colors duration-200" href="../terrava_emergency_sos_rural_support_center_3/">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span class="font-body-sm">Emergency SOS</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_profile_settings_center/">
+            <span class="material-symbols-outlined text-[20px]">settings</span>
+            <span class="font-body-sm">Settings</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../">
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span class="font-body-sm">Grower Access</span>
+        </a>
+    </nav>
+    <div class="mt-auto border-t border-outline-variant/10 pt-md space-y-xs px-sm">
+        <div class="flex items-center gap-md py-sm text-on-surface-variant">
+            <div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/30">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4ECkKIzQy5v_zhw_ZjQIynpE-zrXLt2R88IXm4ax2Tddbrl4ZA4KmhljXJtCYeHc_00hx96qpEogFUNUF9Hlfgsk2MErfYXBCXt9dQCd889Clq1ip9pklRGIxWih4ELQ6O2brLLzaOKP4LVf6ZgAj0Uxq8p5BfOMoosIRP6enrOiei-MrFVdfr1dY6OY02kVA4Dn2FW3DF-e6nUTZLEqLpauVIk5hCNCeFJtoX-yK7Nc3n2m5kzE8wf_1nTtmRGVVsjxepVmRRU"/>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Anoop Sharma</span>
+                <span class="text-[9px] font-label-caps text-primary uppercase">GROWER ALPHA</span>
+            </div>
+        </div>
+    </div>
+</aside>
+<!-- Main Workspace -->
+<main class="ml-64 flex-1 relative flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-256px)] h-20 bg-tertiary-container dark:bg-tertiary-container shadow-[0_0_20px_rgba(239,68,68,0.4)] flex items-center justify-between px-8 z-40">
+<div class="flex items-center gap-6">
+<h2 class="font-display-sos text-display-sos text-on-tertiary-container animate-pulse-critical scale-50 origin-left">TERRAVA EMERGENCY</h2>
+<div class="h-8 w-px bg-on-tertiary-container/20"></div>
+<nav class="hidden md:flex gap-8">
+<a class="text-on-tertiary-container font-bold border-b-2 border-on-tertiary-container font-label-mono text-label-mono py-2" href="#">Critical Status</a>
+<a class="text-on-tertiary-container/70 hover:brightness-110 transition-all font-label-mono text-label-mono py-2" href="#">Nearby Assets</a>
+<a class="text-on-tertiary-container/70 hover:brightness-110 transition-all font-label-mono text-label-mono py-2" href="#">Weather Radar</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-on-tertiary-container text-tertiary-container font-bold px-6 py-2 rounded-full font-label-mono text-label-mono transition-all active:scale-[0.99] uppercase">
+                    DECLARE INCIDENT
+                </button>
+<button class="p-2 text-on-tertiary-container hover:bg-white/10 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-emergency-red rounded-full"></span>
+</button>
+<button class="p-2 text-on-tertiary-container hover:bg-white/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">emergency_home</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden border-2 border-on-tertiary-container">
+<img alt="Operator Avatar" class="w-full h-full object-cover" data-alt="A close-up portrait of a serious middle-aged agricultural operator wearing a sleek tactical headset in a dimly lit high-tech control room environment. The lighting is dominated by glowing cyan and emergency red screens reflecting off his face. He has a determined, professional expression suitable for a mission-critical emergency response interface. The style is cinematic and realistic with a shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfaRSq3tfLJhI4CCp-Q0Y6xSClSS4Pu6C1nhWaby6DYHx9s44mJfIBqcrSLHI-FeD7YojkxCjR7VGS_AUc0B_ruH_bmmwdh9b4BzBgF2c0Ewo51FVwIwcpN7rplMxizwBRVdOOg29il8J1qw_zlgMiXjKW1PrzQIa22qqJLZduuFx_rm3vqLjdxukAXrFZbsakT3haMiHegI0aYQdrZSXwlBVsnggwSy9lzmJzj4nr-CgFOwZpA_i3WTkJAHTS8EidqA3scM4pJo8"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="mt-20 flex-1 overflow-y-auto p-8 custom-grid-layout">
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left Column (Main Controls) -->
+<div class="col-span-8 space-y-gutter">
+<!-- SOS Hero -->
+<section class="glass-panel p-12 rounded-xl flex flex-col items-center justify-center text-center relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emergency-red via-transparent to-transparent"></div>
+</div>
+<button class="w-64 h-64 rounded-full bg-emergency-red text-white flex flex-col items-center justify-center gap-2 shadow-[0_0_50px_rgba(239,68,68,0.5)] animate-pulse-critical active:scale-95 transition-all group z-10" id="mainSosBtn">
+<span class="material-symbols-outlined text-7xl font-bold" style="font-variation-settings: 'FILL' 1;">emergency</span>
+<span class="font-display-sos text-3xl">SOS</span>
+</button>
+<div class="mt-8 z-10">
+<h3 class="font-headline-lg text-headline-lg text-white mb-2">Tap for immediate assistance</h3>
+<p class="text-on-surface-variant font-label-mono">GPS: 44.9680° N, 94.4203° W • ACTIVE TRACING ENABLED</p>
+</div>
+</section>
+<!-- Category Grid -->
+<div class="grid grid-cols-3 gap-control-gap">
+<button class="glass-panel p-6 rounded-lg hover:border-emergency-red/50 transition-all flex flex-col items-center gap-3 group">
+<span class="material-symbols-outlined text-primary text-4xl group-hover:scale-110 transition-transform">eco</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Crop Disease</span>
+</button>
+<button class="glass-panel p-6 rounded-lg hover:border-emergency-red/50 transition-all flex flex-col items-center gap-3 group">
+<span class="material-symbols-outlined text-primary text-4xl group-hover:scale-110 transition-transform">pets</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Animal Health</span>
+</button>
+<button class="glass-panel p-6 rounded-lg hover:border-emergency-red/50 transition-all flex flex-col items-center gap-3 group">
+<span class="material-symbols-outlined text-primary text-4xl group-hover:scale-110 transition-transform">medical_services</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Farmer Medical</span>
+</button>
+<button class="glass-panel p-6 rounded-lg border-2 border-emergency-red/30 bg-emergency-red/10 flex flex-col items-center gap-3 group">
+<span class="material-symbols-outlined text-emergency-red text-4xl animate-bounce">flood</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest text-emergency-red">Flood Risk</span>
+</button>
+<button class="glass-panel p-6 rounded-lg hover:border-emergency-red/50 transition-all flex flex-col items-center gap-3 group">
+<span class="material-symbols-outlined text-primary text-4xl group-hover:scale-110 transition-transform">local_fire_department</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Fire Hazard</span>
+</button>
+<button class="glass-panel p-6 rounded-lg hover:border-emergency-red/50 transition-all flex flex-col items-center gap-3 group">
+<span class="material-symbols-outlined text-primary text-4xl group-hover:scale-110 transition-transform">construction</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Equipment Failure</span>
+</button>
+</div>
+<!-- GIS Map Placeholder -->
+<section class="glass-panel h-96 rounded-xl overflow-hidden relative border border-primary/20">
+<div class="absolute inset-0 bg-surface-container-low flex items-center justify-center">
+<img class="w-full h-full object-cover opacity-60" data-alt="A high-contrast GIS-style satellite map of a rural farming grid in Iowa. The map is overlaid with digital UI elements including glowing blue asset markers for hospitals and veterinary clinics, translucent red polygons indicating flood risk zones, and technical telemetry data labels in JetBrains Mono. The aesthetic is modern, data-dense, and professional, utilizing a dark navy and cyan palette with sharp emergency red accents." data-location="Iowa" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrmLkfCvgQnR7McA8t-3R9Hj_ovT3YOIsx3RdjhVBTgqkwlHzLIfI--cMQm3uJF39alZq7QVck64wxnZPUwM4cR6d2aPGfogLBddaijvUunCDAYIgYJz-Ls6_bhNTko5_cSq9FVJO-LmSdnDzHcDHgHTT_dR9RNX0r1URW2Zd9Xf2c6_guEs2977VyYqfJ35L3y87xrD7f9iKsRxiJzjbjUGqht_dS4Zak8oAbkU-OuAcj5KdiZuyVF9pASB8nE_obTl6UXe7MAvs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<!-- Map Overlay UI -->
+<div class="absolute top-4 left-4 flex flex-col gap-2">
+<div class="bg-surface-container-highest/90 backdrop-blur-md px-3 py-1 rounded border border-white/10 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="font-label-mono text-[10px] uppercase">Asset: Unit-09 (Vet) - 4.2km</span>
+</div>
+<div class="bg-surface-container-highest/90 backdrop-blur-md px-3 py-1 rounded border border-white/10 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emergency-red"></span>
+<span class="font-label-mono text-[10px] uppercase">Alert: Bridge Closure @ S-14</span>
+</div>
+</div>
+<div class="absolute bottom-6 right-6 flex flex-col gap-2">
+<button class="w-10 h-10 bg-surface-container-highest rounded border border-white/10 flex items-center justify-center hover:bg-white/10"><span class="material-symbols-outlined">add</span></button>
+<button class="w-10 h-10 bg-surface-container-highest rounded border border-white/10 flex items-center justify-center hover:bg-white/10"><span class="material-symbols-outlined">remove</span></button>
+<button class="w-10 h-10 bg-primary text-on-primary rounded border border-white/10 flex items-center justify-center"><span class="material-symbols-outlined">my_location</span></button>
+</div>
+</div>
+</section>
+<!-- Emergency Contacts -->
+<section class="grid grid-cols-2 gap-gutter">
+<div class="glass-panel p-6 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-high rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">local_hospital</span>
+</div>
+<div>
+<h4 class="font-bold text-white">St. Jude Rural Clinic</h4>
+<p class="font-label-mono text-label-mono text-secondary">ETA: 12 MINS • OPEN</p>
+</div>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-2 rounded-full font-bold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">call</span>
+                                DIAL
+                            </button>
+</div>
+<div class="glass-panel p-6 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-high rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">pets</span>
+</div>
+<div>
+<h4 class="font-bold text-white">Equine Emergency Vet</h4>
+<p class="font-label-mono text-label-mono text-secondary">ETA: 18 MINS • ON-CALL</p>
+</div>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-2 rounded-full font-bold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">call</span>
+                                DIAL
+                            </button>
+</div>
+</section>
+</div>
+<!-- Right Column (Status & AI) -->
+<div class="col-span-4 space-y-gutter">
+<!-- Weather Radar & Alerts -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-tertiary-container">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-mono text-label-mono uppercase tracking-widest text-on-tertiary-container">Active Weather Radar</h3>
+<span class="material-symbols-outlined text-on-tertiary-container">radar</span>
+</div>
+<div class="flex items-end gap-4">
+<span class="font-display-sos text-4xl">84°F</span>
+<div class="flex-1 pb-1">
+<p class="text-on-surface-variant font-label-mono text-[10px] uppercase">High Heat Warning</p>
+<div class="w-full bg-surface-variant h-1 rounded-full mt-1 overflow-hidden">
+<div class="bg-tertiary-container h-full w-4/5"></div>
+</div>
+</div>
+</div>
+<p class="mt-4 text-on-surface-variant text-sm border-t border-white/5 pt-4">Extreme heat predicted for 14:00. Hydrate livestock and check ventilation systems in Zone B.</p>
+</div>
+<!-- AI Emergency Assistant -->
+<div class="glass-panel rounded-xl flex flex-col h-[400px]">
+<div class="p-4 border-b border-white/10 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-sm">smart_toy</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">TERRA-AI Assist</h4>
+<span class="font-label-mono text-[10px] text-secondary">TRIAGE MODE ACTIVE</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<div class="flex gap-2">
+<div class="bg-surface-container-high p-3 rounded-xl rounded-tl-none max-w-[80%]">
+<p class="text-sm">I'm standing by for emergency protocols. Describe the situation or tap a quick-action below.</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 items-end">
+<div class="bg-primary/20 p-3 rounded-xl rounded-tr-none border border-primary/20 max-w-[80%]">
+<p class="text-sm">My cow stopped eating and looks lethargic.</p>
+</div>
+</div>
+<div class="flex gap-2">
+<div class="bg-surface-container-high p-3 rounded-xl rounded-tl-none max-w-[80%] border-l-2 border-secondary">
+<p class="text-sm font-bold text-secondary mb-1">Triage: Metabolic Check</p>
+<p class="text-xs">1. Check temperature (Normal: 101.5°F).<br/>2. Check for bloat in left flank.<br/>3. Observe breathing rate.</p>
+</div>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest/50">
+<div class="relative">
+<input class="w-full bg-background border border-white/10 rounded-lg py-2 pl-4 pr-12 text-sm focus:border-primary focus:ring-0 transition-all" placeholder="Type or speak emergency..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary p-1">
+<span class="material-symbols-outlined">mic</span>
+</button>
+</div>
+</div>
+</div>
+<!-- History Timeline -->
+<div class="glass-panel p-6 rounded-xl flex-1">
+<h3 class="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant mb-6">Incident Logs</h3>
+<div class="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-0 before:w-px before:bg-white/10">
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high border border-white/20 flex items-center justify-center">
+<span class="w-2 h-2 rounded-full bg-emergency-red"></span>
+</div>
+<p class="font-label-mono text-[10px] text-on-surface-variant uppercase">Today, 08:42 AM</p>
+<h5 class="font-bold text-sm">Zone A Sensor Offline</h5>
+<p class="text-xs text-on-surface-variant">Maintenance dispatched. ETA 1 hr.</p>
+</div>
+<div class="relative pl-8 opacity-60">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high border border-white/20 flex items-center justify-center">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<p class="font-label-mono text-[10px] text-on-surface-variant uppercase">Yesterday, 14:15 PM</p>
+<h5 class="font-bold text-sm">Frost Warning Resolved</h5>
+<p class="text-xs text-on-surface-variant">Heaters engaged; crop yield protected.</p>
+</div>
+<div class="relative pl-8 opacity-60">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high border border-white/20 flex items-center justify-center">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<p class="font-label-mono text-[10px] text-on-surface-variant uppercase">3 Days Ago</p>
+<h5 class="font-bold text-sm">Drill Maintenance</h5>
+<p class="text-xs text-on-surface-variant">Completed by Unit-03.</p>
+</div>
+</div>
+</div>
+<!-- Checklist -->
+<div class="bg-surface-container-highest p-6 rounded-xl border border-white/10">
+<h3 class="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant mb-4">Preparation Checklist</h3>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded-sm bg-background border-white/20 text-secondary focus:ring-0" type="checkbox"/>
+<span class="text-xs text-on-surface-variant line-through group-hover:text-white transition-colors">Fuel Reserves Checked</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded-sm bg-background border-white/20 text-secondary focus:ring-0" type="checkbox"/>
+<span class="text-xs text-on-surface-variant line-through group-hover:text-white transition-colors">Emergency Radio Band Open</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded-sm bg-background border-white/20 text-secondary focus:ring-0" type="checkbox"/>
+<span class="text-xs text-on-surface-variant group-hover:text-white transition-colors">First Aid Kit - Inventory Review</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple Interaction: SOS Button Trigger
+        const sosBtn = document.getElementById('mainSosBtn');
+        sosBtn.addEventListener('click', () => {
+            const confirmed = confirm("CONFIRM EMERGENCY SOS: This will notify local responders and broadcast your GPS location.");
+            if (confirmed) {
+                sosBtn.classList.remove('animate-pulse-critical');
+                sosBtn.classList.add('bg-white', 'text-emergency-red', 'scale-110');
+                sosBtn.innerHTML = `
+                    <span class="material-symbols-outlined text-7xl font-bold animate-spin" style="font-variation-settings: 'FILL' 1;">sync</span>
+                    <span class="font-display-sos text-2xl uppercase">Alerting...</span>
+                `;
+                setTimeout(() => {
+                    alert("Emergency Broadcast Successful. Help is 12 minutes away.");
+                }, 1000);
+            }
+        });
+
+        // Simulating some dynamic status changes
+        setInterval(() => {
+            const timeElements = document.querySelectorAll('.font-label-mono');
+            // This just keeps the feeling of "active telemetry"
+        }, 5000);
+    </script>
+</body></html>

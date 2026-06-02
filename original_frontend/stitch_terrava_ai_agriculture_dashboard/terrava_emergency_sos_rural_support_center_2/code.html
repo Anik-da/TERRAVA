@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA | Emergency SOS &amp; Rural Support</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Geist:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @keyframes pulse-critical {
+            0% { box-shadow: 0 0 0px #EF4444; transform: scale(1); }
+            50% { box-shadow: 0 0 25px #EF4444; transform: scale(1.02); }
+            100% { box-shadow: 0 0 0px #EF4444; transform: scale(1); }
+        }
+        .pulse-critical {
+            animation: pulse-critical 1.5s infinite ease-in-out;
+        }
+        .glass-panel {
+            background: rgba(23, 31, 51, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-panel-heavy {
+            background: rgba(6, 14, 32, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3a494a; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline": "#849495",
+                      "tertiary-fixed": "#ffdad7",
+                      "on-error": "#690005",
+                      "primary-container": "#00f5ff",
+                      "surface-tint": "#00dce5",
+                      "inverse-surface": "#dae2fd",
+                      "on-secondary-fixed": "#002113",
+                      "surface-bright": "#31394d",
+                      "outline-variant": "#3a494a",
+                      "on-tertiary-container": "#bd1e26",
+                      "on-surface-variant": "#b9caca",
+                      "on-primary-container": "#006c71",
+                      "tertiary": "#fff8f7",
+                      "surface-container-high": "#222a3d",
+                      "surface-container": "#171f33",
+                      "surface-container-lowest": "#060e20",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary": "#68000a",
+                      "tertiary-fixed-dim": "#ffb3ad",
+                      "on-secondary": "#003824",
+                      "surface-container-low": "#131b2e",
+                      "secondary-fixed-dim": "#4edea3",
+                      "tertiary-container": "#ffd3cf",
+                      "on-primary": "#003739",
+                      "primary-fixed-dim": "#00dce5",
+                      "on-tertiary-fixed": "#410004",
+                      "surface": "#0b1326",
+                      "primary-fixed": "#63f7ff",
+                      "primary": "#e9feff",
+                      "error": "#ffb4ab",
+                      "error-container": "#93000a",
+                      "secondary": "#4edea3",
+                      "on-secondary-container": "#00311f",
+                      "on-primary-fixed": "#002021",
+                      "background": "#0b1326",
+                      "on-primary-fixed-variant": "#004f53",
+                      "secondary-fixed": "#6ffbbe",
+                      "surface-variant": "#2d3449",
+                      "secondary-container": "#00a572",
+                      "on-secondary-fixed-variant": "#005236",
+                      "on-tertiary-fixed-variant": "#930013",
+                      "inverse-on-surface": "#283044",
+                      "surface-dim": "#0b1326",
+                      "surface-container-highest": "#2d3449",
+                      "inverse-primary": "#00696e",
+                      "on-surface": "#dae2fd",
+                      "on-background": "#dae2fd",
+                      "emergency-red": "#EF4444"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "unit": "4px",
+                      "control-gap": "8px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "32px"
+              },
+              "fontFamily": {
+                      "label-mono": ["JetBrains Mono"],
+                      "display-sos": ["Geist"],
+                      "body-md": ["Geist"],
+                      "alert-status": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "headline-lg-mobile": ["Geist"]
+              },
+              "fontSize": {
+                      "label-mono": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                      "display-sos": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                      "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                      "alert-status": ["14px", { "lineHeight": "16px", "fontWeight": "700" }],
+                      "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                      "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-16 pb-8 z-40 bg-surface-container dark:bg-surface-container docked left-0 h-full w-64 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/10">
+<div class="px-6 mb-8">
+<h2 class="font-display-sos text-headline-lg text-primary">HQ Alpha</h2>
+<p class="font-label-mono text-label-mono text-on-surface-variant">Sector 7G</p>
+</div>
+<nav class="flex-grow space-y-2">
+<a class="flex items-center py-3 text-on-surface-variant hover:text-on-surface pl-4 hover:bg-primary-container/10 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="dashboard">dashboard</span>
+<span class="font-label-mono text-label-mono">Command Center</span>
+</a>
+<a class="flex items-center py-3 text-on-surface-variant hover:text-on-surface pl-4 hover:bg-primary-container/10 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="map">map</span>
+<span class="font-label-mono text-label-mono">GIS Map</span>
+</a>
+<a class="flex items-center py-3 text-on-surface-variant hover:text-on-surface pl-4 hover:bg-primary-container/10 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-mono text-label-mono">Service Fleet</span>
+</a>
+<a class="flex items-center py-3 text-primary font-bold border-l-4 border-primary pl-3 bg-primary-container/5" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="assignment">assignment</span>
+<span class="font-label-mono text-label-mono">Incident Logs</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-4 bg-emergency-red text-white font-display-sos font-bold tracking-widest rounded pulse-critical mb-8 hover:opacity-90 active:scale-95 transition-all">
+                ACTIVATE SOS
+            </button>
+<div class="space-y-2 pt-4 border-t border-outline-variant/20">
+<a class="flex items-center py-2 text-on-surface-variant hover:text-on-surface pl-4 font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span> Settings
+                </a>
+<a class="flex items-center py-2 text-on-surface-variant hover:text-on-surface pl-4 font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help">help</span> Support
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow ml-64 flex flex-col h-full overflow-hidden">
+<!-- TopAppBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 fixed top-0 z-50 bg-surface-container-high dark:bg-surface-container-high border-b border-outline-variant/10 backdrop-blur-md shadow-md ml-0">
+<div class="flex items-center gap-8">
+<h1 class="font-display-sos text-display-sos tracking-tighter text-primary dark:text-primary text-[32px]">TERRAVA</h1>
+<div class="flex items-center bg-surface-variant/40 rounded px-4 py-1.5 border border-outline-variant/20">
+<span class="material-symbols-outlined text-primary text-[20px] mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface text-label-mono placeholder:text-on-surface-variant/50 w-64" placeholder="Global Telemetry Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/20 p-2 rounded transition-colors" data-icon="radar">radar</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/20 p-2 rounded transition-colors" data-icon="thermostat">thermostat</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/20 p-2 rounded transition-colors" data-icon="emergency_home">emergency_home</button>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 font-bold font-alert-status text-alert-status rounded-full hover:shadow-[0_0_15px_rgba(0,245,255,0.4)] transition-all">
+                    CRITICAL STATUS
+                </button>
+</div>
+</header>
+<!-- Dynamic Content Layout -->
+<div class="mt-16 p-8 grid grid-cols-12 gap-6 h-[calc(100vh-64px)] overflow-y-auto">
+<!-- Left Column: SOS Hero & Weather -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Large SOS Button Card -->
+<div class="glass-panel-heavy p-10 rounded-xl text-center relative overflow-hidden flex flex-col items-center justify-center border-t-2 border-emergency-red/40">
+<div class="absolute inset-0 bg-gradient-to-b from-emergency-red/5 to-transparent pointer-events-none"></div>
+<h3 class="font-label-mono text-label-mono text-emergency-red tracking-[0.3em] mb-8">INITIATE EMERGENCY PROTOCOL</h3>
+<button class="w-48 h-48 bg-emergency-red rounded-full pulse-critical flex items-center justify-center text-white font-display-sos text-headline-lg shadow-[0_0_40px_rgba(239,68,68,0.5)] active:scale-90 transition-transform cursor-pointer group" id="sos-trigger">
+<span class="material-symbols-outlined !text-[80px]" data-icon="emergency" style="font-variation-settings: 'FILL' 1;">emergency</span>
+</button>
+<p class="font-display-sos text-headline-lg text-primary mt-10">EMERGENCY SOS</p>
+<p class="font-body-md text-on-surface-variant mt-2 max-w-[280px]">Bypass all automation. Direct line to Rapid Response Unit Delta.</p>
+</div>
+<!-- Weather Alert Center -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-emergency-red">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h4 class="font-alert-status text-alert-status text-emergency-red uppercase tracking-widest">Active Weather Radar</h4>
+<p class="text-on-surface-variant text-label-mono mt-1">Updated 2m ago</p>
+</div>
+<span class="material-symbols-outlined text-emergency-red" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="font-display-sos text-[56px] text-primary">84°F</span>
+<div class="flex flex-col">
+<span class="font-bold text-tertiary">HIGH HEAT WARNING</span>
+<span class="text-on-surface-variant text-label-mono">Soil Temp: 92°F | Humidity: 14%</span>
+</div>
+</div>
+<div class="mt-6 h-2 w-full bg-surface-variant/30 rounded-full overflow-hidden">
+<div class="h-full bg-emergency-red w-4/5"></div>
+</div>
+</div>
+</div>
+<!-- Center Column: GIS & Emergency Grid -->
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<!-- GIS Map Section -->
+<div class="glass-panel rounded-xl h-[400px] relative overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover grayscale brightness-50 contrast-125" data-alt="A sophisticated dark-themed GIS satellite map of a large agricultural farm estate. The map features luminous neon green outlines of crop zones, glowing red incident markers for emergencies, and pulsing blue icons for hospital and veterinary assets. The lighting is nocturnal with high-contrast data overlays and translucent telemetry panels typical of a mission-critical control center interface." data-location="Rural Sector 7G" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEDbsUucYhd1QQzt36QYSyUOFjC4mQ4Ikov1foy-1pE8qoXC0Bsr3qGcfEmheoObOplLUStE0e38e6YU-M-ovnPQC9SHfkPCOKTa0DBUAsfX5dAOBcH76XLwPCEJKbeeNsM2orwBIVDuVzVhBA6T8MB295Veqojd6yANWgNh6YL74KNPc_domYC0AzNvAk1FtT7t4MBut2ao0fRPE3v4iLY7i6Y8V7JzMYSBa3wlhQbiYWawD2pSl9N-efOkZp9yn0UlPsx4id0Bg"/>
+<div class="absolute top-4 left-4 glass-panel p-3 rounded-lg flex flex-col gap-2">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]" data-icon="local_hospital">local_hospital</span>
+<span class="font-label-mono text-label-mono">Hospital: 12.4km</span>
+</div>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[18px]" data-icon="pets">pets</span>
+<span class="font-label-mono text-label-mono">Vet Unit: 4.8km</span>
+</div>
+</div>
+<div class="absolute bottom-4 right-4 flex gap-2">
+<button class="bg-surface-container-high/90 p-2 rounded border border-outline-variant/30 text-primary hover:bg-primary-container hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+<button class="bg-surface-container-high/90 p-2 rounded border border-outline-variant/30 text-primary hover:bg-primary-container hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+</div>
+</div>
+<!-- Emergency Type Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+<button class="glass-panel p-6 rounded-xl border border-outline-variant/20 hover:border-emergency-red transition-all group flex flex-col items-center gap-3 text-center">
+<span class="material-symbols-outlined text-emergency-red text-[32px] group-hover:scale-110 transition-transform" data-icon="coronavirus">coronavirus</span>
+<span class="font-label-mono text-label-mono uppercase tracking-tight">Crop Disease</span>
+</button>
+<button class="glass-panel p-6 rounded-xl border border-outline-variant/20 hover:border-emergency-red transition-all group flex flex-col items-center gap-3 text-center">
+<span class="material-symbols-outlined text-secondary text-[32px] group-hover:scale-110 transition-transform" data-icon="medical_services">medical_services</span>
+<span class="font-label-mono text-label-mono uppercase tracking-tight">Farmer Medical</span>
+</button>
+<button class="glass-panel p-6 rounded-xl border border-outline-variant/20 hover:border-emergency-red transition-all group flex flex-col items-center gap-3 text-center">
+<span class="material-symbols-outlined text-primary-container text-[32px] group-hover:scale-110 transition-transform" data-icon="agriculture">agriculture</span>
+<span class="font-label-mono text-label-mono uppercase tracking-tight">Equipment Failure</span>
+</button>
+<button class="glass-panel p-6 rounded-xl border border-outline-variant/20 hover:border-emergency-red transition-all group flex flex-col items-center gap-3 text-center">
+<span class="material-symbols-outlined text-secondary text-[32px] group-hover:scale-110 transition-transform" data-icon="styler">styler</span>
+<span class="font-label-mono text-label-mono uppercase tracking-tight">Animal Health</span>
+</button>
+<button class="glass-panel p-6 rounded-xl border border-outline-variant/20 hover:border-emergency-red transition-all group flex flex-col items-center gap-3 text-center">
+<span class="material-symbols-outlined text-primary-container text-[32px] group-hover:scale-110 transition-transform" data-icon="flood">flood</span>
+<span class="font-label-mono text-label-mono uppercase tracking-tight">Flood Risk</span>
+</button>
+<button class="glass-panel p-6 rounded-xl border border-outline-variant/20 hover:border-emergency-red transition-all group flex flex-col items-center gap-3 text-center">
+<span class="material-symbols-outlined text-emergency-red text-[32px] group-hover:scale-110 transition-transform" data-icon="local_fire_department">local_fire_department</span>
+<span class="font-label-mono text-label-mono uppercase tracking-tight">Fire Hazard</span>
+</button>
+</div>
+</div>
+<!-- Right Column: AI Assistant & Logs -->
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<!-- AI Assistant Panel -->
+<div class="glass-panel rounded-xl h-[500px] flex flex-col border border-primary-container/20">
+<div class="p-4 border-b border-outline-variant/20 bg-primary-container/5 flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<h4 class="font-alert-status text-alert-status text-primary-container">AI TRIAGE ASSISTANT</h4>
+</div>
+<div class="flex-grow p-4 space-y-4 overflow-y-auto">
+<div class="flex justify-end">
+<div class="bg-surface-variant/40 p-3 rounded-lg max-w-[85%] border border-outline-variant/20">
+<p class="text-sm">My cow suddenly stopped eating and seems lethargic. Rapid breathing noticed.</p>
+</div>
+</div>
+<div class="flex justify-start">
+<div class="bg-primary-container/10 p-3 rounded-lg max-w-[85%] border border-primary-container/20">
+<p class="text-sm text-primary">I've recorded this as a Grade 2 Animal Health Incident. Immediate steps:</p>
+<ul class="text-xs mt-2 list-disc ml-4 space-y-1 text-on-surface-variant">
+<li>Isolate the animal from the herd.</li>
+<li>Check rectal temperature (Normal: 101.5°F).</li>
+<li>Check for bloat on left side.</li>
+</ul>
+<button class="mt-3 text-xs font-bold text-primary-container underline">CONNECT TO ON-CALL VET</button>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-outline-variant/20 flex gap-2">
+<input class="flex-grow bg-surface-container-lowest border-outline-variant/30 rounded text-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Describe symptoms..." type="text"/>
+<button class="material-symbols-outlined bg-primary-container text-on-primary-container p-2 rounded" data-icon="send">send</button>
+</div>
+</div>
+<!-- Incident Logs Timeline -->
+<div class="glass-panel p-5 rounded-xl border border-outline-variant/20">
+<h4 class="font-alert-status text-alert-status text-on-surface-variant mb-4 uppercase tracking-widest text-xs">Incident Timeline</h4>
+<div class="space-y-4">
+<div class="flex gap-4 items-start relative pb-4 border-l border-outline-variant/30 ml-2 pl-4">
+<div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-emergency-red ring-4 ring-emergency-red/20"></div>
+<div>
+<p class="text-xs font-label-mono text-emergency-red">ACTIVE - 14:02</p>
+<p class="text-sm font-bold text-on-surface">Zone A Sensor Offline</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative pb-4 border-l border-outline-variant/30 ml-2 pl-4">
+<div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-secondary ring-4 ring-secondary/20"></div>
+<div>
+<p class="text-xs font-label-mono text-secondary">RESOLVED - 11:45</p>
+<p class="text-sm font-bold text-on-surface">Frost Warning Resolved</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative ml-2 pl-4">
+<div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-on-surface-variant"></div>
+<div>
+<p class="text-xs font-label-mono text-on-surface-variant">SYSTEM - 09:12</p>
+<p class="text-sm font-bold text-on-surface-variant">Scheduled Calibration Comp.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interaction for SOS button
+        const sosBtn = document.getElementById('sos-trigger');
+        sosBtn.addEventListener('click', () => {
+            if (confirm('CONFIRM EMERGENCY SOS ACTIVATION? Emergency teams will be dispatched immediately.')) {
+                sosBtn.classList.add('scale-150');
+                sosBtn.style.background = '#ffffff';
+                sosBtn.style.color = '#EF4444';
+                setTimeout(() => {
+                    alert('SOS SIGNAL SENT. VECTORING NEAREST UNITS.');
+                    sosBtn.classList.remove('scale-150');
+                    sosBtn.style.background = '#EF4444';
+                    sosBtn.style.color = '#ffffff';
+                }, 1000);
+            }
+        });
+
+        // Atmospheric parallax/flicker effect for glass panels
+        document.addEventListener('mousemove', (e) => {
+            const amount = 5;
+            const x = (e.clientX / window.innerWidth - 0.5) * amount;
+            const y = (e.clientY / window.innerHeight - 0.5) * amount;
+            document.querySelectorAll('.glass-panel-heavy').forEach(panel => {
+                panel.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+            });
+        });
+    </script>
+</body></html>

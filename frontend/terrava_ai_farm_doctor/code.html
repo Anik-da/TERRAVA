@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA AI Farm Doctor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(248, 250, 252, 0.08);
+        }
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 10px;
+        }
+        .waveform-bar {
+            animation: wave 1.2s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#0b1326",
+                        "on-surface": "#dae2fd",
+                        "surface-container": "#171f33",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "surface": "#0b1326",
+                        "on-tertiary-container": "#5c3800",
+                        "secondary-container": "#005829",
+                        "on-secondary-container": "#81cc90",
+                        "tertiary-container": "#ef9900",
+                        "on-error": "#690005",
+                        "primary": "#4be277",
+                        "surface-container-lowest": "#060e20",
+                        "surface-tint": "#4ae176",
+                        "secondary-fixed-dim": "#8bd79b",
+                        "inverse-primary": "#006e2f",
+                        "secondary": "#8bd79b",
+                        "on-primary-fixed-variant": "#005321",
+                        "tertiary-fixed": "#ffddb8",
+                        "tertiary": "#ffba61",
+                        "primary-fixed": "#6bff8f",
+                        "on-primary-fixed": "#002109",
+                        "on-tertiary": "#472a00",
+                        "primary-fixed-dim": "#4ae176",
+                        "on-primary-container": "#004b1e",
+                        "inverse-surface": "#dae2fd",
+                        "secondary-fixed": "#a6f4b5",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-secondary-fixed-variant": "#005226",
+                        "on-secondary": "#003918",
+                        "error": "#ffb4ab",
+                        "on-background": "#dae2fd",
+                        "surface-variant": "#2d3449",
+                        "outline": "#869585",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "outline-variant": "#3d4a3d",
+                        "background": "#0b1326",
+                        "surface-container-low": "#131b2e",
+                        "surface-container-high": "#222a3d",
+                        "surface-container-highest": "#2d3449",
+                        "primary-container": "#22c55e",
+                        "on-surface-variant": "#bccbb9",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-secondary-fixed": "#00210b",
+                        "on-primary": "#003915",
+                        "inverse-on-surface": "#283044",
+                        "surface-bright": "#31394d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "margin-desktop": "40px",
+                        "3xl": "64px",
+                        "margin-mobile": "16px",
+                        "2xl": "48px",
+                        "gutter": "20px",
+                        "md": "16px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+      authDomain: "terrava-farm.firebaseapp.com",
+      databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+      projectId: "terrava-farm",
+      storageBucket: "terrava-farm.firebasestorage.app",
+      messagingSenderId: "850552694321",
+      appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+      measurementId: "G-WQKPETW205"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Check user session state
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Unauthenticated - redirect to auth portal
+            window.location.href = "../";
+        } else {
+            // Authenticated - greeting modification and dynamic logout transformation
+            document.addEventListener("DOMContentLoaded", () => {
+                const welcomeText = document.querySelector("h2.font-headline-lg");
+                if (welcomeText) {
+                    welcomeText.innerText = "Good Morning, " + (user.displayName || "Grower") + ".";
+                }
+
+                // Dynamically convert Grower Access sidebar link to active Logout trigger
+                const sidebarLinks = document.querySelectorAll("aside nav a");
+                sidebarLinks.forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href === "../") {
+                        // Change icon to logout
+                        const iconSpan = link.querySelector(".material-symbols-outlined");
+                        if (iconSpan) iconSpan.innerText = "logout";
+                        
+                        // Change text
+                        const textSpan = link.querySelector(".font-body-sm") || link.querySelector("span:not(.material-symbols-outlined)");
+                        if (textSpan) textSpan.innerText = "Logout";
+                        
+                        // Click handler
+                        link.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.signOut().then(() => {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>\n</head>
+<body class="bg-surface-dim text-on-surface font-body-md overflow-hidden selection:bg-primary/30">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
+    <div class="mb-xl px-sm flex items-center gap-sm">
+        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+            <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
+        </div>
+        <div>
+            <h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">TERRAVA</h1>
+            <p class="text-[10px] font-label-caps uppercase tracking-widest text-on-surface-variant">Ag-OS v2.4</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar pr-xs">
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_dashboard/">
+            <span class="material-symbols-outlined text-[20px]">dashboard</span>
+            <span class="font-body-sm">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_digital_farm_twin/">
+            <span class="material-symbols-outlined text-[20px]">hub</span>
+            <span class="font-body-sm">Digital Farm Twin</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_crop_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">psychology</span>
+            <span class="font-body-sm">Crop Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_command_center/">
+            <span class="material-symbols-outlined text-[20px]">sensors</span>
+            <span class="font-body-sm">Sensor Array</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_livestock_guardian/">
+            <span class="material-symbols-outlined text-[20px]">pets</span>
+            <span class="font-body-sm">Livestock Guardian</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-2 border-primary bg-primary/10 transition-colors duration-200" href="../terrava_ai_farm_doctor/">
+            <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+            <span class="font-body-sm">AI Farm Doctor</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_market_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">trending_up</span>
+            <span class="font-body-sm">Market Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_government_benefits_center/">
+            <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            <span class="font-body-sm">Government Schemes</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_emergency_sos_rural_support_center_3/">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span class="font-body-sm">Emergency SOS</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_profile_settings_center/">
+            <span class="material-symbols-outlined text-[20px]">settings</span>
+            <span class="font-body-sm">Settings</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../">
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span class="font-body-sm">Grower Access</span>
+        </a>
+    </nav>
+    <div class="mt-auto border-t border-outline-variant/10 pt-md space-y-xs px-sm">
+        <div class="flex items-center gap-md py-sm text-on-surface-variant">
+            <div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/30">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4ECkKIzQy5v_zhw_ZjQIynpE-zrXLt2R88IXm4ax2Tddbrl4ZA4KmhljXJtCYeHc_00hx96qpEogFUNUF9Hlfgsk2MErfYXBCXt9dQCd889Clq1ip9pklRGIxWih4ELQ6O2brLLzaOKP4LVf6ZgAj0Uxq8p5BfOMoosIRP6enrOiei-MrFVdfr1dY6OY02kVA4Dn2FW3DF-e6nUTZLEqLpauVIk5hCNCeFJtoX-yK7Nc3n2m5kzE8wf_1nTtmRGVVsjxepVmRRU"/>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Anoop Sharma</span>
+                <span class="text-[9px] font-label-caps text-primary uppercase">GROWER ALPHA</span>
+            </div>
+        </div>
+    </div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-256px)] h-16 bg-surface/50 backdrop-blur-md border-b border-outline-variant/10 flex items-center justify-between px-margin-desktop z-40">
+<div class="flex items-center gap-4">
+<span class="w-3 h-3 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#4be277]"></span>
+<span class="font-headline-md text-headline-md font-black tracking-tight text-primary uppercase">AI Farm Doctor: Online &amp; Ready</span>
+</div>
+<div class="flex items-center gap-xl">
+<div class="relative flex items-center">
+<input class="bg-surface-container-high/50 border border-outline-variant/30 rounded-full px-lg py-1 text-body-sm focus:outline-none focus:border-primary/50 w-64 transition-all" placeholder="Search insights..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 text-on-surface-variant text-body-md">search</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">cloud</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">bolt</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area (Chat + Drawer Layout) -->
+<main class="ml-64 pt-16 h-screen flex relative overflow-hidden">
+<!-- Chat Area -->
+<section class="flex-1 flex flex-col bg-surface-dim relative overflow-hidden">
+<!-- Messages Container -->
+<div class="flex-1 overflow-y-auto px-margin-desktop py-lg space-y-xl pb-48">
+<!-- User Message -->
+<div class="flex justify-end animate-in slide-in-from-right duration-500">
+<div class="max-w-2xl bg-surface-container-high text-on-surface p-md rounded-2xl rounded-tr-none border border-outline-variant/20 shadow-sm">
+<p class="font-body-md">Why are my tomato leaves turning yellow? They were fine a week ago, but now the lower leaves are showing bright yellowing while the veins stay green.</p>
+<div class="mt-2 text-[10px] text-on-surface-variant text-right font-code-sm">10:42 AM • Sent</div>
+</div>
+</div>
+<!-- AI Response -->
+<div class="flex justify-start animate-in slide-in-from-left duration-700">
+<div class="max-w-3xl glass-panel p-lg rounded-2xl rounded-tl-none border-l-4 border-l-primary ai-glow">
+<div class="flex items-center gap-sm mb-md">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-body-md" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<span class="font-label-caps text-primary tracking-widest">DIAGNOSTIC ANALYSIS</span>
+</div>
+<div class="space-y-md font-body-md">
+<p>Based on your description of <span class="text-primary font-bold">interveinal chlorosis</span> on lower leaves, I have identified two high-probability issues for your tomato crop:</p>
+<div class="grid grid-cols-2 gap-md">
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/10">
+<h4 class="text-tertiary font-bold mb-1 flex items-center gap-xs">
+<span class="material-symbols-outlined text-body-md">warning</span> Nitrogen Deficiency
+                                    </h4>
+<p class="text-body-sm text-on-surface-variant">The plant is scavenging nitrogen from older leaves to support new growth. Probability: 85%.</p>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/10">
+<h4 class="text-error font-bold mb-1 flex items-center gap-xs">
+<span class="material-symbols-outlined text-body-md">water_drop</span> Overwatering
+                                    </h4>
+<p class="text-body-sm text-on-surface-variant">Saturated roots cannot absorb nutrients properly. Probability: 40%.</p>
+</div>
+</div>
+<div class="mt-lg">
+<h4 class="font-bold text-primary mb-2">Recommended Actions:</h4>
+<ul class="space-y-2 list-none">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-body-md">check_circle</span>
+<span class="text-body-sm">Apply a liquid nitrogen-rich fertilizer (e.g., 10-5-5 NPK) immediately.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-body-md">check_circle</span>
+<span class="text-body-sm">Check soil moisture at 3-inch depth; if muddy, suspend irrigation for 48 hours.</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="mt-md pt-md border-t border-outline-variant/10 flex justify-between items-center">
+<button class="text-label-caps text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm">share</span> Export Report
+                            </button>
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">thumb_up</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-error">thumb_down</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Floating Controls -->
+<div class="absolute bottom-0 left-0 right-0 px-margin-desktop pb-lg bg-gradient-to-t from-surface-dim via-surface-dim to-transparent pt-xl">
+<!-- Quick Actions Scroll -->
+<div class="flex gap-md overflow-x-auto pb-md no-scrollbar mb-md">
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-body-md">content_paste_search</span>
+<span class="text-body-sm whitespace-nowrap">Identify Disease</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-tertiary text-body-md">partly_cloudy_day</span>
+<span class="text-body-sm whitespace-nowrap">Weather Advice</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-secondary text-body-md">monitoring</span>
+<span class="text-body-sm whitespace-nowrap">Market Trends</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-2 px-md py-2 bg-surface-container-high/80 border border-outline-variant/20 rounded-full hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-body-md">account_balance</span>
+<span class="text-body-sm whitespace-nowrap">Government Schemes</span>
+</button>
+</div>
+<!-- Input Field -->
+<div class="glass-panel rounded-2xl p-sm flex flex-col gap-sm shadow-2xl">
+<div class="flex items-center gap-md px-md pt-xs">
+<button class="p-2 hover:bg-surface-bright/20 rounded-full text-on-surface-variant transition-colors" title="Upload Reports">
+<span class="material-symbols-outlined">attachment</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-body-md placeholder:text-on-surface-variant/50 py-2" placeholder="Ask anything about your farm..." type="text"/>
+<!-- Voice Command -->
+<div class="flex items-center gap-3 bg-surface-container px-3 py-2 rounded-xl border border-outline-variant/10">
+<div class="flex items-end gap-[2px] h-4 w-8 overflow-hidden">
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.2s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.4s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.1s;"></div>
+<div class="waveform-bar w-1 bg-primary rounded-full" style="animation-delay: 0.3s;"></div>
+</div>
+<span class="material-symbols-outlined text-primary text-body-md" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<button class="w-12 h-12 bg-primary text-on-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+<!-- Language Badges -->
+<div class="flex items-center justify-between px-md pb-xs">
+<div class="flex gap-xs items-center">
+<span class="text-[10px] font-label-caps text-on-surface-variant mr-1">INPUT LANGUAGE:</span>
+<span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-md text-[11px] font-bold cursor-pointer">ENGLISH</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20">हिन्दी</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20">ಕನ್ನಡ</span>
+</div>
+<span class="text-[10px] font-code-sm text-on-surface-variant/50">Powered by TERRAVA Neural Core v4.2</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Intelligence Drawer -->
+<aside class="w-80 h-full bg-surface-container-high/60 backdrop-blur-2xl border-l border-tertiary/20 flex flex-col p-md overflow-y-auto z-40">
+<div class="mb-lg">
+<p class="font-label-caps text-label-caps text-tertiary uppercase tracking-widest">System Intelligence</p>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Real-time Monitoring</h2>
+</div>
+<!-- Daily Briefing Card -->
+<div class="bg-surface-container-lowest/80 border-t-2 border-tertiary p-md rounded-xl mb-lg shadow-xl">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h3 class="text-body-md font-bold text-on-surface">Daily Briefing</h3>
+<p class="text-[11px] text-on-surface-variant">Dec 14, 2024</p>
+</div>
+<span class="material-symbols-outlined text-tertiary">description</span>
+</div>
+<div class="space-y-md">
+<div class="flex items-center justify-between">
+<span class="text-body-sm text-on-surface-variant">Farm Health Score</span>
+<span class="text-body-md font-bold text-primary">89%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 89%"></div>
+</div>
+<div class="flex items-center gap-3 text-body-sm text-tertiary bg-tertiary/5 p-2 rounded-lg border border-tertiary/10">
+<span class="material-symbols-outlined text-body-md">rainy</span>
+<span>Rain expected tomorrow (0.4mm)</span>
+</div>
+</div>
+</div>
+<!-- Live Insights Feed -->
+<div class="flex-1">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+                    LIVE INSIGHTS
+                </h3>
+<div class="space-y-md">
+<!-- Alert Item -->
+<div class="p-md rounded-xl bg-error-container/10 border border-error/20 group hover:bg-error-container/20 transition-all duration-300">
+<div class="flex items-center gap-sm text-error mb-1">
+<span class="material-symbols-outlined text-body-md" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="text-[11px] font-bold uppercase">Disease Alert</span>
+</div>
+<p class="text-body-sm font-medium mb-1">Early Blight detected in Sector 4G</p>
+<p class="text-[11px] text-on-surface-variant">Satellite thermal imagery shows 12% deviation from norms.</p>
+</div>
+<!-- Opportunity Item -->
+<div class="p-md rounded-xl bg-secondary-container/10 border border-secondary/20 group hover:bg-secondary-container/20 transition-all duration-300">
+<div class="flex items-center gap-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-body-md" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="text-[11px] font-bold uppercase">Market Opportunity</span>
+</div>
+<p class="text-body-sm font-medium mb-1">Onion prices projected +15% next week</p>
+<p class="text-[11px] text-on-surface-variant">Regional supply shortage detected in Nashik cluster.</p>
+</div>
+<!-- Task Item -->
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant/10">
+<div class="flex items-center gap-sm text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-body-md">schedule</span>
+<span class="text-[11px] font-bold uppercase">Scheduled</span>
+</div>
+<p class="text-body-sm font-medium">Auto-Irrigation: Sector 2B</p>
+<p class="text-[11px] text-on-surface-variant">Starting at 18:00 based on soil evapotranspiration rates.</p>
+</div>
+</div>
+</div>
+<!-- Bottom Ad/Map Placeholder -->
+<div class="mt-md">
+<div class="relative rounded-xl overflow-hidden aspect-video bg-surface-container-highest flex items-center justify-center">
+<img alt="Satellite View" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" data-alt="A high-resolution satellite imagery view of a large commercial farm with precise irrigation patterns and lush green crop sectors. The image is captured from a top-down perspective, emphasizing geometric field layouts. The aesthetic is technical and professional, featuring a cool blue and emerald green color palette to match the dark-mode dashboard interface. Digital data overlays and grid lines highlight the precision of the agricultural operating system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWxU2ng71VAV0XrZEhMVim9zE9tba5fImsQTbl6Yuw0Zc6Nzuf2oFpOCDISymvaKpU1NBKt6eyw6cnA4QL_T5rTvFUhE5UQW_wJcT13JPphmgFFpkzwwGwC168ZZpuaLpGTlT06WzRbADS5lmQA91bgJviBexNBmWoFvnq4sFyUY9eix6v6L4WnN2mOFfJROqA3YeL_W7dDDD7_At9Ru8F2p-bxnKI2VJ8JnfFvgx9sZhqEuzrjQTv3KJn9PJO0iy6MhTy-1-eaeI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex flex-col">
+<span class="text-[10px] text-primary font-bold">LIVE SATELLITE</span>
+<span class="text-[11px] text-on-surface">Sector 1-8 Visual Feed</span>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<script>
+        // Micro-interaction for input pulsing
+        const inputField = document.querySelector('input[type="text"]');
+        const waveform = document.querySelector('.flex.items-end.gap-\\[2px\\]');
+        
+        inputField.addEventListener('focus', () => {
+            inputField.parentElement.parentElement.classList.add('border-primary/30');
+        });
+
+        inputField.addEventListener('blur', () => {
+            inputField.parentElement.parentElement.classList.remove('border-primary/30');
+        });
+    </script>
+</body></html>

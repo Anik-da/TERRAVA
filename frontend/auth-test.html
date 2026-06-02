@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>TERRAVA Auth Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; background: #0b1326; color: #dae2fd; }
+        input, button { display: block; width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #3d4a3d; background: #171f33; color: #dae2fd; font-size: 16px; box-sizing: border-box; }
+        button { background: #22c55e; color: #003915; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background: #4be277; }
+        #status { padding: 16px; margin: 16px 0; border-radius: 8px; background: #131b2e; border: 1px solid #3d4a3d; white-space: pre-wrap; font-family: monospace; font-size: 13px; min-height: 100px; }
+        h1 { color: #4be277; }
+        h2 { color: #8bd79b; margin-top: 32px; }
+        .success { color: #4be277; }
+        .error { color: #ffb4ab; }
+    </style>
+</head>
+<body>
+    <h1>🌿 TERRAVA Auth Diagnostic</h1>
+    <div id="status">Initializing Firebase...</div>
+
+    <h2>Register New Account</h2>
+    <input id="reg-email" type="email" placeholder="Email (e.g. you@example.com)" />
+    <input id="reg-pass" type="password" placeholder="Password (min 6 chars)" />
+    <input id="reg-name" type="text" placeholder="Full Name" />
+    <button onclick="doRegister()">Create Account</button>
+
+    <h2>Login</h2>
+    <input id="login-email" type="email" placeholder="Email" />
+    <input id="login-pass" type="password" placeholder="Password" />
+    <button onclick="doLogin()">Login</button>
+
+    <h2>Google Sign-In</h2>
+    <button onclick="doGoogle()">Sign in with Google</button>
+
+    <h2>Logout</h2>
+    <button onclick="doLogout()">Logout</button>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        function log(msg, type) {
+            const line = document.createElement('div');
+            line.className = type || '';
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            statusEl.appendChild(line);
+            statusEl.scrollTop = statusEl.scrollHeight;
+        }
+
+        // Firebase init
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+            authDomain: "terrava-farm.firebaseapp.com",
+            databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+            projectId: "terrava-farm",
+            storageBucket: "terrava-farm.firebasestorage.app",
+            messagingSenderId: "850552694321",
+            appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+            measurementId: "G-WQKPETW205"
+        };
+
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            const auth = firebase.auth();
+            log('✅ Firebase initialized successfully', 'success');
+            log(`Project: ${firebaseConfig.projectId}`, '');
+
+            // Auth state listener
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    log(`✅ LOGGED IN: ${user.email} (uid: ${user.uid})`, 'success');
+                    if (user.displayName) log(`   Name: ${user.displayName}`, 'success');
+                } else {
+                    log('ℹ️ No user logged in — ready for login/register', '');
+                }
+            });
+
+            // Register
+            window.doRegister = function() {
+                const email = document.getElementById('reg-email').value.trim();
+                const pass = document.getElementById('reg-pass').value;
+                const name = document.getElementById('reg-name').value.trim();
+                if (!email || !pass) { log('❌ Email and password required', 'error'); return; }
+                if (pass.length < 6) { log('❌ Password must be at least 6 characters', 'error'); return; }
+                log(`Registering ${email}...`, '');
+                auth.createUserWithEmailAndPassword(email, pass)
+                    .then((cred) => {
+                        log(`✅ Account created: ${cred.user.email}`, 'success');
+                        if (name) {
+                            return cred.user.updateProfile({ displayName: name }).then(() => {
+                                log(`✅ Display name set: ${name}`, 'success');
+                            });
+                        }
+                    })
+                    .catch(err => log(`❌ Registration failed: ${err.code} — ${err.message}`, 'error'));
+            };
+
+            // Login
+            window.doLogin = function() {
+                const email = document.getElementById('login-email').value.trim();
+                const pass = document.getElementById('login-pass').value;
+                if (!email || !pass) { log('❌ Email and password required', 'error'); return; }
+                log(`Logging in ${email}...`, '');
+                auth.signInWithEmailAndPassword(email, pass)
+                    .then((cred) => log(`✅ Login success: ${cred.user.email}`, 'success'))
+                    .catch(err => log(`❌ Login failed: ${err.code} — ${err.message}`, 'error'));
+            };
+
+            // Google
+            window.doGoogle = function() {
+                log('Opening Google popup...', '');
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithPopup(provider)
+                    .then((cred) => log(`✅ Google login: ${cred.user.email}`, 'success'))
+                    .catch(err => log(`❌ Google failed: ${err.code} — ${err.message}`, 'error'));
+            };
+
+            // Logout
+            window.doLogout = function() {
+                auth.signOut()
+                    .then(() => log('✅ Logged out', 'success'))
+                    .catch(err => log(`❌ Logout failed: ${err.message}`, 'error'));
+            };
+
+        } catch(e) {
+            log(`❌ FATAL: ${e.message}`, 'error');
+        }
+    </script>
+</body>
+</html>

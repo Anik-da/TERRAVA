@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA AG-OS | Digital Farm Twin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#222a3d",
+                        "primary-container": "#22c55e",
+                        "surface-tint": "#4ae176",
+                        "secondary": "#8bd79b",
+                        "on-secondary-fixed-variant": "#005226",
+                        "on-tertiary": "#472a00",
+                        "on-primary": "#003915",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-primary-fixed-variant": "#005321",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-dim": "#0b1326",
+                        "surface-bright": "#31394d",
+                        "on-primary-container": "#004b1e",
+                        "surface": "#0b1326",
+                        "outline": "#869585",
+                        "surface-variant": "#2d3449",
+                        "surface-container-highest": "#2d3449",
+                        "primary-fixed": "#6bff8f",
+                        "primary-fixed-dim": "#4ae176",
+                        "outline-variant": "#3d4a3d",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "inverse-primary": "#006e2f",
+                        "secondary-fixed-dim": "#8bd79b",
+                        "tertiary-container": "#ef9900",
+                        "on-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "secondary-fixed": "#a6f4b5",
+                        "tertiary-fixed": "#ffddb8",
+                        "inverse-on-surface": "#283044",
+                        "tertiary": "#ffba61",
+                        "surface-container": "#171f33",
+                        "on-tertiary-container": "#5c3800",
+                        "error": "#ffb4ab",
+                        "primary": "#4be277",
+                        "on-secondary-fixed": "#00210b",
+                        "secondary-container": "#005829",
+                        "on-primary-fixed": "#002109",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#131b2e",
+                        "surface-container-lowest": "#060e20",
+                        "on-secondary": "#003918",
+                        "on-error": "#690005",
+                        "on-background": "#dae2fd",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#dae2fd",
+                        "on-secondary-container": "#81cc90",
+                        "on-surface-variant": "#bccbb9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "gutter": "20px",
+                        "xs": "4px",
+                        "margin-desktop": "40px",
+                        "2xl": "48px",
+                        "3xl": "64px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ai-border {
+            border-top: 2px solid #F59E0B;
+        }
+        .glow-green {
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+        }
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .wireframe-grid {
+            background-image: linear-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3d4a3d; border-radius: 10px; }
+    </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+      authDomain: "terrava-farm.firebaseapp.com",
+      databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+      projectId: "terrava-farm",
+      storageBucket: "terrava-farm.firebasestorage.app",
+      messagingSenderId: "850552694321",
+      appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+      measurementId: "G-WQKPETW205"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Check user session state
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Unauthenticated - redirect to auth portal
+            window.location.href = "../";
+        } else {
+            // Authenticated - greeting modification and dynamic logout transformation
+            document.addEventListener("DOMContentLoaded", () => {
+                const welcomeText = document.querySelector("h2.font-headline-lg");
+                if (welcomeText) {
+                    welcomeText.innerText = "Good Morning, " + (user.displayName || "Grower") + ".";
+                }
+
+                // Dynamically convert Grower Access sidebar link to active Logout trigger
+                const sidebarLinks = document.querySelectorAll("aside nav a");
+                sidebarLinks.forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href === "../") {
+                        // Change icon to logout
+                        const iconSpan = link.querySelector(".material-symbols-outlined");
+                        if (iconSpan) iconSpan.innerText = "logout";
+                        
+                        // Change text
+                        const textSpan = link.querySelector(".font-body-sm") || link.querySelector("span:not(.material-symbols-outlined)");
+                        if (textSpan) textSpan.innerText = "Logout";
+                        
+                        // Click handler
+                        link.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.signOut().then(() => {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>\n</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden">
+<!-- Sidebar (SideNavBar) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
+    <div class="mb-xl px-sm flex items-center gap-sm">
+        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+            <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
+        </div>
+        <div>
+            <h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">TERRAVA</h1>
+            <p class="text-[10px] font-label-caps uppercase tracking-widest text-on-surface-variant">Ag-OS v2.4</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar pr-xs">
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_dashboard/">
+            <span class="material-symbols-outlined text-[20px]">dashboard</span>
+            <span class="font-body-sm">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-2 border-primary bg-primary/10 transition-colors duration-200" href="../terrava_digital_farm_twin/">
+            <span class="material-symbols-outlined text-[20px]">hub</span>
+            <span class="font-body-sm">Digital Farm Twin</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_crop_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">psychology</span>
+            <span class="font-body-sm">Crop Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ag_os_command_center/">
+            <span class="material-symbols-outlined text-[20px]">sensors</span>
+            <span class="font-body-sm">Sensor Array</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_livestock_guardian/">
+            <span class="material-symbols-outlined text-[20px]">pets</span>
+            <span class="font-body-sm">Livestock Guardian</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_ai_farm_doctor/">
+            <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+            <span class="font-body-sm">AI Farm Doctor</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_market_intelligence_center/">
+            <span class="material-symbols-outlined text-[20px]">trending_up</span>
+            <span class="font-body-sm">Market Intelligence</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_government_benefits_center/">
+            <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            <span class="font-body-sm">Government Schemes</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_emergency_sos_rural_support_center_3/">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span class="font-body-sm">Emergency SOS</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../terrava_profile_settings_center/">
+            <span class="material-symbols-outlined text-[20px]">settings</span>
+            <span class="font-body-sm">Settings</span>
+        </a>
+        <a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-colors duration-200" href="../">
+            <span class="material-symbols-outlined text-[20px]">login</span>
+            <span class="font-body-sm">Grower Access</span>
+        </a>
+    </nav>
+    <div class="mt-auto border-t border-outline-variant/10 pt-md space-y-xs px-sm">
+        <div class="flex items-center gap-md py-sm text-on-surface-variant">
+            <div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/30">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4ECkKIzQy5v_zhw_ZjQIynpE-zrXLt2R88IXm4ax2Tddbrl4ZA4KmhljXJtCYeHc_00hx96qpEogFUNUF9Hlfgsk2MErfYXBCXt9dQCd889Clq1ip9pklRGIxWih4ELQ6O2brLLzaOKP4LVf6ZgAj0Uxq8p5BfOMoosIRP6enrOiei-MrFVdfr1dY6OY02kVA4Dn2FW3DF-e6nUTZLEqLpauVIk5hCNCeFJtoX-yK7Nc3n2m5kzE8wf_1nTtmRGVVsjxepVmRRU"/>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-on-surface">Anoop Sharma</span>
+                <span class="text-[9px] font-label-caps text-primary uppercase">GROWER ALPHA</span>
+            </div>
+        </div>
+    </div>
+</aside>
+<!-- Topbar (TopNavBar) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant/10 flex justify-between items-center px-margin-desktop ml-64 z-40">
+<div class="flex items-center gap-xl w-1/2">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-low border border-outline-variant/20 rounded-lg pl-10 pr-4 py-1.5 w-full text-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Search parameters, sensors, or fields..." type="text"/>
+</div>
+<nav class="flex gap-lg">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Network</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Connectivity</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Weather</a>
+</nav>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all active:scale-95">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all active:scale-95">sensors</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all active:scale-95">dns</button>
+<div class="h-8 w-8 rounded-full bg-surface-variant border border-outline-variant/20 overflow-hidden">
+<img alt="Operator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a technical agricultural operator in a modern control center, lit by the soft blue glow of data screens. The image captures a sense of expertise and futuristic technology integration. Dark aesthetic with high-key primary green accent lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAiZoxOJwOsLsjTYDLO6HxXmPQzAntzI25gV5xQWNEa8dewWLvbmFi2e3W1R6MR-2gw2pK_ro-vCkz37lDELfcw2dTrorW7JfvlaQiEaqqk3iYurL9WRIhmqAnh3SFtK3zRJNLxEL2EZPlPZgDVe3FZKYX-Dvy675VSgKB4GYki3nzzg3E3qibNZRMANQ8fZezbK6QfxKAgXFE0LpK2MB2lNe00mDG8Q0VJ4IboNhTclJSZsufQo7v-FjkXFOX9xAIEOYuHHKK-sc"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 h-[calc(100vh-4rem)] p-lg overflow-hidden relative">
+<!-- Dashboard Header -->
+<div class="flex justify-between items-end mb-lg relative z-10">
+<div>
+<div class="flex items-center gap-md">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Green Valley Farm</h2>
+<span class="bg-primary-container/20 text-primary border border-primary/30 px-sm py-1 rounded text-label-caps font-bold">HEALTHY 89%</span>
+</div>
+<p class="text-on-surface-variant flex items-center gap-sm font-body-sm">
+<span class="material-symbols-outlined text-sm">location_on</span> Karnataka, India • 12.4 Acres Total • <span class="text-secondary">Precision Scan Active</span>
+</p>
+</div>
+<div class="flex gap-sm">
+<button class="bg-surface-container-high border border-outline-variant/20 px-md py-sm rounded-lg text-body-sm hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">calendar_today</span> Schedule Task
+                </button>
+<button class="bg-primary text-on-primary font-bold px-md py-sm rounded-lg text-body-sm hover:brightness-110 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">videocam</span> Live Feed
+                </button>
+</div>
+</div>
+<!-- Layout Grid: 3D Twin & Right Panels -->
+<div class="grid grid-cols-12 gap-lg h-full pb-lg">
+<!-- Left/Center Stage: Digital Twin Map -->
+<div class="col-span-9 relative rounded-2xl overflow-hidden border border-outline-variant/10 wireframe-grid flex flex-col">
+<!-- Map Background -->
+<div class="absolute inset-0 bg-[#060e20] z-0">
+<iframe class="w-full h-full border-0 opacity-90" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAwav5JDBdYHgQjOf4yCrOqN4ZjxqPsYR8&q=12.9716,77.5946&zoom=14&maptype=satellite" allowfullscreen></iframe>
+</div>
+<!-- Floating Data Markers -->
+<div class="absolute top-1/3 left-1/3 z-10">
+<div class="glass-panel p-sm rounded-lg border-primary/40 flex items-center gap-md">
+<div class="w-2 h-2 rounded-full bg-primary pulse-dot"></div>
+<div class="text-label-caps">ZONE A-1: OPTIMAL</div>
+</div>
+</div>
+<div class="absolute bottom-1/4 right-1/3 z-10">
+<div class="glass-panel p-sm rounded-lg border-error/40 flex items-center gap-md">
+<div class="w-2 h-2 rounded-full bg-error pulse-dot"></div>
+<div class="text-label-caps">ZONE C-4: HYDRATION NEEDED</div>
+</div>
+</div>
+<!-- Zone Analytics (Floating UI) -->
+<div class="absolute top-md left-md w-72 glass-panel p-md rounded-xl z-20 space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-body-lg text-on-surface">Tomato Sector</h3>
+<p class="text-on-surface-variant font-label-caps">ACTIVE CROP</p>
+</div>
+<div class="text-primary font-bold text-headline-md">82%</div>
+</div>
+<div class="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[82%] shadow-[0_0_8px_#22c55e]"></div>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<div class="p-sm bg-surface-container-low/50 rounded border border-outline-variant/10">
+<p class="text-xs text-on-surface-variant uppercase">Moisture</p>
+<p class="font-code-sm text-primary">34.2 hPa</p>
+</div>
+<div class="p-sm bg-surface-container-low/50 rounded border border-outline-variant/10">
+<p class="text-xs text-on-surface-variant uppercase">Nitrogen</p>
+<p class="font-code-sm text-secondary">Optimal</p>
+</div>
+</div>
+<div class="pt-sm border-t border-outline-variant/10">
+<p class="text-xs text-on-surface-variant">EST. HARVEST</p>
+<p class="font-bold text-on-surface">Nov 24 — 3,400 kg</p>
+</div>
+</div>
+<!-- Bottom Simulation Controls -->
+<div class="mt-auto p-lg z-20 grid grid-cols-3 gap-md">
+<!-- Gauge -->
+<div class="glass-panel p-md rounded-xl flex items-center gap-md">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-variant/30" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="176" stroke-dashoffset="20" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-bold text-sm">89</div>
+</div>
+<div>
+<p class="font-label-caps text-on-surface-variant">HEALTH SCORE</p>
+<p class="text-xs text-primary">+2% from yesterday</p>
+</div>
+</div>
+<!-- Weather Simulator -->
+<div class="glass-panel p-md rounded-xl hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<p class="font-label-caps text-on-surface-variant">WEATHER IMPACT</p>
+<span class="material-symbols-outlined text-secondary group-hover:translate-x-1 transition-transform">storm</span>
+</div>
+<p class="text-sm font-medium">Predicted Monsoon: -4% Yield</p>
+<p class="text-xs text-on-surface-variant mt-1">Run drainage simulation →</p>
+</div>
+<!-- Future Scenario -->
+<div class="glass-panel p-md rounded-xl hover:bg-surface-container-high transition-colors cursor-pointer group ai-border">
+<div class="flex justify-between items-start mb-2">
+<p class="font-label-caps text-tertiary">AI SCENARIO</p>
+<span class="material-symbols-outlined text-tertiary">auto_awesome</span>
+</div>
+<p class="text-sm font-medium">Increase Irrigation: +12% Yield</p>
+<p class="text-xs text-on-surface-variant mt-1">Deploy automated plan →</p>
+</div>
+</div>
+</div>
+<!-- Right Panel: AI Insights Feed -->
+<div class="col-span-3 flex flex-col gap-lg h-full">
+<!-- AI Insights Container -->
+<div class="flex-1 glass-panel rounded-2xl p-lg flex flex-col gap-md overflow-hidden ai-border">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-body-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">insights</span> AI Feed
+                        </h3>
+<span class="bg-tertiary/10 text-tertiary px-2 py-0.5 rounded text-[10px] font-bold">LIVE</span>
+</div>
+<div class="space-y-md overflow-y-auto pr-sm">
+<!-- Alert Item -->
+<div class="p-md rounded-lg bg-error/10 border border-error/20">
+<div class="flex gap-sm mb-1">
+<span class="material-symbols-outlined text-error text-md">warning</span>
+<p class="text-sm font-bold text-error">DISEASE ALERT</p>
+</div>
+<p class="text-xs text-on-surface-variant mb-2">Early-stage blight detected in Sector C-4 (Area: 1.2 Acres).</p>
+<button class="text-xs font-bold text-error underline decoration-2 underline-offset-4">INITIATE TREATMENT</button>
+</div>
+<!-- Insight Item -->
+<div class="p-md rounded-lg bg-surface-container-high/50 border border-outline-variant/10">
+<div class="flex gap-sm mb-1">
+<span class="material-symbols-outlined text-secondary text-md">trending_up</span>
+<p class="text-sm font-bold text-secondary">PROFIT OPPORTUNITY</p>
+</div>
+<p class="text-xs text-on-surface-variant">Market demand for Tomatoes is up 14%. Optimize harvest for Tuesday arrival.</p>
+</div>
+<!-- Prediction Center Stats -->
+<div class="pt-md border-t border-outline-variant/10 space-y-md">
+<p class="font-label-caps text-xs text-on-surface-variant">PREDICTION CENTER</p>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Disease Risk</span>
+<span class="font-code-sm text-primary">12% Low</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Profit Forecast</span>
+<span class="font-code-sm text-on-surface font-bold">₹2.3 Lakhs</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Weather/Connectivity Status (Bottom Right) -->
+<div class="glass-panel rounded-2xl p-md">
+<div class="flex items-center gap-md">
+<div class="bg-surface-variant/30 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary">cloudy_filled</span>
+</div>
+<div class="flex-1">
+<p class="text-xs text-on-surface-variant">CURRENT WEATHER</p>
+<p id="twin-weather" class="font-bold">28°C / Clear Skies</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Roadmap Timeline -->
+<div class="absolute bottom-0 left-lg right-lg h-24 glass-panel border-t-0 rounded-t-2xl px-xl flex flex-col justify-center z-30">
+<div class="flex justify-between text-[10px] font-label-caps text-on-surface-variant mb-2">
+<span>PAST 30 DAYS</span>
+<span class="text-primary font-bold">TODAY</span>
+<span>NEXT 30 DAYS (PREDICTED)</span>
+</div>
+<div class="relative h-4 bg-surface-variant/20 rounded-full flex items-center overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-1/2 bg-surface-variant/40"></div>
+<!-- Data Nodes -->
+<div class="w-2 h-2 rounded-full bg-secondary absolute left-[15%]" title="Seeding"></div>
+<div class="w-2 h-2 rounded-full bg-secondary absolute left-[30%]" title="Irrigation Spike"></div>
+<div class="w-3 h-3 rounded-full bg-primary absolute left-1/2 -translate-x-1/2 z-10 shadow-[0_0_10px_#22c55e]"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary absolute left-[70%] opacity-50" title="Planned Harvest"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary absolute left-[90%] opacity-50" title="Market Sale"></div>
+<!-- Connecting Line -->
+<div class="w-full border-t border-dashed border-outline-variant/30"></div>
+</div>
+<div class="flex justify-between mt-2">
+<div class="flex gap-md opacity-40">
+<span class="text-[10px] font-code-sm">SEP 12</span>
+<span class="text-[10px] font-code-sm">SEP 28</span>
+</div>
+<div class="flex gap-md text-tertiary">
+<span class="text-[10px] font-code-sm">OCT 24</span>
+<span class="text-[10px] font-code-sm">NOV 10</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (FAB) Suppression check: Only on Dashboard/Main screens. This is a Main screen. -->
+<button class="fixed bottom-lg right-lg w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<script>
+        // Micro-interactions and real-time feel
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            });
+        });
+
+        // Simple animation for 'Live' data
+        setInterval(() => {
+            const liveBadge = document.querySelector('.bg-tertiary\\/10');
+            if(liveBadge) {
+                liveBadge.classList.toggle('opacity-50');
+            }
+        }, 1000);
+
+        // Fetch Live Weather for Karnataka (Coordinates: 12.9716, 77.5946)
+        function fetchLiveWeather() {
+            const lat = localStorage.getItem('terrava_lat') || '12.9716';
+            const lng = localStorage.getItem('terrava_lng') || '77.5946';
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current_weather) {
+                        const temp = Math.round(data.current_weather.temperature);
+                        const code = data.current_weather.weathercode;
+                        let desc = "Clear Skies";
+                        if (code > 0 && code <= 3) desc = "Partly Cloudy";
+                        else if (code >= 51 && code <= 67) desc = "Light Rain";
+                        else if (code >= 71 && code <= 82) desc = "Snow Showers";
+                        else if (code >= 95) desc = "Thunderstorms";
+                        
+                        const weatherText = document.getElementById("twin-weather");
+                        if (weatherText) {
+                            weatherText.innerText = `${temp}°C / ${desc}`;
+                        }
+                    }
+                })
+                .catch(err => console.log("Weather fetch failed:", err));
+        }
+        fetchLiveWeather();
+        // Refresh every 15 minutes
+        setInterval(fetchLiveWeather, 900000);
+    </script>
+    <script src="../terrava-config.js"></script>
+</body></html>

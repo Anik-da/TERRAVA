@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA | Profile &amp; Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#93000a",
+                        "surface": "#0b1326",
+                        "surface-container-low": "#131b2e",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "background": "#0b1326",
+                        "surface-container-highest": "#2d3449",
+                        "surface-tint": "#4ae176",
+                        "outline": "#869585",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#5c3800",
+                        "on-surface": "#dae2fd",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-container": "#ef9900",
+                        "on-primary": "#003915",
+                        "surface-variant": "#2d3449",
+                        "primary-fixed": "#6bff8f",
+                        "secondary-container": "#005829",
+                        "surface-bright": "#31394d",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#00210b",
+                        "secondary": "#8bd79b",
+                        "inverse-primary": "#006e2f",
+                        "surface-dim": "#0b1326",
+                        "surface-container": "#171f33",
+                        "on-surface-variant": "#bccbb9",
+                        "on-primary-container": "#004b1e",
+                        "on-secondary-fixed-variant": "#005226",
+                        "surface-container-lowest": "#060e20",
+                        "tertiary": "#ffba61",
+                        "primary": "#4be277",
+                        "on-tertiary-fixed": "#2a1700",
+                        "outline-variant": "#3d4a3d",
+                        "on-primary-fixed-variant": "#005321",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "secondary-fixed-dim": "#8bd79b",
+                        "on-primary-fixed": "#002109",
+                        "on-secondary": "#003918",
+                        "surface-container-high": "#222a3d",
+                        "primary-fixed-dim": "#4ae176",
+                        "secondary-fixed": "#a6f4b5",
+                        "on-secondary-container": "#81cc90",
+                        "on-background": "#dae2fd",
+                        "inverse-surface": "#dae2fd",
+                        "tertiary-fixed": "#ffddb8",
+                        "primary-container": "#22c55e",
+                        "on-tertiary": "#472a00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "3xl": "64px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "2xl": "48px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "gutter": "20px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(248, 250, 252, 0.08);
+        }
+        .gradient-border-green {
+            border: 1px solid transparent;
+            background: linear-gradient(#171f33, #171f33) padding-box,
+                        linear-gradient(to right, #22c55e, #166534) border-box;
+        }
+        .gradient-border-gold {
+            border: 1px solid transparent;
+            background: linear-gradient(#171f33, #171f33) padding-box,
+                        linear-gradient(to right, #f59e0b, #92400e) border-box;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 10px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4be277 !important;
+            box-shadow: 0 0 0 4px rgba(75, 226, 119, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary/30 selection:text-primary overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 bottom-0 w-64 bg-surface-container-low/80 backdrop-blur-xl border-r border-outline-variant/10 hidden lg:flex flex-col h-full py-xl z-50">
+<div class="px-lg mb-2xl flex items-center gap-sm">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary font-bold">agriculture</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary leading-tight">Ag-OS</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-70">Precision Agriculture</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-sm">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-bright/20 hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-primary">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-bright/20 hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-primary">tactic</span>
+<span class="font-body-md">Farm Twin</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-bright/20 hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-primary">psychology</span>
+<span class="font-body-md">Crop Intelligence</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-bright/20 hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-primary">pets</span>
+<span class="font-body-md">Livestock Guardian</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-bright/20 hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-primary">account_balance</span>
+<span class="font-body-md">Government Benefits</span>
+</a>
+<!-- Active State using Profile/Settings context -->
+<a class="flex items-center gap-md px-md py-sm bg-primary/10 text-primary border-r-4 border-primary rounded-r-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-body-md font-bold">Profile &amp; Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-xl">
+<div class="bg-primary/5 rounded-xl p-md border border-primary/20 mb-xl">
+<p class="text-body-sm font-bold text-primary">Pro Plan Active</p>
+<p class="text-[12px] text-on-surface-variant mb-md">Unlimited AI analysis &amp; Satellite data</p>
+<button class="w-full bg-primary text-on-primary py-xs rounded-lg font-bold text-sm active:scale-95 transition-transform">Upgrade Plan</button>
+</div>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="lg:ml-64 flex flex-col h-screen overflow-hidden">
+<!-- Top Navigation -->
+<header class="h-16 flex items-center justify-between px-margin-desktop bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/10 sticky top-0 z-40">
+<h2 class="font-headline-md text-headline-md font-bold text-primary">Settings</h2>
+<div class="flex items-center gap-lg">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-highest/40 border-none rounded-full pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-1 focus:ring-primary transition-all" placeholder="Search settings..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer">settings</button>
+<div class="h-8 w-[1px] bg-outline-variant/20 mx-sm"></div>
+<button class="bg-surface-bright/20 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-surface-bright/40 transition-colors">Support</button>
+</div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden">
+<!-- Central Workspace -->
+<section class="flex-1 overflow-y-auto custom-scrollbar p-xl space-y-xl">
+<!-- Profile Header Card -->
+<div class="gradient-border-green rounded-xl p-lg flex flex-col md:flex-row gap-lg items-center glass-panel">
+<div class="relative">
+<img alt="Anoop Kumar" class="w-32 h-32 rounded-full object-cover border-4 border-surface shadow-2xl" data-alt="A professional, high-resolution portrait of a South Asian male farmer in his 40s with a warm, confident expression. He is standing in a lush green tomato farm at dawn, with soft golden sunlight filtering through the leaves. The image has a cinematic quality with shallow depth of field, highlighting his weathered but kind features. He wears a clean, simple collared shirt, and the atmosphere is one of expertise and successful sustainable agriculture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYI3OqX-u9L56SfVCw-sk-Q5Eqeh2xo5DSRJfwxqTrGzmSgfR9wMRPTylmh_EzvKQ3ryxeQ_xR1mSMAbFXRd_9pRkwor2ZYvVzaEKX8teb1J7YTP7b1JmWs9t-q3LdKRK-y-7P71R2Bzl29jDQTbPdGeOIGnQSL4LhUwP2Rz8ZUFLD0XT2TFBg6BFgpkB9kaRpgO7pXdljDqisVXENk54rl6UH9LfqfoGl3Y9YVSqXHRFPZPWTMcH2o3xbQEvWuFulcUzDNSNHlsc"/>
+<div class="absolute bottom-1 right-1 bg-primary text-on-primary rounded-full p-1 border-2 border-surface shadow-lg">
+<span class="material-symbols-outlined text-sm font-bold">check_circle</span>
+</div>
+</div>
+<div class="flex-1 text-center md:text-left">
+<div class="flex flex-wrap items-center gap-sm justify-center md:justify-start">
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Anoop Kumar</h3>
+<span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-[12px] font-bold border border-primary/30 uppercase tracking-widest">Tomato Farmer</span>
+</div>
+<div class="flex flex-wrap items-center gap-md mt-sm justify-center md:justify-start text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-body-sm">Karnataka, India</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+<span class="text-body-sm">12-acre farm size</span>
+</div>
+</div>
+</div>
+<div class="flex gap-md">
+<button class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 transition-all">Edit Profile</button>
+<button class="px-md py-sm border border-outline-variant/30 font-bold rounded-lg hover:bg-surface-bright/10 transition-colors">Share Stats</button>
+</div>
+</div>
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="glass-panel p-lg rounded-xl flex flex-col justify-between group hover:bg-surface-container-high/60 transition-colors border-l-4 border-primary">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">eco</span>
+<span class="text-primary font-bold text-headline-md">94%</span>
+</div>
+<p class="text-on-surface-variant font-label-caps mt-xl">Farm Health Score</p>
+</div>
+<div class="glass-panel p-lg rounded-xl flex flex-col justify-between group hover:bg-surface-container-high/60 transition-colors border-l-4 border-secondary">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary">potted_plant</span>
+<span class="text-secondary font-bold text-headline-md">1,402</span>
+</div>
+<p class="text-on-surface-variant font-label-caps mt-xl">Total Crops Monitored</p>
+</div>
+<div class="glass-panel p-lg rounded-xl flex flex-col justify-between group hover:bg-surface-container-high/60 transition-colors border-l-4 border-tertiary">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary">analytics</span>
+<span class="text-tertiary font-bold text-headline-md">84</span>
+</div>
+<p class="text-on-surface-variant font-label-caps mt-xl">AI Reports Generated</p>
+</div>
+</div>
+<!-- Settings Workspace Tabs -->
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="border-b border-outline-variant/10 flex overflow-x-auto no-scrollbar">
+<button class="px-lg py-md text-primary font-bold border-b-2 border-primary whitespace-nowrap">Personal Information</button>
+<button class="px-lg py-md text-on-surface-variant font-medium hover:text-on-surface transition-colors whitespace-nowrap">Farm Information</button>
+<button class="px-lg py-md text-on-surface-variant font-medium hover:text-on-surface transition-colors whitespace-nowrap">Language Settings</button>
+<button class="px-lg py-md text-on-surface-variant font-medium hover:text-on-surface transition-colors whitespace-nowrap">Security</button>
+</div>
+<div class="p-lg space-y-xl">
+<!-- Personal Info Form -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-sm">
+<label class="text-body-sm font-bold text-on-surface-variant">Full Name</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface" type="text" value="Anoop Kumar"/>
+</div>
+<div class="space-y-sm">
+<label class="text-body-sm font-bold text-on-surface-variant">Email Address</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface" type="email" value="anoop.kumar@ag-os.cloud"/>
+</div>
+<div class="space-y-sm">
+<label class="text-body-sm font-bold text-on-surface-variant">Contact Number</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface" type="tel" value="+91 98765 43210"/>
+</div>
+<div class="space-y-sm">
+<label class="text-body-sm font-bold text-on-surface-variant">Residential Address</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface" type="text" value="Sector 4, Chikmagalur, Karnataka"/>
+</div>
+</div>
+<!-- Divider -->
+<div class="h-[1px] bg-outline-variant/10"></div>
+<!-- Notification Controls -->
+<div>
+<h4 class="font-headline-md text-on-surface mb-lg">Notification Controls</h4>
+<div class="space-y-md">
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-outline-variant/5">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">cloud</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Weather Alerts</p>
+<p class="text-[12px] text-on-surface-variant">Get notified about sudden rain or frost.</p>
+</div>
+</div>
+<button class="w-12 h-6 bg-primary rounded-full relative transition-colors" onclick="this.classList.toggle('bg-primary'); this.classList.toggle('bg-outline-variant');">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-all"></div>
+</button>
+</div>
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-outline-variant/5">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error">coronavirus</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Disease &amp; Pest Early Warning</p>
+<p class="text-[12px] text-on-surface-variant">Real-time alerts for local pest outbreaks.</p>
+</div>
+</div>
+<button class="w-12 h-6 bg-primary rounded-full relative transition-colors" onclick="this.classList.toggle('bg-primary'); this.classList.toggle('bg-outline-variant');">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-all"></div>
+</button>
+</div>
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-outline-variant/5">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">trending_up</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Market Trends</p>
+<p class="text-[12px] text-on-surface-variant">Weekly summaries of crop market prices.</p>
+</div>
+</div>
+<button class="w-12 h-6 bg-outline-variant rounded-full relative transition-colors" onclick="this.classList.toggle('bg-primary'); this.classList.toggle('bg-outline-variant');">
+<div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all"></div>
+</button>
+</div>
+</div>
+</div>
+<!-- AI Personalization Section -->
+<div class="gradient-border-gold rounded-xl p-lg bg-surface-container-low/40">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-tertiary">auto_awesome</span>
+<h4 class="font-headline-md text-on-surface">AI Personalization</h4>
+</div>
+<div class="space-y-lg">
+<div class="space-y-sm">
+<label class="text-body-sm font-bold text-on-surface-variant">Primary Farming Goal</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface appearance-none">
+<option>Maximize Yield Efficiency</option>
+<option>Minimize Water Usage</option>
+<option>Maximize Market Profit</option>
+<option>Organic Certification Path</option>
+</select>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-sm">
+<label class="text-body-sm font-bold text-on-surface-variant">Profit Target (Annual)</label>
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm">
+<span class="text-on-surface-variant mr-sm">₹</span>
+<input class="bg-transparent border-none p-0 w-full focus:ring-0" type="number" value="2500000"/>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="text-body-sm font-bold text-on-surface-variant">Recommendation Depth</label>
+<input class="w-full accent-tertiary" type="range"/>
+<div class="flex justify-between text-[10px] text-on-surface-variant uppercase font-bold">
+<span>Light</span>
+<span>Moderate</span>
+<span>Expert Insight</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Insights Panel -->
+<aside class="w-[380px] hidden xl:block border-l border-outline-variant/10 p-lg space-y-lg overflow-y-auto custom-scrollbar">
+<!-- Farm Summary Widget -->
+<div class="glass-panel rounded-xl p-lg space-y-md">
+<h5 class="font-headline-md text-on-surface">Farm Summary</h5>
+<div class="aspect-square w-full rounded-lg relative overflow-hidden group">
+<img alt="Farm Map View" class="w-full h-full object-cover grayscale-[0.2] group-hover:scale-110 transition-transform duration-700" data-alt="A bird's-eye satellite view of a lush green agricultural landscape featuring neatly organized tomato plant rows and irrigation systems. The image is stylized with high-tech digital overlays, highlighting soil moisture levels in glowing neon greens and blues. The lighting is bright and clear, emphasizing the precision and scale of a modern industrial farm operation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbR3bVg8cFbRbIAtpBGa-zh1ceSrOhKOx1TIONctpgTj5zskRVTutOd3kkgvgWBejUeo9VFll6_lBmr8tRHDqGweT-pQs1ANDt93iJGuzrWAC-191nUfk_SkAMskkN51VvK5Fv_mpjp3YcnSa8YDpjR_6Xx2dsPk5eXRZeSlfBkvwAmj_yIEIjoJQuM1S421CT7mNfDH3cYrZZYlcKGuL66ufLxOQ_95KeDotM2Fb5QAfWhKCKR7IGsgRGMbRJPxvMVaLTWwWQTk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+<div class="absolute bottom-4 left-4">
+<p class="font-label-caps text-primary text-[10px]">LIVE SATELLITE</p>
+<p class="font-bold text-on-surface">Western Sector 7</p>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Soil Composition</span>
+<span class="text-on-surface font-bold">Red Sandy Loam</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Irrigation Type</span>
+<span class="text-on-surface font-bold">Smart Drip</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Current Lifecycle</span>
+<span class="text-primary font-bold">Fruiting Stage</span>
+</div>
+</div>
+</div>
+<!-- Achievements Section -->
+<div class="glass-panel rounded-xl p-lg">
+<div class="flex items-center justify-between mb-lg">
+<h5 class="font-headline-md text-on-surface">Achievements</h5>
+<span class="text-primary font-bold text-sm cursor-pointer hover:underline">View All</span>
+</div>
+<div class="space-y-md">
+<div class="flex items-center gap-md group">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center border border-primary/20 group-hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Water Saver</p>
+<p class="text-[12px] text-on-surface-variant leading-tight">Reduced consumption by 30% in Q3.</p>
+</div>
+</div>
+<div class="flex items-center gap-md group">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center border border-error/20 group-hover:bg-error/10 transition-all">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Disease Prevention Expert</p>
+<p class="text-[12px] text-on-surface-variant leading-tight">Zero pest outbreaks in the last 180 days.</p>
+</div>
+</div>
+<div class="flex items-center gap-md group">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center border border-tertiary/20 group-hover:bg-tertiary/10 transition-all">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Bumper Harvest</p>
+<p class="text-[12px] text-on-surface-variant leading-tight">Yield exceeded regional average by 15%.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Action Tip -->
+<div class="bg-primary/5 rounded-xl p-lg border border-primary/10">
+<p class="text-[11px] font-bold text-primary uppercase tracking-widest mb-sm">AI Recommendation</p>
+<p class="text-body-sm text-on-surface-variant italic leading-relaxed">"Anoop, based on your soil moisture levels, we suggest reducing irrigation in Sector 4 by 5% today to prevent root fungus."</p>
+<button class="mt-md text-sm font-bold text-primary flex items-center gap-xs hover:translate-x-1 transition-transform">
+                        Apply Suggestion <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</aside>
+</div>
+</main>
+<script>
+        // Micro-interactions and simple state handling
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('focus', () => {
+                element.closest('.space-y-sm')?.querySelector('label')?.classList.add('text-primary');
+            });
+            element.addEventListener('blur', () => {
+                element.closest('.space-y-sm')?.querySelector('label')?.classList.remove('text-primary');
+            });
+        });
+
+        // Toggle Switch Animation logic
+        function toggleState(btn) {
+            const dot = btn.querySelector('div');
+            if (btn.classList.contains('bg-primary')) {
+                dot.style.transform = 'translateX(-24px)';
+            } else {
+                dot.style.transform = 'translateX(0)';
+            }
+        }
+    </script>
+</body></html>

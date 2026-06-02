@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERRAVA | Intelligence for Modern Agriculture</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#222a3d",
+                    "primary": "#4be277",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "secondary": "#8bd79b",
+                    "surface-tint": "#4ae176",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "outline-variant": "#3d4a3d",
+                    "surface-container-lowest": "#060e20",
+                    "on-surface": "#dae2fd",
+                    "error": "#ffb4ab",
+                    "surface-container-low": "#131b2e",
+                    "surface": "#0b1326",
+                    "on-tertiary": "#472a00",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-secondary": "#003918",
+                    "inverse-primary": "#006e2f",
+                    "on-secondary-container": "#81cc90",
+                    "surface-variant": "#2d3449",
+                    "surface-container": "#171f33",
+                    "inverse-surface": "#dae2fd",
+                    "primary-container": "#22c55e",
+                    "primary-fixed": "#6bff8f",
+                    "on-primary-fixed-variant": "#005321",
+                    "on-primary": "#003915",
+                    "on-secondary-fixed-variant": "#005226",
+                    "on-primary-container": "#004b1e",
+                    "on-tertiary-container": "#5c3800",
+                    "on-surface-variant": "#bccbb9",
+                    "background": "#0b1326",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-error": "#690005",
+                    "tertiary-container": "#ef9900",
+                    "primary-fixed-dim": "#4ae176",
+                    "on-secondary-fixed": "#00210b",
+                    "secondary-fixed": "#a6f4b5",
+                    "on-background": "#dae2fd",
+                    "outline": "#869585",
+                    "inverse-on-surface": "#283044",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface-container-highest": "#2d3449",
+                    "on-primary-fixed": "#002109",
+                    "surface-dim": "#0b1326",
+                    "tertiary": "#ffba61",
+                    "secondary-container": "#005829",
+                    "secondary-fixed-dim": "#8bd79b",
+                    "surface-bright": "#31394d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "gutter": "20px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "unit": "4px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "40px",
+                    "3xl": "64px",
+                    "2xl": "48px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-caps": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "code-sm": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .mesh-gradient {
+            background-color: #0b1326;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(142, 70%, 25%, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(217, 91%, 20%, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(142, 72%, 29%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(222, 47%, 11%, 0.1) 0px, transparent 50%);
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .rotate-x-12 {
+            transform: rotateX(12deg) rotateY(-15deg);
+            transition: transform 0.5s ease-out;
+        }
+        .particle {
+            position: absolute;
+            background: #4be277;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel:hover {
+            border: 1px solid rgba(75, 226, 119, 0.3);
+            background: rgba(30, 41, 59, 0.6);
+        }
+        .ai-pulse {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(75, 226, 119, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(75, 226, 119, 0.4); }
+        }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: floating 6s ease-in-out infinite;
+        }
+        .animate-float-delayed-1 { animation: floating 7s ease-in-out infinite 1s; }
+        .animate-float-delayed-2 { animation: floating 5s ease-in-out infinite 2s; }
+        .animate-float-delayed-3 { animation: floating 8s ease-in-out infinite 0.5s; }
+
+        .mouse-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(75, 226, 119, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+        }
+
+        .haptic-hover {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .haptic-hover:hover {
+            transform: scale(1.02);
+        }
+        .haptic-hover:active {
+            transform: scale(0.98);
+        }
+
+        .fade-slide-in {
+            animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .staggered-check {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .staggered-check.active {
+            animation: checkFadeIn 0.5s ease forwards;
+        }
+        @keyframes checkFadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glassmorphism refine for inputs */
+        .auth-input {
+            background: rgba(255, 255, 255, 0.03) !important;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .auth-input:focus {
+            border-color: #22C55E !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1) !important;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden h-screen">
+<main class="flex h-full w-full">
+<!-- Left Side: Brand Experience (55%) -->
+<section class="hidden lg:flex lg:w-[55%] relative mesh-gradient items-center justify-center overflow-hidden border-r border-outline-variant/10" id="brand-panel">
+<!-- Interactive Glow -->
+<div class="mouse-glow" id="glow-cursor"></div>
+<!-- Animated Particles Container -->
+<div class="absolute inset-0 z-0" id="particle-container"></div>
+<!-- Content Branding -->
+<div class="absolute top-margin-desktop left-margin-desktop z-10">
+<div class="flex items-center gap-sm">
+<img src="terrava-logo.png" alt="TERRAVA" class="w-10 h-10 object-contain" />
+<span class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">TERRAVA</span>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-70">Ag-OS v2.4 | Enterprise Intelligence</p>
+</div>
+<!-- Digital Twin Visualization -->
+<div class="relative z-10 w-full max-w-2xl px-lg perspective-1000">
+<div class="rotate-x-12 relative animate-float">
+<!-- 3D Grid Map Image -->
+<div class="w-full h-96 bg-surface-container-high rounded-xl overflow-hidden relative border border-primary/20 shadow-2xl">
+<img alt="Topographic Farm View" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" data-alt="A futuristic aerial 3D rendering of a high-tech agricultural landscape." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7KGPVWoPVmoGjzCulTNINhnJPOwnSlbc9TUpwJH-AAaFT-4A8cOUl0u8t2KkDOjPpycJr-9rB_TWx4ATqXutjXPl_9W_IXTfl4b1K_JD9RI7UhWgWcF1eHFNFF5EUhAvfH2oREM_oroiV9hMGxjPp4iFU5-Nhph15zmJUDzOWftka5k--UDRDUM2yRx6Y5gBXUDeM0cQkhbcuwl5yvDlnwcbDmKcs2VFayNCiNhWPD07fQAEOxiKjbEKaoN3qvoNGViNh8Z07Fog"/>
+<!-- Overlay Grid Lines -->
+<div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(75,226,119,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(75,226,119,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+<!-- Pulse Point -->
+<div class="absolute top-1/2 left-1/3 w-4 h-4 bg-primary rounded-full animate-ping opacity-75"></div>
+<div class="absolute top-1/2 left-1/3 w-3 h-3 bg-primary rounded-full shadow-[0_0_15px_rgba(75,226,119,1)]"></div>
+</div>
+<!-- Glassmorphism KPI Cards (Floating) -->
+<div class="absolute -top-12 -left-8 glass-panel p-md rounded-xl w-48 shadow-2xl ai-pulse animate-float-delayed-1">
+<div class="flex items-center justify-between mb-xs">
+<span class="text-on-surface-variant font-label-caps text-[10px]">Farm Health</span>
+<span class="material-symbols-outlined text-primary text-sm">monitoring</span>
+</div>
+<div class="font-headline-md text-primary">89%</div>
+<div class="h-1 w-full bg-surface-variant rounded-full mt-sm">
+<div class="h-full bg-primary rounded-full w-[89%]"></div>
+</div>
+</div>
+<div class="absolute top-1/4 -right-12 glass-panel p-md rounded-xl w-56 shadow-2xl animate-float-delayed-2">
+<div class="flex items-center justify-between mb-xs">
+<span class="text-on-surface-variant font-label-caps text-[10px]">Disease Risk</span>
+<span class="material-symbols-outlined text-tertiary text-sm">warning</span>
+</div>
+<div class="font-headline-md text-tertiary">Low</div>
+<p class="text-body-sm text-on-surface-variant mt-xs">No active alerts</p>
+</div>
+<div class="absolute -bottom-8 left-1/4 glass-panel p-md rounded-xl w-52 shadow-2xl border-l-2 border-primary animate-float-delayed-3">
+<div class="flex items-center justify-between mb-xs">
+<span class="text-on-surface-variant font-label-caps text-[10px]">Water Efficiency</span>
+<span class="material-symbols-outlined text-secondary text-sm">water_drop</span>
+</div>
+<div class="font-headline-md text-on-surface">82%</div>
+<p class="text-code-sm text-primary">+4% vs last cycle</p>
+</div>
+<div class="absolute top-3/4 -right-8 glass-panel p-md rounded-xl w-48 shadow-2xl bg-tertiary-container/20 animate-float-delayed-1">
+<div class="flex items-center justify-between mb-xs">
+<span class="text-on-tertiary-container font-label-caps text-[10px]">Profit Forecast</span>
+<span class="material-symbols-outlined text-tertiary text-sm">payments</span>
+</div>
+<div class="font-headline-md text-tertiary font-bold">₹1.8L</div>
+<p class="text-code-sm text-on-tertiary-container">Projected Yield</p>
+</div>
+</div>
+</div>
+<!-- Brand Footer -->
+<div class="absolute bottom-margin-desktop left-margin-desktop right-margin-desktop flex justify-between items-end">
+<div class="max-w-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">The Intelligent Edge</h3>
+<p class="text-body-sm text-on-surface-variant">Deploying predictive analytics and real-time sensor arrays to maximize every hectare.</p>
+</div>
+<div class="flex gap-md">
+<div class="flex flex-col items-center">
+<span class="text-on-surface-variant text-[10px] uppercase tracking-widest font-label-caps">Network</span>
+<span class="text-primary font-bold">Online</span>
+</div>
+<div class="flex flex-col items-center border-l border-outline-variant/30 pl-md">
+<span class="text-on-surface-variant text-[10px] uppercase tracking-widest font-label-caps">Uptime</span>
+<span class="text-on-surface font-bold">99.9%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Side: Auth Area (45%) -->
+<section class="w-full lg:w-[45%] bg-[#F8FAFC] flex items-center justify-center p-margin-mobile md:p-margin-desktop relative overflow-hidden">
+<div class="w-full max-w-md relative z-10">
+<!-- Auth Container with overflow control for transitions -->
+<div class="relative overflow-visible min-h-[550px]" id="auth-flow-container">
+<!-- Login State -->
+<div class="auth-section transition-all duration-500 transform scale-100 opacity-100" id="login-section">
+<div class="mb-xl text-center lg:text-left">
+<h1 class="font-headline-lg text-headline-lg text-surface-container-lowest font-extrabold mb-xs">Welcome Back</h1>
+<p class="text-body-md text-slate-500">Login to manage your farm with AI</p>
+</div>
+<form class="space-y-lg" onsubmit="return false">
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">Email Address</label>
+<input id="login-email" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-md px-md focus:outline-none haptic-hover text-surface-container-lowest placeholder:text-slate-400" placeholder="grower@terrava.ai" type="email"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-xs">
+<label class="text-label-caps text-slate-600">Password</label>
+<a class="text-xs font-semibold text-primary hover:underline" href="#">Forgot Password?</a>
+</div>
+<input id="login-password" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-md px-md focus:outline-none haptic-hover text-surface-container-lowest placeholder:text-slate-400" placeholder="••••••••" type="password"/>
+</div>
+<button type="button" id="btn-login" class="w-full bg-primary-container text-white font-bold py-md rounded-lg shadow-lg shadow-primary/20 hover:shadow-xl haptic-hover transition-all">
+                            Continue to Dashboard
+                        </button>
+<div class="relative py-md">
+<div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+<div class="relative flex justify-center text-xs uppercase"><span class="bg-[#F8FAFC] px-md text-slate-400 font-label-caps">Or continue with</span></div>
+</div>
+<button type="button" id="btn-google" class="w-full bg-white border border-slate-200 text-slate-700 font-semibold py-md rounded-lg flex items-center justify-center gap-sm hover:bg-slate-50 transition-colors haptic-hover">
+<img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrdAGkA-Soj_3xt0kIoZ5VslWwyACCScNyTyOhN764kNkCnK4HDwDdDFcixHYfxPqioiAk3FVr3a0P1e8xJp_5LTuipUdy0kErsyL45y5CW0ZpNuaGP7fCViPQV0-iIvZA9gMo6ZBMppJnwnTUq0khVf7t55OaBryJwVu7SQPH_GEVYvw7KaH9qyRHZ1zabrjyAx2t0KlcAc_brxW7LPBSpZiKQzGcpsVPcljDDGDrFEJIgbPNR2Q-lWYgbKKUk83I5CeDJCYjc5E"/>
+                            Sign in with Google
+                        </button>
+</form>
+<p class="mt-xl text-center text-body-sm text-slate-500">
+                        Don't have an account? 
+                        <button class="text-primary font-bold hover:underline" onclick="navigateTo('register-step-1')">Create Account</button>
+</p>
+</div>
+<!-- Registration Flow -->
+<div class="auth-section hidden transition-all duration-500 transform translate-x-12 opacity-0" id="registration-section">
+<div class="mb-xl">
+<div class="flex items-center gap-sm mb-md">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors" onclick="navigateTo('login')">arrow_back</button>
+<h1 class="font-headline-md text-headline-md text-surface-container-lowest font-bold" id="registration-title">New Enterprise</h1>
+</div>
+<!-- Progress Bar -->
+<div class="flex items-center gap-xs mb-lg">
+<div class="h-1 flex-1 bg-primary rounded-full transition-all duration-300" id="step-1-bar"></div>
+<div class="h-1 flex-1 bg-slate-200 rounded-full transition-all duration-300" id="step-2-bar"></div>
+<div class="h-1 flex-1 bg-slate-200 rounded-full transition-all duration-300" id="step-3-bar"></div>
+</div>
+</div>
+<!-- Step 1: Personal -->
+<div class="reg-step space-y-md" id="step-1-content">
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">First Name</label>
+<input id="reg-first-name" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-sm px-md haptic-hover text-surface-container-lowest" type="text"/>
+</div>
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">Last Name</label>
+<input id="reg-last-name" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-sm px-md haptic-hover text-surface-container-lowest" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">Email</label>
+<input id="reg-email" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-sm px-md haptic-hover text-surface-container-lowest" type="email"/>
+</div>
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">Create Password</label>
+<input id="reg-password" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-sm px-md haptic-hover text-surface-container-lowest" type="password"/>
+</div>
+<button class="w-full bg-primary-container text-white font-bold py-md rounded-lg mt-md shadow-lg shadow-primary/20 haptic-hover" onclick="navigateTo('register-step-2')">Next: Farm Details</button>
+</div>
+<!-- Step 2: Farm Details -->
+<div class="reg-step hidden space-y-md" id="step-2-content">
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">State</label>
+<select id="reg-state" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-sm px-md haptic-hover text-surface-container-lowest">
+<option>Karnataka</option>
+<option>Maharashtra</option>
+<option>Punjab</option>
+</select>
+</div>
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">Farm Size (Ha)</label>
+<input id="reg-farm-size" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-sm px-md haptic-hover text-surface-container-lowest" type="number"/>
+</div>
+</div>
+<div>
+<label class="block text-label-caps text-slate-600 mb-xs">Primary Crop</label>
+<select id="reg-crop" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-sm px-md haptic-hover text-surface-container-lowest">
+<option>Wheat</option>
+<option>Rice</option>
+<option>Cotton</option>
+<option>Sustainable Coffee</option>
+</select>
+</div>
+<button class="w-full bg-primary-container text-white font-bold py-md rounded-lg mt-md shadow-lg shadow-primary/20 haptic-hover" onclick="navigateTo('register-step-3')">Review &amp; Confirm</button>
+<button class="w-full text-slate-500 font-semibold py-sm haptic-hover" onclick="navigateTo('register-step-1')">Back</button>
+</div>
+<!-- Step 3: Summary -->
+<div class="reg-step hidden space-y-md" id="step-3-content">
+<div class="bg-slate-100 p-md rounded-lg border border-slate-200">
+<h4 class="text-label-caps text-slate-500 mb-sm border-b border-slate-200 pb-xs">Enterprise Summary</h4>
+<div class="space-y-xs text-body-sm text-surface-container-lowest">
+<div class="flex justify-between"><span>Region:</span> <span class="font-bold">Karnataka (IN-KA)</span></div>
+<div class="flex justify-between"><span>Package:</span> <span class="font-bold">Ag-OS Enterprise v2</span></div>
+<div class="flex justify-between"><span>Network:</span> <span class="font-bold">Edge-Computing Local</span></div>
+</div>
+</div>
+<div class="flex items-start gap-sm p-sm">
+<input id="reg-terms" class="mt-1 rounded text-primary focus:ring-primary auth-input" type="checkbox"/>
+<p class="text-[12px] text-slate-500">I agree to the TERRAVA Terms of Service and Data Governance Policy for automated telemetry.</p>
+</div>
+<button id="btn-register" class="w-full bg-primary-container text-white font-bold py-md rounded-lg shadow-lg shadow-primary/20 haptic-hover">Initialize Operating System</button>
+<button class="w-full text-slate-500 font-semibold py-sm haptic-hover" onclick="navigateTo('register-step-2')">Back</button>
+</div>
+</div>
+</div>
+<!-- Shared Benefits Footer -->
+<div class="mt-3xl grid grid-cols-1 md:grid-cols-3 gap-md border-t border-slate-100 pt-xl">
+<div class="flex items-center gap-xs staggered-check">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[11px] font-bold text-slate-600">Disease Prediction</span>
+</div>
+<div class="flex items-center gap-xs staggered-check">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[11px] font-bold text-slate-600">Market Intelligence</span>
+</div>
+<div class="flex items-center gap-xs staggered-check">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[11px] font-bold text-slate-600">AI Farm Doctor</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script>
+try {
+    console.log('[TERRAVA] Script initializing...');
+
+    // Particle background logic
+    var container = document.getElementById('particle-container');
+    if (container) {
+        for (var i = 0; i < 40; i++) {
+            var p = document.createElement('div');
+            p.className = 'particle';
+            var size = Math.random() * 3 + 1;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = (Math.random() * 100) + '%';
+            p.style.top = (Math.random() * 100) + '%';
+            p.style.animation = 'floatParticle ' + (Math.random() * 10 + 15) + 's linear infinite';
+            p.style.opacity = Math.random() * 0.3;
+            container.appendChild(p);
+        }
+    }
+
+    // Mouse Glow Logic
+    var brandPanel = document.getElementById('brand-panel');
+    var glow = document.getElementById('glow-cursor');
+    if (brandPanel && glow) {
+        brandPanel.addEventListener('mousemove', function(e) {
+            var rect = brandPanel.getBoundingClientRect();
+            glow.style.left = (e.clientX - rect.left) + 'px';
+            glow.style.top = (e.clientY - rect.top) + 'px';
+        });
+    }
+
+    // Navigation logic (Multi-step + Login/Register)
+    window.navigateTo = function(target) {
+        var loginSection = document.getElementById('login-section');
+        var regSection = document.getElementById('registration-section');
+        var steps = ['step-1-content', 'step-2-content', 'step-3-content'];
+        var bars = ['step-1-bar', 'step-2-bar', 'step-3-bar'];
+
+        function showStep(stepIdx) {
+            for (var i = 0; i < steps.length; i++) {
+                var el = document.getElementById(steps[i]);
+                var bar = document.getElementById(bars[i]);
+                if (i === stepIdx) {
+                    el.classList.remove('hidden');
+                    el.classList.add('fade-slide-in');
+                    bar.classList.add('bg-primary');
+                    bar.classList.remove('bg-slate-200');
+                } else {
+                    el.classList.add('hidden');
+                    el.classList.remove('fade-slide-in');
+                    if (i > stepIdx) {
+                        bar.classList.remove('bg-primary');
+                        bar.classList.add('bg-slate-200');
+                    } else {
+                        bar.classList.add('bg-primary');
+                    }
+                }
+            }
+        }
+
+        if (target === 'login') {
+            regSection.classList.add('opacity-0', 'translate-x-12');
+            setTimeout(function() {
+                regSection.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+                setTimeout(function() {
+                    loginSection.classList.remove('opacity-0', 'translate-x-[-24px]', 'scale-95');
+                    loginSection.classList.add('opacity-100', 'translate-x-0', 'scale-100');
+                }, 50);
+            }, 300);
+        } else if (target.indexOf('register-step') === 0) {
+            var stepNum = parseInt(target.split('-').pop());
+            if (loginSection.classList.contains('hidden')) {
+                showStep(stepNum - 1);
+            } else {
+                loginSection.classList.add('opacity-0', 'translate-x-[-24px]', 'scale-95');
+                setTimeout(function() {
+                    loginSection.classList.add('hidden');
+                    regSection.classList.remove('hidden');
+                    showStep(stepNum - 1);
+                    setTimeout(function() {
+                        regSection.classList.remove('opacity-0', 'translate-x-12');
+                        regSection.classList.add('opacity-100', 'translate-x-0');
+                    }, 50);
+                }, 300);
+            }
+        }
+    };
+
+    console.log('[TERRAVA] Navigation functions loaded.');
+
+    // Firebase Configuration and Authentication
+    var firebaseConfig = {
+        apiKey: "AIzaSyD3z7KMV7OeV8Nj81lljJhlTA3JQ8sMLZU",
+        authDomain: "terrava-farm.firebaseapp.com",
+        databaseURL: "https://terrava-farm-default-rtdb.firebaseio.com",
+        projectId: "terrava-farm",
+        storageBucket: "terrava-farm.firebasestorage.app",
+        messagingSenderId: "850552694321",
+        appId: "1:850552694321:web:1dbc9cbc1f546609b95710",
+        measurementId: "G-WQKPETW205"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    var auth = firebase.auth();
+    console.log('[TERRAVA] Firebase initialized. Auth ready.');
+
+    // Listen for auth state changes
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            console.log('[TERRAVA] User authenticated:', user.email);
+            localStorage.setItem('user_email', user.email);
+            localStorage.setItem('user_uid', user.uid);
+            if (user.displayName) {
+                var parts = user.displayName.split(' ');
+                localStorage.setItem('user_first_name', parts[0] || 'Grower');
+                if (parts[1]) localStorage.setItem('user_last_name', parts[1]);
+            } else {
+                // If displayName is null/empty, parse prefix of email as name fallback
+                var emailPrefix = user.email ? user.email.split('@')[0] : 'Grower';
+                // Capitalize
+                emailPrefix = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+                localStorage.setItem('user_first_name', emailPrefix);
+            }
+            window.location.href = './terrava_ag_os_dashboard/';
+        } else {
+            console.log('[TERRAVA] No user session. Login required.');
+        }
+    });
+
+    // Email & Password Login
+    var btnLogin = document.getElementById('btn-login');
+    console.log('[TERRAVA] btn-login found:', !!btnLogin);
+    if (btnLogin) {
+        btnLogin.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('[TERRAVA] Login button clicked');
+            var email = document.getElementById('login-email').value.trim();
+            var password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                alert('Please fill in both email and password fields.');
+                return;
+            }
+            
+            btnLogin.disabled = true;
+            btnLogin.innerText = 'Authenticating...';
+            console.log('[TERRAVA] Signing in:', email);
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(function(cred) {
+                    console.log('[TERRAVA] Login success:', cred.user.email);
+                })
+                .catch(function(error) {
+                    console.error('[TERRAVA] Login error:', error.code, error.message);
+                    alert('Login failed: ' + error.message);
+                    btnLogin.disabled = false;
+                    btnLogin.innerText = 'Continue to Dashboard';
+                });
+        });
+    }
+
+    // Google Sign-In
+    var btnGoogle = document.getElementById('btn-google');
+    console.log('[TERRAVA] btn-google found:', !!btnGoogle);
+    if (btnGoogle) {
+        btnGoogle.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('[TERRAVA] Google sign-in clicked');
+            btnGoogle.disabled = true;
+            var provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then(function(cred) {
+                    console.log('[TERRAVA] Google login success:', cred.user.email);
+                })
+                .catch(function(error) {
+                    console.error('[TERRAVA] Google error:', error.code, error.message);
+                    alert('Google Sign-In failed: ' + error.message);
+                    btnGoogle.disabled = false;
+                });
+        });
+    }
+
+    // User Registration
+    var btnRegister = document.getElementById('btn-register');
+    console.log('[TERRAVA] btn-register found:', !!btnRegister);
+    if (btnRegister) {
+        btnRegister.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('[TERRAVA] Register button clicked');
+            var email = document.getElementById('reg-email').value.trim();
+            var password = document.getElementById('reg-password').value;
+            var firstName = document.getElementById('reg-first-name').value.trim();
+            var lastName = document.getElementById('reg-last-name').value.trim();
+            var termsEl = document.getElementById('reg-terms');
+            var terms = termsEl ? termsEl.checked : false;
+            
+            if (!email || !password || !firstName) {
+                alert('Please complete all required registration fields (name, email, password).');
+                return;
+            }
+            
+            if (!terms) {
+                alert('You must agree to the Terms of Service.');
+                return;
+            }
+            
+            btnRegister.disabled = true;
+            btnRegister.innerText = 'Initializing OS...';
+            console.log('[TERRAVA] Creating account:', email);
+            
+            // Collect farm details from step 2
+            var regState = document.getElementById('reg-state');
+            var regFarmSize = document.getElementById('reg-farm-size');
+            var regCrop = document.getElementById('reg-crop');
+            var farmState = regState ? regState.value : 'Karnataka';
+            var farmSize = regFarmSize ? parseFloat(regFarmSize.value) || 2.0 : 2.0;
+            var farmCrop = regCrop ? regCrop.value : 'Wheat';
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(function(userCredential) {
+                    console.log('[TERRAVA] Account created:', userCredential.user.email);
+                    // Save all profile data to localStorage for downstream profile seeding
+                    localStorage.setItem('user_first_name', firstName);
+                    localStorage.setItem('user_last_name', lastName);
+                    localStorage.setItem('user_state', farmState);
+                    localStorage.setItem('user_farm_size', farmSize);
+                    localStorage.setItem('user_crop', farmCrop);
+                    localStorage.setItem('user_uid', userCredential.user.uid);
+                    localStorage.setItem('user_email', email);
+
+                    return userCredential.user.updateProfile({
+                        displayName: firstName + ' ' + lastName
+                    }).then(function() {
+                        console.log('[TERRAVA] Profile updated with name:', firstName, lastName);
+                        // Push profile data to backend API
+                        return userCredential.user.getIdToken();
+                    }).then(function(idToken) {
+                        var endpoint = 'http://localhost:8000/api/v1/profile';
+                        var host = window.location.hostname;
+                        if (host !== 'localhost' && host !== '127.0.0.1') {
+                            endpoint = 'https://terrava-farm-backend.onrender.com/api/v1/profile';
+                        }
+                        return fetch(endpoint, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + idToken
+                            },
+                            body: JSON.stringify({
+                                name: firstName + ' ' + lastName,
+                                email: email,
+                                state: farmState,
+                                farm_size: farmSize,
+                                crops: [{ name: farmCrop }]
+                            })
+                        }).catch(function(err) {
+                            console.warn('[TERRAVA] Backend profile push failed (non-critical):', err);
+                        });
+                    });
+                })
+                .catch(function(error) {
+                    console.error('[TERRAVA] Registration error:', error.code, error.message);
+                    alert('Registration failed: ' + error.message);
+                    btnRegister.disabled = false;
+                    btnRegister.innerText = 'Initialize Operating System';
+                });
+        });
+    }
+
+    // Staggered check animation on load
+    var checks = document.querySelectorAll('.staggered-check');
+    checks.forEach(function(check, index) {
+        setTimeout(function() {
+            check.classList.add('active');
+        }, 400 + (index * 150));
+    });
+
+    console.log('[TERRAVA] All event listeners attached successfully.');
+
+} catch(e) {
+    console.error('[TERRAVA] FATAL SCRIPT ERROR:', e);
+}
+</script>
+<style>
+    @keyframes floatParticle {
+        0% { transform: translateY(0) translateX(0); }
+        50% { transform: translateY(-100px) translateX(50px); }
+        100% { transform: translateY(-200px) translateX(-20px); opacity: 0; }
+    }
+    
+    .auth-section {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    #auth-flow-container {
+        position: relative;
+    }
+</style>
+<script src="terrava-config.js"></script>
+</body></html>
