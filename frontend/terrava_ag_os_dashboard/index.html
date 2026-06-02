@@ -189,7 +189,11 @@
                             const welcomeMsg = document.getElementById("welcome-message");
                             if (welcomeMsg) {
                                 const firstName = (profile.name || "Grower").split(" ")[0];
-                                welcomeMsg.innerText = `Good Morning, ${firstName}.`;
+                                const h = new Date().getHours();
+                                let g = "Good Morning";
+                                if (h >= 12 && h < 17) g = "Good Afternoon";
+                                else if (h >= 17) g = "Good Evening";
+                                welcomeMsg.innerText = `${g}, ${firstName}.`;
                             }
                             
                             // Load custom regional weather

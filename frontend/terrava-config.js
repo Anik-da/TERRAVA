@@ -1069,12 +1069,33 @@ function globalDOMHydration() {
     // 1. Get preferred language from localStorage
     const prefLang = localStorage.getItem('terrava_language') || 'en';
     
-    // Map welcome greetings for each language
-    const greetings = {
-        en: "Good Morning",
-        hi: "शुभ प्रभात",
-        kn: "ಶುಭ ಮುಂಜಾನೆ"
+    // Map welcome greetings for each language depending on time of day
+    const hour = new Date().getHours();
+    let timeOfDay = 'morning';
+    if (hour >= 12 && hour < 17) {
+        timeOfDay = 'afternoon';
+    } else if (hour >= 17) {
+        timeOfDay = 'evening';
+    }
+
+    const greetingsMap = {
+        morning: {
+            en: "Good Morning",
+            hi: "शुभ प्रभात",
+            kn: "ಶುಭ ಮುಂಜಾನೆ"
+        },
+        afternoon: {
+            en: "Good Afternoon",
+            hi: "शुभ दोपहर",
+            kn: "ಶುಭ ಮಧ್ಯಾಹ್ನ"
+        },
+        evening: {
+            en: "Good Evening",
+            hi: "शुभ संध्या",
+            kn: "ಶುಭ ಸಂಜೆ"
+        }
     };
+    const greetings = greetingsMap[timeOfDay];
 
     // 2. Auth state change listener for dynamic UI hydration
     try {
@@ -1509,19 +1530,35 @@ function injectConnectivityIndicator() {
 
     const badge = document.createElement('div');
     badge.id = indicatorId;
+    badge.style.cursor = 'pointer';
     
     function updateBadge() {
-        const isOnline = navigator.onLine;
+        const forceOffline = localStorage.getItem('terrava_force_offline') === 'true';
+        const isOnline = navigator.onLine && !forceOffline;
         const apiConnected = isOnline && (TERRAVA_API_BASE !== '');
         
         if (apiConnected) {
             badge.className = 'badge-online';
             badge.innerHTML = `<span class="badge-dot"></span> Live Ag-OS Connected`;
+            badge.title = "Click to force Offline AI Mode (Offline Simulator)";
         } else {
             badge.className = 'badge-offline';
-            badge.innerHTML = `<span class="badge-dot"></span> Offline AI Simulator`;
+            badge.innerHTML = `<span class="badge-dot"></span> Offline AI Simulator` + (forceOffline ? " (Forced)" : "");
+            badge.title = "Click to restore Online AI Mode";
         }
     }
+
+    badge.addEventListener('click', () => {
+        const currentlyForced = localStorage.getItem('terrava_force_offline') === 'true';
+        localStorage.setItem('terrava_force_offline', currentlyForced ? 'false' : 'true');
+        updateBadge();
+        if (typeof updateAIModeIndicator === 'function') {
+            updateAIModeIndicator();
+        }
+        window.dispatchEvent(new Event('terrava-mode-change'));
+        // Reload the current page to apply the offline state cleanly to all scripts!
+        location.reload();
+    });
 
     updateBadge();
     document.body.appendChild(badge);

@@ -152,7 +152,11 @@
             document.addEventListener("DOMContentLoaded", () => {
                 const welcomeText = document.querySelector("h2.font-headline-lg");
                 if (welcomeText) {
-                    welcomeText.innerText = "Good Morning, " + (user.displayName || "Grower") + ".";
+                    const hour = new Date().getHours();
+                    let greeting = "Good Morning";
+                    if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+                    else if (hour >= 17) greeting = "Good Evening";
+                    welcomeText.innerText = greeting + ", " + (user.displayName || "Grower") + ".";
                 }
 
                 // Dynamically convert Grower Access sidebar link to active Logout trigger
