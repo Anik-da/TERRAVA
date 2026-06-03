@@ -105,7 +105,7 @@
                         "on-primary-fixed": "#002109",
                         "tertiary-fixed-dim": "#ffb95f"
                     },
-                    "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                    "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px" },
                     "spacing": { "3xl": "64px", "xs": "4px", "margin-mobile": "16px", "2xl": "48px", "xl": "32px", "unit": "4px", "sm": "8px", "margin-desktop": "40px", "lg": "24px", "md": "16px", "gutter": "20px" },
                     "fontFamily": { "headline-md": ["Inter"], "body-md": ["Inter"], "code-sm": ["JetBrains Mono"], "body-lg": ["Inter"], "body-sm": ["Inter"], "headline-lg-mobile": ["Inter"], "label-caps": ["JetBrains Mono"], "display-lg": ["Inter"], "headline-lg": ["Inter"] },
                     "fontSize": { "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "code-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }], "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }] }
@@ -293,8 +293,13 @@
 </div>
 </div>
 <div class="relative aspect-video rounded-lg overflow-hidden bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-center">
-<div class="scan-line"></div>
-<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A macro close-up photograph of a bright red tomato hanging from a lush green vine, with one prominent leaf showing detailed early-stage fungal spots. The lighting is clinical and high-contrast, mimicking an agricultural laboratory setting. A digital green laser-line overlay scans horizontally across the leaf surface. The overall mood is high-tech, precise, and sophisticated, consistent with a dark-mode industrial operating system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-R57E72acBEhVeFe53hw-JiGKsDoMS-PA8wFxrRW__pbgsCgfvEuwlxVfHw-gpbrUXPp0jEwxzorE0UOVI_W70OAMjBBg5UO3vS3QlM4WIniNn0uEFH4rfUbPKiM_rjHQ-Ibi5Bm7qyDM8WgYgSexlpbjk1a4RJU82pt6LvYQs6XXEob2jyLd10IVGeTXJ59TE1Ufkz0g5W2IygExSDIe6Ink7-rhiON8k2ntSSlNET85JEK8akvAGNdZKI3AJsGhUtnhpejFqzI"/>
+<div id="crop-scan-line" class="scan-line hidden"></div>
+<div id="crop-upload-placeholder" class="flex flex-col items-center justify-center p-lg text-center space-y-sm z-10 cursor-pointer w-full h-full">
+    <span class="material-symbols-outlined text-5xl text-primary animate-pulse mb-xs">add_photo_alternate</span>
+    <p class="font-headline-md text-headline-md text-on-surface">Awaiting Crop Specimen Scan</p>
+    <p class="text-body-sm text-on-surface-variant max-w-sm">Click "Upload Crop Image" or drag-and-drop a leaf specimen to perform a zero-shot pathology scan.</p>
+</div>
+<img id="crop-preview-img" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity hidden" data-alt="Crop Pathology Specimen" src=""/>
 <!-- Analysis Overlay -->
 <div class="absolute top-4 left-4 glass-modal p-md rounded-lg border-primary/20 ai-glow">
 <div class="flex items-center gap-xs text-primary mb-1">

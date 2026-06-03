@@ -66,7 +66,7 @@
                         "DEFAULT": "0.125rem",
                         "lg": "0.25rem",
                         "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "full": "9999px"
                     },
                     "spacing": {
                         "xl": "32px",
@@ -159,12 +159,15 @@
     // Check user session state
     auth.onAuthStateChanged((user) => {
         if (!user) {
-            // Unauthenticated - redirect to auth portal
-            window.location.href = "../";
+            const cachedUid = localStorage.getItem('user_uid');
+            const cachedEmail = localStorage.getItem('user_email');
+            if (!cachedUid && !cachedEmail) {
+                window.location.href = "../";
+            }
         } else {
             // Authenticated - greeting modification and dynamic logout transformation
-            document.addEventListener("DOMContentLoaded", () => {
-                const welcomeText = document.querySelector("h2.font-headline-lg");
+            const hydrateUI = () => {
+                const welcomeText = document.getElementById("welcome-message");
                 if (welcomeText) {
                     const hour = new Date().getHours();
                     let greeting = "Good Morning";
@@ -197,7 +200,13 @@
                         });
                     }
                 });
-            });
+            };
+
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                hydrateUI();
+            } else {
+                document.addEventListener("DOMContentLoaded", hydrateUI);
+            }
         }
     });
 </script>\n</head>
@@ -205,7 +214,7 @@
 <!-- Sidebar (SideNavBar) -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
     <div class="mb-xl px-sm flex items-center gap-sm">
-        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden bg-transparent">
             <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
         </div>
         <div>
@@ -299,10 +308,10 @@
 <div class="flex justify-between items-end mb-lg relative z-10">
 <div>
 <div class="flex items-center gap-md">
-<h2 class="font-headline-lg text-headline-lg text-on-surface">Green Valley Farm</h2>
-<span class="bg-primary-container/20 text-primary border border-primary/30 px-sm py-1 rounded text-label-caps font-bold">HEALTHY 89%</span>
+<h2 id="twin-farm-name" class="font-headline-lg text-headline-lg text-on-surface">Green Valley Farm</h2>
+<span id="twin-health-badge" class="bg-primary-container/20 text-primary border border-primary/30 px-sm py-1 rounded text-label-caps font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>HEALTHY 89%</span>
 </div>
-<p class="text-on-surface-variant flex items-center gap-sm font-body-sm">
+<p id="twin-farm-subtext" class="text-on-surface-variant flex items-center gap-sm font-body-sm">
 <span class="material-symbols-outlined text-sm">location_on</span> Karnataka, India • 12.4 Acres Total • <span class="text-secondary">Precision Scan Active</span>
 </p>
 </div>
@@ -340,18 +349,18 @@
 <div class="absolute top-md left-md w-72 glass-panel p-md rounded-xl z-20 space-y-md">
 <div class="flex justify-between items-start">
 <div>
-<h3 class="font-headline-md text-body-lg text-on-surface">Tomato Sector</h3>
+<h3 id="twin-active-crop-title" class="font-headline-md text-body-lg text-on-surface">Tomato Sector</h3>
 <p class="text-on-surface-variant font-label-caps">ACTIVE CROP</p>
 </div>
-<div class="text-primary font-bold text-headline-md">82%</div>
+<div id="twin-active-crop-score" class="text-primary font-bold text-headline-md">82%</div>
 </div>
 <div class="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
-<div class="bg-primary h-full w-[82%] shadow-[0_0_8px_#22c55e]"></div>
+<div id="twin-active-crop-progress" class="bg-primary h-full w-[82%] shadow-[0_0_8px_#22c55e]"></div>
 </div>
 <div class="grid grid-cols-2 gap-sm">
 <div class="p-sm bg-surface-container-low/50 rounded border border-outline-variant/10">
 <p class="text-xs text-on-surface-variant uppercase">Moisture</p>
-<p class="font-code-sm text-primary">34.2 hPa</p>
+<p id="twin-active-crop-moisture" class="font-code-sm text-primary">34.2 hPa</p>
 </div>
 <div class="p-sm bg-surface-container-low/50 rounded border border-outline-variant/10">
 <p class="text-xs text-on-surface-variant uppercase">Nitrogen</p>
@@ -370,13 +379,13 @@
 <div class="relative w-16 h-16">
 <svg class="w-full h-full transform -rotate-90">
 <circle class="text-surface-variant/30" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
-<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="176" stroke-dashoffset="20" stroke-width="4"></circle>
+<circle id="twin-gauge-ring" class="text-primary transition-all duration-500" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="176" stroke-dashoffset="20" stroke-width="4"></circle>
 </svg>
-<div class="absolute inset-0 flex items-center justify-center font-bold text-sm">89</div>
+<div id="twin-gauge-text" class="absolute inset-0 flex items-center justify-center font-bold text-sm">89</div>
 </div>
 <div>
 <p class="font-label-caps text-on-surface-variant">HEALTH SCORE</p>
-<p class="text-xs text-primary">+2% from yesterday</p>
+<p id="twin-gauge-subtext" class="text-xs text-primary">+2% from yesterday</p>
 </div>
 </div>
 <!-- Weather Simulator -->
@@ -411,13 +420,13 @@
 </div>
 <div class="space-y-md overflow-y-auto pr-sm">
 <!-- Alert Item -->
-<div class="p-md rounded-lg bg-error/10 border border-error/20">
+<div id="twin-ai-alert-box" class="p-md rounded-lg bg-error/10 border border-error/20">
 <div class="flex gap-sm mb-1">
-<span class="material-symbols-outlined text-error text-md">warning</span>
-<p class="text-sm font-bold text-error">DISEASE ALERT</p>
+<span id="twin-ai-alert-icon" class="material-symbols-outlined text-error text-md">warning</span>
+<p id="twin-ai-alert-title" class="text-sm font-bold text-error">DISEASE ALERT</p>
 </div>
-<p class="text-xs text-on-surface-variant mb-2">Early-stage blight detected in Sector C-4 (Area: 1.2 Acres).</p>
-<button class="text-xs font-bold text-error underline decoration-2 underline-offset-4">INITIATE TREATMENT</button>
+<p id="twin-ai-alert-desc" class="text-xs text-on-surface-variant mb-2">Early-stage blight detected in Sector C-4 (Area: 1.2 Acres).</p>
+<button id="twin-ai-alert-btn" onclick="window.location.href='../terrava_crop_intelligence_center/index.html?initiate_treatment=true'" class="text-xs font-bold text-error underline decoration-2 underline-offset-4">INITIATE TREATMENT</button>
 </div>
 <!-- Insight Item -->
 <div class="p-md rounded-lg bg-surface-container-high/50 border border-outline-variant/10">
@@ -462,7 +471,7 @@
 <span class="text-primary font-bold">TODAY</span>
 <span>NEXT 30 DAYS (PREDICTED)</span>
 </div>
-<div class="relative h-4 bg-surface-variant/20 rounded-full flex items-center overflow-hidden">
+<div id="twin-timeline-container" class="relative h-4 bg-surface-variant/20 rounded-full flex items-center">
 <div class="absolute inset-y-0 left-0 w-1/2 bg-surface-variant/40"></div>
 <!-- Data Nodes -->
 <div class="w-2 h-2 rounded-full bg-secondary absolute left-[15%]" title="Seeding"></div>
@@ -486,103 +495,596 @@
 </div>
 </main>
 <!-- Floating Action Button (FAB) Suppression check: Only on Dashboard/Main screens. This is a Main screen. -->
-<button class="fixed bottom-lg right-lg w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
-<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">add</span>
+<button id="btn-configure-twin" class="fixed bottom-lg right-lg w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 hover:shadow-[0_0_25px_rgba(74,225,118,0.5)] group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-45 transition-transform" style="font-variation-settings: 'FILL' 1;">hub</span>
 </button>
 <script>
-        // Micro-interactions and real-time feel
-        document.querySelectorAll('.glass-panel').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+        // Unified Digital Farm Twin Initialization
+        function initializeDigitalTwinUI() {
+            // Micro-interactions and real-time feel
+            document.querySelectorAll('.glass-panel').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                });
             });
-            card.addEventListener('mouseleave', () => {
-                card.style.borderColor = 'rgba(255, 255, 255, 0.05)';
-            });
-        });
 
-        // Simple animation for 'Live' data
-        setInterval(() => {
-            const liveBadge = document.querySelector('.bg-tertiary\\/10');
-            if(liveBadge) {
-                liveBadge.classList.toggle('opacity-50');
+            // Simple animation for 'Live' data
+            setInterval(() => {
+                const liveBadge = document.querySelector('.bg-tertiary\\/10');
+                if(liveBadge) {
+                    liveBadge.classList.toggle('opacity-50');
+                }
+            }, 1000);
+
+            // Fetch Live Weather for Karnataka (Coordinates: 12.9716, 77.5946)
+            function fetchLiveWeather() {
+                const lat = localStorage.getItem('terrava_lat') || '12.9716';
+                const lng = localStorage.getItem('terrava_lng') || '77.5946';
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.current_weather) {
+                            const temp = Math.round(data.current_weather.temperature);
+                            const code = data.current_weather.weathercode;
+                            let desc = "Clear Skies";
+                            if (code > 0 && code <= 3) desc = "Partly Cloudy";
+                            else if (code >= 51 && code <= 67) desc = "Light Rain";
+                            else if (code >= 71 && code <= 82) desc = "Snow Showers";
+                            else if (code >= 95) desc = "Thunderstorms";
+                            
+                            const weatherText = document.getElementById("twin-weather");
+                            if (weatherText) {
+                                weatherText.innerText = `${temp}°C / ${desc}`;
+                            }
+                        }
+                    })
+                    .catch(err => console.log("Weather fetch failed:", err));
             }
-        }, 1000);
+            fetchLiveWeather();
+            // Refresh every 15 minutes
+            setInterval(fetchLiveWeather, 900000);
 
-        // Fetch Live Weather for Karnataka (Coordinates: 12.9716, 77.5946)
-        function fetchLiveWeather() {
-            const lat = localStorage.getItem('terrava_lat') || '12.9716';
-            const lng = localStorage.getItem('terrava_lng') || '77.5946';
-            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.current_weather) {
-                        const temp = Math.round(data.current_weather.temperature);
-                        const code = data.current_weather.weathercode;
-                        let desc = "Clear Skies";
-                        if (code > 0 && code <= 3) desc = "Partly Cloudy";
-                        else if (code >= 51 && code <= 67) desc = "Light Rain";
-                        else if (code >= 71 && code <= 82) desc = "Snow Showers";
-                        else if (code >= 95) desc = "Thunderstorms";
+            // Interactive Modals Triggering
+            const btnSchedule = document.getElementById('btn-schedule-task');
+            const btnLiveFeed = document.getElementById('btn-live-feed');
+            
+            const modalLiveFeed = document.getElementById('modal-live-feed');
+            const modalSchedule = document.getElementById('modal-schedule-task');
+            
+            const btnCloseLiveFeed = document.getElementById('btn-close-live-feed');
+            const btnCloseSchedule = document.getElementById('btn-close-schedule');
+            const btnCancelSchedule = document.getElementById('btn-cancel-schedule');
+            
+            const btnSubmitTask = document.getElementById('btn-submit-task');
+            const scheduleSuccess = document.getElementById('schedule-success-alert');
+
+            if (btnLiveFeed && modalLiveFeed) {
+                btnLiveFeed.addEventListener('click', () => {
+                    modalLiveFeed.classList.remove('hidden');
+                });
+            }
+            if (btnCloseLiveFeed) {
+                btnCloseLiveFeed.addEventListener('click', () => {
+                    modalLiveFeed.classList.add('hidden');
+                });
+            }
+
+            if (btnSchedule && modalSchedule) {
+                btnSchedule.addEventListener('click', () => {
+                    modalSchedule.classList.remove('hidden');
+                    if (scheduleSuccess) scheduleSuccess.classList.add('hidden');
+                });
+            }
+            
+            const closeScheduleModal = () => {
+                if (modalSchedule) modalSchedule.classList.add('hidden');
+            };
+            if (btnCloseSchedule) btnCloseSchedule.addEventListener('click', closeScheduleModal);
+            if (btnCancelSchedule) btnCancelSchedule.addEventListener('click', closeScheduleModal);
+
+            // Tasks Persistence and Dynamic Timeline Rendering
+            function getSavedTasks() {
+                try {
+                    return JSON.parse(localStorage.getItem('terrava_scheduled_tasks')) || [];
+                } catch(e) {
+                    return [];
+                }
+            }
+
+            function saveTask(task) {
+                const tasks = getSavedTasks();
+                tasks.push(task);
+                localStorage.setItem('terrava_scheduled_tasks', JSON.stringify(tasks));
+            }
+
+            // Custom Task Details Modal Elements
+            const modalTaskDetails = document.getElementById('modal-task-details');
+            const btnCloseTaskDetails = document.getElementById('btn-close-task-details');
+            const btnCloseTaskDetailsFooter = document.getElementById('btn-close-task-details-footer');
+            const btnCancelTask = document.getElementById('btn-cancel-task');
+            const btnExecuteTaskNow = document.getElementById('btn-execute-task-now');
+
+            const taskDetailsOperation = document.getElementById('task-details-operation');
+            const taskDetailsSector = document.getElementById('task-details-sector');
+            const taskDetailsDate = document.getElementById('task-details-date');
+            const taskDetailsTime = document.getElementById('task-details-time');
+            const taskDetailsIcon = document.getElementById('task-details-icon');
+
+            let currentViewingTaskIndex = null;
+
+            function renderTasksOnTimeline() {
+                const container = document.getElementById('twin-timeline-container');
+                if (!container) return;
+                
+                // Remove existing custom nodes (any node with class 'custom-task-node')
+                container.querySelectorAll('.custom-task-node').forEach(node => node.remove());
+                
+                const tasks = getSavedTasks();
+                tasks.forEach((task, index) => {
+                    // Calculate horizontal percentage spacing for nodes scheduled in the next 30 days
+                    // Starting from 55% (just past today) up to 95%
+                    const positionLeft = 55 + (index * 12) % 40;
+                    
+                    const node = document.createElement('div');
+                    node.className = "custom-task-node w-3 h-3 rounded-full bg-primary absolute z-10 shadow-[0_0_12px_#22c55e] cursor-pointer animate-pulse";
+                    node.style.left = `${positionLeft}%`;
+                    node.title = `${task.operation} (${task.sector}) at ${task.time} on ${task.date}`;
+                    
+                    // Add click handler to display custom glassmorphic manifest dialog
+                    node.addEventListener('click', () => {
+                        currentViewingTaskIndex = index;
+                        if (taskDetailsOperation) taskDetailsOperation.innerText = task.operation;
+                        if (taskDetailsSector) taskDetailsSector.innerText = task.sector;
+                        if (taskDetailsDate) taskDetailsDate.innerText = task.date;
+                        if (taskDetailsTime) taskDetailsTime.innerText = task.time;
                         
-                        const weatherText = document.getElementById("twin-weather");
-                        if (weatherText) {
-                            weatherText.innerText = `${temp}°C / ${desc}`;
+                        // Select corresponding icon dynamically
+                        if (taskDetailsIcon) {
+                            if (task.operation.includes('Spraying')) taskDetailsIcon.innerText = 'precision_manufacturing';
+                            else if (task.operation.includes('Irrigation')) taskDetailsIcon.innerText = 'water_drop';
+                            else if (task.operation.includes('Imaging')) taskDetailsIcon.innerText = 'satellite_alt';
+                            else taskDetailsIcon.innerText = 'auto_awesome';
+                        }
+
+                        if (modalTaskDetails) modalTaskDetails.classList.remove('hidden');
+                    });
+                    
+                    container.appendChild(node);
+                });
+            }
+
+            const closeTaskDetailsModal = () => {
+                if (modalTaskDetails) modalTaskDetails.classList.add('hidden');
+            };
+            if (btnCloseTaskDetails) btnCloseTaskDetails.addEventListener('click', closeTaskDetailsModal);
+            if (btnCloseTaskDetailsFooter) btnCloseTaskDetailsFooter.addEventListener('click', closeTaskDetailsModal);
+
+            if (btnCancelTask) {
+                btnCancelTask.addEventListener('click', () => {
+                    if (currentViewingTaskIndex !== null) {
+                        const tasks = getSavedTasks();
+                        tasks.splice(currentViewingTaskIndex, 1);
+                        localStorage.setItem('terrava_scheduled_tasks', JSON.stringify(tasks));
+                        renderTasksOnTimeline();
+                        closeTaskDetailsModal();
+                    }
+                });
+            }
+
+            if (btnExecuteTaskNow) {
+                btnExecuteTaskNow.addEventListener('click', () => {
+                    closeTaskDetailsModal();
+                    triggerScanSimulation("EXECUTING SCHEDULED ROBOTICS SCAN...", () => {
+                        alert("Task executed successfully. Twin status updated in real-time.");
+                    });
+                });
+            }
+
+            if (btnSubmitTask) {
+                btnSubmitTask.addEventListener('click', () => {
+                    const sector = document.getElementById('task-sector').value;
+                    const operation = document.getElementById('task-operation').value;
+                    const date = document.getElementById('task-date').value || new Date().toISOString().split('T')[0];
+                    const time = document.getElementById('task-time').value || '08:00';
+                    
+                    const newTask = { sector, operation, date, time };
+                    saveTask(newTask);
+                    
+                    if (scheduleSuccess) {
+                        scheduleSuccess.classList.remove('hidden');
+                    }
+                    
+                    // Dynamically re-render timeline immediately
+                    renderTasksOnTimeline();
+                    
+                    setTimeout(() => {
+                        closeScheduleModal();
+                    }, 1500);
+                });
+            }
+            
+            // Render existing tasks on initial load
+            renderTasksOnTimeline();
+
+            // --- Configure Digital Farm Twin Modal Logic ---
+            const btnConfigureTwin = document.getElementById('btn-configure-twin');
+            const modalConfigureTwin = document.getElementById('modal-configure-twin');
+            const btnCloseConfigure = document.getElementById('btn-close-configure');
+            const btnCancelConfigure = document.getElementById('btn-cancel-configure');
+            const btnSubmitConfigure = document.getElementById('btn-submit-configure');
+            const loadingScanOverlay = document.getElementById('loading-scan-overlay');
+
+            if (btnConfigureTwin && modalConfigureTwin) {
+                btnConfigureTwin.addEventListener('click', () => {
+                    // Populate inputs with current settings or fallbacks
+                    document.getElementById('twin-input-size').value = localStorage.getItem('user_farm_size') || '12.4';
+                    document.getElementById('twin-input-location').value = localStorage.getItem('user_state') || 'Karnataka';
+                    document.getElementById('twin-input-crop').value = localStorage.getItem('user_crop') || 'Tomato';
+                    document.getElementById('twin-input-irrigation').value = localStorage.getItem('user_irrigation') || 'Drip Irrigation';
+                    
+                    modalConfigureTwin.classList.remove('hidden');
+                });
+            }
+
+            const closeConfigureModal = () => {
+                if (modalConfigureTwin) modalConfigureTwin.classList.add('hidden');
+            };
+            if (btnCloseConfigure) btnCloseConfigure.addEventListener('click', closeConfigureModal);
+            if (btnCancelConfigure) btnCancelConfigure.addEventListener('click', closeConfigureModal);
+
+            // Core dynamic update logic
+            function updateDigitalTwinUI(size, location, crop, irrigation) {
+                // 1. Calculate risk & health based on inputs
+                let healthScore = 89;
+                let riskLevel = "HEALTHY";
+                let badgeClass = "bg-primary-container/20 text-primary border border-primary/30 font-bold px-sm py-1 rounded text-label-caps flex items-center gap-1";
+                let dotClass = "w-2 h-2 rounded-full bg-primary inline-block";
+                let gaugeColor = "text-primary";
+                let moistureStr = "34.2 hPa";
+
+                // Normalization
+                const cropLower = crop.toLowerCase();
+                const irrLower = irrigation.toLowerCase();
+
+                if (irrLower.includes('drip')) {
+                    healthScore = 92;
+                    riskLevel = "HEALTHY";
+                    badgeClass = "bg-primary-container/20 text-primary border border-primary/30 font-bold px-sm py-1 rounded text-label-caps flex items-center gap-1";
+                    dotClass = "w-2 h-2 rounded-full bg-primary inline-block";
+                    gaugeColor = "text-primary";
+                    moistureStr = "38.5 hPa [OPTIMAL]";
+                } else if (irrLower.includes('sprinkler')) {
+                    healthScore = 74;
+                    riskLevel = "MODERATE RISK";
+                    badgeClass = "bg-tertiary-container/20 text-tertiary border border-tertiary/30 font-bold px-sm py-1 rounded text-label-caps flex items-center gap-1";
+                    dotClass = "w-2 h-2 rounded-full bg-tertiary inline-block animate-pulse";
+                    gaugeColor = "text-tertiary";
+                    moistureStr = "28.1 hPa [ADEQUATE]";
+                } else {
+                    // Manual or Flood
+                    healthScore = 38;
+                    riskLevel = "HIGH RISK";
+                    badgeClass = "bg-error-container/20 text-error border border-error/30 font-bold px-sm py-1 rounded text-label-caps flex items-center gap-1";
+                    dotClass = "w-2 h-2 rounded-full bg-error inline-block animate-ping";
+                    gaugeColor = "text-error";
+                    moistureStr = "12.4 hPa [CRITICAL DRY]";
+                }
+
+                // 2. Perform DOM mutations
+                const farmNameEl = document.getElementById('twin-farm-name');
+                if (farmNameEl) farmNameEl.innerText = `${location} Valley Field`;
+
+                const healthBadgeEl = document.getElementById('twin-health-badge');
+                if (healthBadgeEl) {
+                    healthBadgeEl.className = badgeClass;
+                    healthBadgeEl.innerHTML = `<span class="${dotClass}"></span>${riskLevel} ${healthScore}%`;
+                }
+
+                const farmSubtextEl = document.getElementById('twin-farm-subtext');
+                if (farmSubtextEl) {
+                    farmSubtextEl.innerHTML = `<span class="material-symbols-outlined text-sm">location_on</span> ${location}, India • ${size} Acres Total • <span class="text-secondary">Precision Scan Active</span>`;
+                }
+
+                const cropTitleEl = document.getElementById('twin-active-crop-title');
+                if (cropTitleEl) cropTitleEl.innerText = `${crop} Sector`;
+
+                const cropScoreEl = document.getElementById('twin-active-crop-score');
+                if (cropScoreEl) {
+                    cropScoreEl.className = healthScore >= 75 ? 'text-primary font-bold text-headline-md' : (healthScore >= 50 ? 'text-tertiary font-bold text-headline-md' : 'text-error font-bold text-headline-md');
+                    cropScoreEl.innerText = `${healthScore}%`;
+                }
+
+                const cropProgressEl = document.getElementById('twin-active-crop-progress');
+                if (cropProgressEl) {
+                    cropProgressEl.style.width = `${healthScore}%`;
+                    cropProgressEl.className = healthScore >= 75 ? 'bg-primary h-full shadow-[0_0_8px_#22c55e]' : (healthScore >= 50 ? 'bg-tertiary h-full shadow-[0_0_8px_#f59e0b]' : 'bg-error h-full shadow-[0_0_8px_#ef4444]');
+                }
+
+                const cropMoistureEl = document.getElementById('twin-active-crop-moisture');
+                if (cropMoistureEl) {
+                    cropMoistureEl.className = healthScore >= 75 ? 'font-code-sm text-primary' : (healthScore >= 50 ? 'font-code-sm text-tertiary' : 'font-code-sm text-error');
+                    cropMoistureEl.innerText = moistureStr;
+                }
+
+                // Health Score Gauge ring & text
+                const gaugeTextEl = document.getElementById('twin-gauge-text');
+                if (gaugeTextEl) gaugeTextEl.innerText = healthScore;
+
+                const gaugeRingEl = document.getElementById('twin-gauge-ring');
+                if (gaugeRingEl) {
+                    // Circumference is 176
+                    const offset = Math.round(176 - (176 * healthScore / 100));
+                    gaugeRingEl.setAttribute('stroke-dashoffset', offset);
+                    // Reset classes cleanly
+                    gaugeRingEl.setAttribute('class', `transition-all duration-500 ${gaugeColor}`);
+                }
+
+                const gaugeSubtextEl = document.getElementById('twin-gauge-subtext');
+                if (gaugeSubtextEl) {
+                    gaugeSubtextEl.className = `text-xs ${gaugeColor}`;
+                    gaugeSubtextEl.innerText = healthScore >= 75 ? 'Optimal health rating' : (healthScore >= 50 ? 'Calibrations suggested' : 'Action required immediately');
+                }
+
+                // Update AI Insights Alert Box based on risk level
+                const alertBoxEl = document.getElementById('twin-ai-alert-box');
+                const alertIconEl = document.getElementById('twin-ai-alert-icon');
+                const alertTitleEl = document.getElementById('twin-ai-alert-title');
+                const alertDescEl = document.getElementById('twin-ai-alert-desc');
+                const alertBtnEl = document.getElementById('twin-ai-alert-btn');
+
+                if (alertBoxEl) {
+                    // Clear previous listeners to prevent multiple bindings
+                    const newAlertBtn = alertBtnEl.cloneNode(true);
+                    alertBtnEl.parentNode.replaceChild(newAlertBtn, alertBtnEl);
+
+                    if (riskLevel === "HEALTHY") {
+                        alertBoxEl.className = "p-md rounded-lg bg-primary/10 border border-primary/20";
+                        if (alertIconEl) { alertIconEl.className = "material-symbols-outlined text-primary text-md"; alertIconEl.innerText = "check_circle"; }
+                        if (alertTitleEl) { alertTitleEl.className = "text-sm font-bold text-primary"; alertTitleEl.innerText = "OPTIMAL STABILITY"; }
+                        if (alertDescEl) alertDescEl.innerText = "All monitored parameters are in stable range. Crop cellular respiration is active.";
+                        newAlertBtn.className = "text-xs font-bold text-primary underline decoration-2 underline-offset-4 cursor-pointer";
+                        newAlertBtn.innerText = "VIEW DETAILED LOGS";
+                        newAlertBtn.addEventListener('click', () => {
+                            openDetailedTelemetryLogs(crop, moistureStr, healthScore);
+                        });
+                    } else if (riskLevel === "MODERATE RISK") {
+                        alertBoxEl.className = "p-md rounded-lg bg-tertiary/10 border border-tertiary/20";
+                        if (alertIconEl) { alertIconEl.className = "material-symbols-outlined text-tertiary text-md"; alertIconEl.innerText = "warning"; }
+                        if (alertTitleEl) { alertTitleEl.className = "text-sm font-bold text-tertiary"; alertTitleEl.innerText = "STRESS WARNING"; }
+                        if (alertDescEl) alertDescEl.innerText = "Low soil moisture index detected. Calibrate sprinkler frequency or increase shade.";
+                        newAlertBtn.className = "text-xs font-bold text-tertiary underline decoration-2 underline-offset-4 cursor-pointer";
+                        newAlertBtn.innerText = "ADJUST IRRIGATION";
+                        newAlertBtn.addEventListener('click', () => {
+                            if (btnConfigureTwin) btnConfigureTwin.click();
+                        });
+                    } else {
+                        alertBoxEl.className = "p-md rounded-lg bg-error/10 border border-error/20";
+                        if (alertIconEl) { alertIconEl.className = "material-symbols-outlined text-error text-md"; alertIconEl.innerText = "coronavirus"; }
+                        if (alertTitleEl) { alertTitleEl.className = "text-sm font-bold text-error"; alertTitleEl.innerText = "CRITICAL PATHOGEN DETECTED"; }
+                        if (alertDescEl) alertDescEl.innerText = "High thermal heatstress index. Soil saturation at crop roots has hit critical lows.";
+                        newAlertBtn.className = "text-xs font-bold text-error underline decoration-2 underline-offset-4 cursor-pointer";
+                        newAlertBtn.innerText = "EMERGENCY SOIL FLOODING";
+                        newAlertBtn.addEventListener('click', () => {
+                            triggerScanSimulation("INITIATING EMERGENCY SOIL SATURATION SCAN & FLOODING SECTOR...", () => {
+                                localStorage.setItem('user_irrigation', 'Drip Irrigation');
+                                updateDigitalTwinUI(size, location, crop, 'Drip Irrigation');
+                            });
+                        });
+                    }
+                }
+            }
+
+            // Detailed Telemetry Logs Logic
+            const modalDetailedLogs = document.getElementById('modal-detailed-logs');
+            const btnCloseDetailedLogs = document.getElementById('btn-close-detailed-logs');
+            const btnCloseDetailedLogsFooter = document.getElementById('btn-close-detailed-logs-footer');
+            const btnRefreshTelemetry = document.getElementById('btn-refresh-telemetry');
+            const telemetryTableBody = document.getElementById('telemetry-table-body');
+            const telemetryTimestamp = document.getElementById('telemetry-timestamp');
+
+            function openDetailedTelemetryLogs(crop, moisture, healthScore) {
+                if (modalDetailedLogs) {
+                    populateTelemetryTable(crop, moisture, healthScore);
+                    modalDetailedLogs.classList.remove('hidden');
+                }
+            }
+
+            function populateTelemetryTable(crop, moisture, healthScore) {
+                if (!telemetryTableBody) return;
+                
+                const timeStr = new Date().toLocaleTimeString();
+                if (telemetryTimestamp) telemetryTimestamp.innerText = `SYNCED: ${timeStr}`;
+
+                const data = [
+                    { param: "Soil Moisture index", val: moisture, status: "Optimal", color: "text-primary" },
+                    { param: "Leaf Cellular Respiration", val: `${(healthScore * 0.9).toFixed(1)} SPAD`, status: "Active", color: "text-primary" },
+                    { param: "Nitrogen Saturation", val: "94.2 ppm", status: "Excellent", color: "text-primary" },
+                    { param: "Phosphorous Index", val: "88.1 ppm", status: "Optimal", color: "text-primary" },
+                    { param: "Drone Thermal Heat Stress", val: "31.4°C", status: "Normal", color: "text-primary" },
+                    { param: "Radar Sat-Sync Latency", val: "12ms", status: "Excellent", color: "text-secondary" }
+                ];
+
+                telemetryTableBody.innerHTML = data.map(item => `
+                    <tr class="hover:bg-surface-container-high/40 transition-colors">
+                        <td class="p-md font-medium text-on-surface">${item.param}</td>
+                        <td class="p-md font-code-sm ${item.color}">${item.val}</td>
+                        <td class="p-md font-bold uppercase ${item.color}">${item.status}</td>
+                    </tr>
+                `).join('');
+            }
+
+            if (btnCloseDetailedLogs) btnCloseDetailedLogs.addEventListener('click', () => modalDetailedLogs.classList.add('hidden'));
+            if (btnCloseDetailedLogsFooter) btnCloseDetailedLogsFooter.addEventListener('click', () => modalDetailedLogs.classList.add('hidden'));
+            if (btnRefreshTelemetry) {
+                btnRefreshTelemetry.addEventListener('click', () => {
+                    const icon = btnRefreshTelemetry.querySelector('.material-symbols-outlined');
+                    if (icon) icon.classList.add('animate-spin');
+                    setTimeout(() => {
+                        if (icon) icon.classList.remove('animate-spin');
+                        const crop = localStorage.getItem('user_crop') || 'Tomato';
+                        const moisture = document.getElementById('twin-active-crop-moisture').innerText;
+                        const health = parseInt(document.getElementById('twin-gauge-text').innerText) || 92;
+                        populateTelemetryTable(crop, moisture, health);
+                    }, 800);
+                });
+            }
+
+            // Orbital Radar Overlay Simulation helper
+            function triggerScanSimulation(statusText, onComplete) {
+                if (loadingScanOverlay) {
+                    loadingScanOverlay.classList.remove('hidden');
+                    
+                    const statusTextEl = document.getElementById('loading-scan-status');
+                    const progressPercentage = document.getElementById('loading-scan-percentage');
+                    const progressBar = document.getElementById('loading-scan-bar');
+                    
+                    let progress = 0;
+                    if (statusTextEl) statusTextEl.innerText = statusText;
+
+                    const interval = setInterval(() => {
+                        progress += 10;
+                        if (progress <= 100) {
+                            if (progressBar) progressBar.style.width = `${progress}%`;
+                            if (progressPercentage) progressPercentage.innerText = `${progress}% Complete`;
+                        }
+                        
+                        if (progress >= 100) {
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                loadingScanOverlay.classList.add('hidden');
+                                if (onComplete) onComplete();
+                            }, 400);
+                        }
+                    }, 100);
+                }
+            }
+
+            // Bind click handlers to weather impact card and AI scenario cards for deep simulation interactivity
+            // 1. Weather impact card click simulation
+            const weatherCard = document.querySelector('.main-content || main')?.querySelectorAll('.glass-panel')[4] || 
+                                document.querySelectorAll('.glass-panel')[4]; // Hard fallback to indices if needed
+            
+            // Let's identify by content safely: find card with "WEATHER IMPACT" header text
+            let resolvedWeatherCard = null;
+            let resolvedAiScenarioCard = null;
+
+            document.querySelectorAll('.glass-panel').forEach(card => {
+                if (card.innerText.includes('WEATHER IMPACT')) resolvedWeatherCard = card;
+                if (card.innerText.includes('AI SCENARIO')) resolvedAiScenarioCard = card;
+            });
+
+            if (resolvedWeatherCard) {
+                resolvedWeatherCard.addEventListener('click', () => {
+                    triggerScanSimulation("SIMULATING MONSOON DRAINAGE FLOWS...", () => {
+                        const gaugeSub = document.getElementById('twin-gauge-subtext');
+                        if (gaugeSub) {
+                            gaugeSub.className = "text-xs text-primary font-bold animate-pulse";
+                            gaugeSub.innerText = "Drainage optimized! Safe from flooding.";
+                        }
+                        alert("Monsoon drainage simulated! System validated crop survival index at 98.4%.");
+                    });
+                });
+            }
+
+            if (resolvedAiScenarioCard) {
+                resolvedAiScenarioCard.addEventListener('click', () => {
+                    triggerScanSimulation("DEPLOYING AUTOMATED SHADING & IRRIGATION PLAN...", () => {
+                        localStorage.setItem('user_irrigation', 'Drip Irrigation');
+                        localStorage.setItem('user_crop', 'Tomato');
+                        updateDigitalTwinUI('12.4', 'Karnataka', 'Tomato', 'Drip Irrigation');
+                    });
+                });
+            }
+
+            // Initialize UI with saved parameters or defaults on page load
+            async function initFromProfile() {
+                try {
+                    const profile = await getTeravaProfile();
+                    if (profile) {
+                        if (profile.farm_size) localStorage.setItem('user_farm_size', profile.farm_size);
+                        if (profile.state) localStorage.setItem('user_state', profile.state);
+                        if (profile.crops && profile.crops.length > 0) {
+                            localStorage.setItem('user_crop', profile.crops[0].crop_name);
                         }
                     }
-                })
-                .catch(err => console.log("Weather fetch failed:", err));
-        }
-        fetchLiveWeather();
-        // Refresh every 15 minutes
-        setInterval(fetchLiveWeather, 900000);
-
-        // Interactive Modals Triggering
-        const btnSchedule = document.getElementById('btn-schedule-task');
-        const btnLiveFeed = document.getElementById('btn-live-feed');
-        
-        const modalLiveFeed = document.getElementById('modal-live-feed');
-        const modalSchedule = document.getElementById('modal-schedule-task');
-        
-        const btnCloseLiveFeed = document.getElementById('btn-close-live-feed');
-        const btnCloseSchedule = document.getElementById('btn-close-schedule');
-        const btnCancelSchedule = document.getElementById('btn-cancel-schedule');
-        
-        const btnSubmitTask = document.getElementById('btn-submit-task');
-        const scheduleSuccess = document.getElementById('schedule-success-alert');
-
-        if (btnLiveFeed && modalLiveFeed) {
-            btnLiveFeed.addEventListener('click', () => {
-                modalLiveFeed.classList.remove('hidden');
-            });
-        }
-        if (btnCloseLiveFeed) {
-            btnCloseLiveFeed.addEventListener('click', () => {
-                modalLiveFeed.classList.add('hidden');
-            });
-        }
-
-        if (btnSchedule && modalSchedule) {
-            btnSchedule.addEventListener('click', () => {
-                modalSchedule.classList.remove('hidden');
-                if (scheduleSuccess) scheduleSuccess.classList.add('hidden');
-            });
-        }
-        
-        const closeScheduleModal = () => {
-            if (modalSchedule) modalSchedule.classList.add('hidden');
-        };
-        if (btnCloseSchedule) btnCloseSchedule.addEventListener('click', closeScheduleModal);
-        if (btnCancelSchedule) btnCancelSchedule.addEventListener('click', closeScheduleModal);
-
-        if (btnSubmitTask) {
-            btnSubmitTask.addEventListener('click', () => {
-                if (scheduleSuccess) {
-                    scheduleSuccess.classList.remove('hidden');
+                } catch(e) {
+                    console.log("Failed to load twin config from profile:", e);
                 }
-                setTimeout(() => {
-                    closeScheduleModal();
-                }, 2000);
-            });
+
+                const initialSize = localStorage.getItem('user_farm_size') || '12.4';
+                const initialLocation = localStorage.getItem('user_state') || 'Karnataka';
+                const initialCrop = localStorage.getItem('user_crop') || 'Tomato';
+                const initialIrrigation = localStorage.getItem('user_irrigation') || 'Drip Irrigation';
+                updateDigitalTwinUI(initialSize, initialLocation, initialCrop, initialIrrigation);
+            }
+            initFromProfile();
+
+            // Submit Configure Form & trigger AI scan
+            if (btnSubmitConfigure) {
+                btnSubmitConfigure.addEventListener('click', () => {
+                    const size = document.getElementById('twin-input-size').value || '12.4';
+                    const location = document.getElementById('twin-input-location').value || 'Karnataka';
+                    const crop = document.getElementById('twin-input-crop').value;
+                    const irrigation = document.getElementById('twin-input-irrigation').value;
+
+                    closeConfigureModal();
+                    
+                    triggerScanSimulation("INITIALIZING ORBITAL RADAR...", async () => {
+                        // Save to localStorage & IndexedDB fallback
+                        localStorage.setItem('user_farm_size', size);
+                        localStorage.setItem('user_state', location);
+                        localStorage.setItem('user_crop', crop);
+                        localStorage.setItem('user_irrigation', irrigation);
+                        
+                        // Update UI
+                        updateDigitalTwinUI(size, location, crop, irrigation);
+
+                        // Fully persist to IndexedDB and backend Profile API!
+                        try {
+                            const profile = await getTeravaProfile() || {};
+                            profile.farm_size = parseFloat(size) || 12.4;
+                            profile.state = location;
+                            
+                            // Map crops structure
+                            profile.crops = [{
+                                crop_name: crop,
+                                area_hectares: parseFloat(size) || 12.4,
+                                planted_date: new Date().toISOString().split('T')[0]
+                            }];
+                            
+                            // Save to IndexedDB
+                            if (typeof TerravaDB !== 'undefined') {
+                                await TerravaDB.set('profile', 'grower_profile', profile, true);
+                            }
+                            
+                            // Put update to backend
+                            if (typeof terraFetch !== 'undefined') {
+                                await terraFetch('/profile', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        farm_size: profile.farm_size,
+                                        state: profile.state,
+                                        crops: profile.crops
+                                    })
+                                });
+                            }
+                        } catch (err) {
+                            console.error('[TERRAVA] Backend sync failed:', err);
+                        }
+                    });
+                });
+            }
+        }
+
+        // Safe DOM ready execution
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            initializeDigitalTwinUI();
+        } else {
+            document.addEventListener('DOMContentLoaded', initializeDigitalTwinUI);
         }
     </script>
 
@@ -600,7 +1102,7 @@
             <!-- Video Canvas -->
             <div class="relative flex-1 aspect-video bg-black overflow-hidden flex items-center justify-center">
                 <!-- Simulated Video Frame (A premium high-res satellite farm image) -->
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYI3OqX-u9L56SfVCw-sk-Q5Eqeh2xo5DSRJfwxqTrGzmSgfR9wMRPTylmh_EzvKQ3ryxeQ_xR1mSMAbFXRd_9pRkwor2ZYvVzaEKX8teb1J7YTP7b1JmWs9t-q3LdKRK-y-7P71R2Bzl29jDQTbPdGeOIGnQSL4LhUwP2Rz8ZUFLD0XT2TFBg6BFgpkB9kaRpgO7pXdljDqisVXENk54rl6UH9LfqfoGl3Y9YVSqXHRFPZPWTMcH2o3xbQEvWuFulcUzDNSNHlsc" alt="Live Stream" class="w-full h-full object-cover opacity-80 mix-blend-screen scale-105">
+                <img src="../drone_satellite_farm_view.png" alt="Live Stream" class="w-full h-full object-cover opacity-80 mix-blend-screen scale-105">
                 
                 <!-- Scanline / Crosshair Overlay -->
                 <div class="absolute inset-0 border-[40px] border-black/30 pointer-events-none"></div>
@@ -682,6 +1184,181 @@
             <div class="flex justify-end gap-sm pt-md border-t border-outline-variant/10">
                 <button id="btn-cancel-schedule" class="px-md py-sm border border-outline-variant/30 font-bold rounded-lg hover:bg-surface-bright/10 text-body-sm transition-colors">Cancel</button>
                 <button id="btn-submit-task" class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 text-body-sm transition-all">Submit Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Scan Loading Overlay -->
+    <div id="loading-scan-overlay" class="fixed inset-0 z-[20000] hidden bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center p-lg space-y-xl">
+        <!-- Spinning Neon Radar Circle -->
+        <div class="relative w-40 h-40 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-4 border-primary/20 animate-ping opacity-20"></div>
+            <div class="absolute inset-2 rounded-full border-4 border-dashed border-primary/40 animate-[spin_8s_linear_infinite]"></div>
+            <div class="absolute inset-4 rounded-full border-2 border-primary/60 shadow-[0_0_30px_rgba(75,226,119,0.3)] animate-pulse flex items-center justify-center bg-surface-container-high/80">
+                <span class="material-symbols-outlined text-primary text-5xl animate-[bounce_2s_infinite]">hub</span>
+            </div>
+            <!-- Dynamic scanning sweep -->
+            <div class="absolute inset-0 rounded-full border-r-4 border-t-4 border-primary animate-spin"></div>
+        </div>
+        
+        <!-- Loading Texts -->
+        <div class="text-center space-y-sm max-w-md">
+            <h3 class="font-headline-md text-headline-md text-on-surface flex items-center justify-center gap-sm">
+                <span class="material-symbols-outlined text-primary animate-spin">sync</span>
+                Generating Digital Twin...
+            </h3>
+            <p id="loading-scan-status" class="text-body-sm text-primary font-code-sm uppercase tracking-widest">CONNECTING TO SATELLITE ARRAY...</p>
+            
+            <!-- Progress Bar -->
+            <div class="w-72 bg-surface-variant/40 h-2 rounded-full overflow-hidden mx-auto mt-lg border border-outline-variant/10">
+                <div id="loading-scan-bar" class="bg-primary h-full w-[0%] transition-all duration-300 shadow-[0_0_10px_rgba(75,226,119,0.5)]"></div>
+            </div>
+            <p id="loading-scan-percentage" class="text-xs font-bold text-on-surface-variant mt-sm">0% Complete</p>
+        </div>
+    </div>
+
+    <!-- Configure Digital Farm Twin Modal -->
+    <div id="modal-configure-twin" class="fixed inset-0 z-[10000] hidden bg-background/80 backdrop-blur-md flex items-center justify-center p-lg">
+        <div class="glass-panel w-full max-w-lg rounded-2xl overflow-hidden flex flex-col border border-primary/20 shadow-[0_0_50px_rgba(34,197,94,0.15)] p-lg space-y-lg">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-outline-variant/10 pb-md">
+                <h3 class="font-headline-md text-on-surface flex items-center gap-sm">
+                    <span class="material-symbols-outlined text-primary text-xl">hub</span>
+                    Configure TerraTwin™
+                </h3>
+                <button id="btn-close-configure" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors cursor-pointer text-xl">close</button>
+            </div>
+            
+            <!-- Form Content -->
+            <div class="space-y-md">
+                <div class="grid grid-cols-2 gap-md">
+                    <div class="space-y-xs">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Land Size (Acres)</label>
+                        <input id="twin-input-size" type="number" step="0.1" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="e.g. 12.4">
+                    </div>
+                    <div class="space-y-xs">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Location (State)</label>
+                        <input id="twin-input-location" type="text" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="e.g. Karnataka">
+                    </div>
+                </div>
+                
+                <div class="space-y-xs">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Active Crop Type</label>
+                    <select id="twin-input-crop" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                        <option value="Tomato">Tomato (Alpha Sector)</option>
+                        <option value="Sustainable Coffee">Sustainable Coffee (Hillside Block)</option>
+                        <option value="Wheat">Wheat (Central Plains)</option>
+                        <option value="Rice">Rice (Lowland Wetland)</option>
+                        <option value="Cotton">Cotton (Western Fields)</option>
+                    </select>
+                </div>
+                
+                <div class="space-y-xs">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Irrigation Method</label>
+                    <select id="twin-input-irrigation" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-md py-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                        <option value="Drip Irrigation">Smart Drip Irrigation (Eco-Efficient)</option>
+                        <option value="Sprinkler Irrigation">Precision Sprinkler Irrigation</option>
+                        <option value="Manual Irrigation">Manual Watering (High Labor)</option>
+                        <option value="Flood Irrigation">Flood Basin Irrigation (Traditional)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-sm pt-md border-t border-outline-variant/10">
+                <button id="btn-cancel-configure" class="px-md py-sm border border-outline-variant/30 font-bold rounded-lg hover:bg-surface-bright/10 text-body-sm transition-colors">Cancel</button>
+                <button id="btn-submit-configure" class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 text-body-sm transition-all">Simulate & Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Live Telemetry Logs Modal -->
+    <div id="modal-detailed-logs" class="fixed inset-0 z-[10000] hidden bg-background/80 backdrop-blur-md flex items-center justify-center p-lg">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl overflow-hidden flex flex-col border border-primary/20 shadow-[0_0_50px_rgba(34,197,94,0.15)] p-lg space-y-lg">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-outline-variant/10 pb-md">
+                <h3 class="font-headline-md text-on-surface flex items-center gap-sm">
+                    <span class="material-symbols-outlined text-primary text-xl">analytics</span>
+                    Live Telemetry Logs — Sector Twin
+                </h3>
+                <button id="btn-close-detailed-logs" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors cursor-pointer text-xl">close</button>
+            </div>
+            <!-- Telemetry Content -->
+            <div class="space-y-md">
+                <div class="flex justify-between items-center bg-surface-container-high/50 p-sm rounded-lg border border-outline-variant/10 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+                        <span class="font-code-sm text-primary font-bold">ORBITAL RADAR CONTEXT ACTIVE</span>
+                    </div>
+                    <span class="text-on-surface-variant font-code-sm" id="telemetry-timestamp">SYNCED: JUST NOW</span>
+                </div>
+                <div class="overflow-hidden border border-outline-variant/10 rounded-lg">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-surface-container-high text-on-surface-variant uppercase tracking-wider font-bold">
+                                <th class="p-md border-b border-outline-variant/15">Parameter</th>
+                                <th class="p-md border-b border-outline-variant/15">Live Reading</th>
+                                <th class="p-md border-b border-outline-variant/15">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/10 bg-surface-container/30" id="telemetry-table-body">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+            <div class="flex justify-between items-center pt-md border-t border-outline-variant/10">
+                <button id="btn-refresh-telemetry" class="px-md py-sm border border-outline-variant/30 font-bold rounded-lg hover:bg-surface-bright/10 text-body-sm transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">sync</span> Force Recalibration
+                </button>
+                <button id="btn-close-detailed-logs-footer" class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 text-body-sm transition-all">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div id="modal-task-details" class="fixed inset-0 z-[10000] hidden bg-background/80 backdrop-blur-md flex items-center justify-center p-lg">
+        <div class="glass-panel w-full max-w-md rounded-2xl overflow-hidden flex flex-col border border-primary/20 shadow-[0_0_50px_rgba(34,197,94,0.15)] p-lg space-y-lg">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-outline-variant/10 pb-md">
+                <h3 class="font-headline-md text-on-surface flex items-center gap-sm">
+                    <span class="material-symbols-outlined text-primary text-xl">event_upcoming</span>
+                    Ag-OS Task Manifest
+                </h3>
+                <button id="btn-close-task-details" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors cursor-pointer text-xl">close</button>
+            </div>
+            <!-- Details Container -->
+            <div class="space-y-lg text-center p-md bg-surface-container-high/30 rounded-xl border border-outline-variant/10">
+                <div class="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 text-primary shadow-[0_0_20px_rgba(34,197,94,0.1)]">
+                    <span class="material-symbols-outlined text-3xl" id="task-details-icon">precision_manufacturing</span>
+                </div>
+                <div class="space-y-xs">
+                    <h4 class="font-headline-md text-body-lg font-bold" id="task-details-operation">Precision Spraying</h4>
+                    <p class="text-xs text-on-surface-variant uppercase tracking-wider" id="task-details-sector">Sector A-1</p>
+                </div>
+                <div class="grid grid-cols-2 gap-sm pt-md border-t border-outline-variant/10 text-xs font-code-sm text-on-surface">
+                    <div class="p-sm bg-surface-container-lowest/50 rounded border border-outline-variant/10">
+                        <span class="text-on-surface-variant block text-[10px] uppercase font-bold mb-1">DATE</span>
+                        <span id="task-details-date">Nov 12</span>
+                    </div>
+                    <div class="p-sm bg-surface-container-lowest/50 rounded border border-outline-variant/10">
+                        <span class="text-on-surface-variant block text-[10px] uppercase font-bold mb-1">TIME</span>
+                        <span id="task-details-time">08:00 AM</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Actions -->
+            <div class="flex flex-col gap-sm">
+                <button id="btn-execute-task-now" class="w-full py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 text-body-sm transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-md">play_arrow</span> Execute Scheduled Scan Now
+                </button>
+                <div class="flex gap-sm">
+                    <button id="btn-cancel-task" class="flex-1 py-sm border border-error/30 text-error hover:bg-error/10 font-bold rounded-lg text-body-sm transition-colors flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-sm">delete</span> Cancel Task
+                    </button>
+                    <button id="btn-close-task-details-footer" class="flex-1 py-sm border border-outline-variant/30 font-bold rounded-lg hover:bg-surface-bright/10 text-body-sm transition-colors">Dismiss</button>
+                </div>
             </div>
         </div>
     </div>

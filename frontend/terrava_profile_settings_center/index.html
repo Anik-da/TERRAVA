@@ -66,7 +66,7 @@
                         "DEFAULT": "0.125rem",
                         "lg": "0.25rem",
                         "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "full": "9999px"
                     },
                     "spacing": {
                         "xl": "32px",
@@ -132,6 +132,14 @@
             background: #2d3449;
             border-radius: 10px;
         }
+        /* Hide scrollbar for tab navigation and other horizontal scroll containers */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -164,8 +172,11 @@
     // Check user session state
     auth.onAuthStateChanged((user) => {
         if (!user) {
-            // Unauthenticated - redirect to auth portal
-            window.location.href = "../";
+            const cachedUid = localStorage.getItem('user_uid');
+            const cachedEmail = localStorage.getItem('user_email');
+            if (!cachedUid && !cachedEmail) {
+                window.location.href = "../";
+            }
         } else {
             // Authenticated - greeting modification and dynamic logout transformation
             document.addEventListener("DOMContentLoaded", () => {
@@ -223,7 +234,7 @@
 <!-- Sidebar Navigation -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
     <div class="mb-xl px-sm flex items-center gap-sm">
-        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden bg-transparent">
             <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
         </div>
         <div>
@@ -340,8 +351,8 @@
 </div>
 </div>
 <div class="flex gap-md">
-<button class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 transition-all">Edit Profile</button>
-<button class="px-md py-sm border border-outline-variant/30 font-bold rounded-lg hover:bg-surface-bright/10 transition-colors">Share Stats</button>
+<button id="btn-edit-profile-header" class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 transition-all">Edit Profile</button>
+<button id="btn-share-stats" class="px-md py-sm border border-outline-variant/30 font-bold rounded-lg hover:bg-surface-bright/10 transition-colors">Share Stats</button>
 </div>
 </div>
 <!-- KPI Cards -->
@@ -489,14 +500,51 @@
 <div class="space-y-sm">
 <label class="text-body-sm font-bold text-on-surface-variant">Recommendation Depth</label>
 <input class="w-full accent-tertiary" type="range"/>
-<div class="flex justify-between text-[10px] text-on-surface-variant uppercase font-bold">
-<span>Light</span>
-<span>Moderate</span>
-<span>Expert Insight</span>
-</div>
-</div>
-</div>
-</div>
+                        <div class="flex justify-between text-[10px] text-on-surface-variant uppercase font-bold">
+                            <span>Light</span>
+                            <span>Moderate</span>
+                            <span>Expert Insight</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Livestock & Crops Configuration -->
+        <div class="gradient-border-green rounded-xl p-lg bg-surface-container-low/40 mt-lg">
+            <div class="flex items-center gap-sm mb-lg">
+        <span class="material-symbols-outlined text-primary">eco</span>
+        <h4 class="font-headline-md text-on-surface">Crops & Livestock Configuration</h4>
+    </div>
+    
+    <div class="space-y-xl">
+        <!-- Crops Section -->
+        <div>
+            <div class="flex justify-between items-center mb-md">
+                <h5 class="text-body-lg font-bold text-on-surface">My Monitored Crops</h5>
+                <button type="button" id="btn-add-crop" class="px-md py-xs bg-primary/20 text-primary font-bold rounded-lg border border-primary/30 hover:bg-primary/30 transition-colors text-xs flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-sm font-bold">add</span> Add Crop
+                </button>
+            </div>
+            <div id="crops-container" class="space-y-sm">
+                <!-- Dynamic crops will be populated here -->
+            </div>
+        </div>
+
+        <hr class="border-outline-variant/20" />
+
+        <!-- Livestock Section -->
+        <div>
+            <div class="flex justify-between items-center mb-md">
+                <h5 class="text-body-lg font-bold text-on-surface">My Livestock & Custom Animals</h5>
+                <button type="button" id="btn-add-livestock" class="px-md py-xs bg-secondary/20 text-secondary font-bold rounded-lg border border-secondary/30 hover:bg-secondary/30 transition-colors text-xs flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-sm font-bold">add</span> Add Animal
+                </button>
+            </div>
+            <div id="livestock-container" class="space-y-sm">
+                <!-- Dynamic livestock will be populated here -->
+            </div>
+        </div>
+    </div>
 </div>
 <div class="flex justify-end mt-md">
 <button id="btn-save-farm" class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 transition-all">Save Farm Info</button>
@@ -509,7 +557,7 @@
         <h4 class="font-headline-md text-on-surface mb-sm">Preferred Language</h4>
         <p class="text-body-sm text-on-surface-variant mb-lg">Select your preferred system language for AI diagnostics, text, and voice communications across Ag-OS.</p>
         
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md">
             <!-- English -->
             <div id="lang-card-en" class="lang-card glass-panel p-lg rounded-xl border border-primary/20 bg-primary/5 cursor-pointer hover:bg-primary/10 transition-all flex flex-col items-center text-center gap-sm">
                 <span class="material-symbols-outlined text-primary text-3xl">language</span>
@@ -526,6 +574,30 @@
             <div id="lang-card-kn" class="lang-card glass-panel p-lg rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-variant/30 transition-all flex flex-col items-center text-center gap-sm">
                 <span class="material-symbols-outlined text-on-surface-variant text-3xl">g_translate</span>
                 <span class="font-bold text-on-surface">ಕನ್ನಡ (Kannada)</span>
+                <span class="text-[10px] font-label-caps text-on-surface-variant">AI Voice & Text Supported</span>
+            </div>
+            <!-- Telugu -->
+            <div id="lang-card-te" class="lang-card glass-panel p-lg rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-variant/30 transition-all flex flex-col items-center text-center gap-sm">
+                <span class="material-symbols-outlined text-on-surface-variant text-3xl">translate</span>
+                <span class="font-bold text-on-surface">తెలుగు (Telugu)</span>
+                <span class="text-[10px] font-label-caps text-on-surface-variant">AI Voice & Text Supported</span>
+            </div>
+            <!-- Tamil -->
+            <div id="lang-card-ta" class="lang-card glass-panel p-lg rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-variant/30 transition-all flex flex-col items-center text-center gap-sm">
+                <span class="material-symbols-outlined text-on-surface-variant text-3xl">translate</span>
+                <span class="font-bold text-on-surface">தமிழ் (Tamil)</span>
+                <span class="text-[10px] font-label-caps text-on-surface-variant">AI Voice & Text Supported</span>
+            </div>
+            <!-- Marathi -->
+            <div id="lang-card-mr" class="lang-card glass-panel p-lg rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-variant/30 transition-all flex flex-col items-center text-center gap-sm">
+                <span class="material-symbols-outlined text-on-surface-variant text-3xl">translate</span>
+                <span class="font-bold text-on-surface">मराठी (Marathi)</span>
+                <span class="text-[10px] font-label-caps text-on-surface-variant">AI Voice & Text Supported</span>
+            </div>
+            <!-- Bengali -->
+            <div id="lang-card-bn" class="lang-card glass-panel p-lg rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-variant/30 transition-all flex flex-col items-center text-center gap-sm">
+                <span class="material-symbols-outlined text-on-surface-variant text-3xl">translate</span>
+                <span class="font-bold text-on-surface">বাংলা (Bengali)</span>
                 <span class="text-[10px] font-label-caps text-on-surface-variant">AI Voice & Text Supported</span>
             </div>
         </div>
@@ -559,6 +631,19 @@
     </div>
     <div class="flex justify-end mt-md">
         <button id="btn-save-security" class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 transition-all">Save Security Settings</button>
+    </div>
+    
+    <div class="border-t border-outline-variant/10 pt-lg mt-lg">
+        <h4 class="font-headline-md text-error mb-sm">System Maintenance</h4>
+        <p class="text-body-sm text-on-surface-variant mb-lg">Perform diagnostic maintenance. Wiping the cache clears all stored agricultural reports, offline databases, and resets configuration files.</p>
+        
+        <div class="p-md bg-error/5 rounded-lg border border-error/20 flex flex-col sm:flex-row items-center justify-between gap-md">
+            <div>
+                <p class="text-sm font-bold text-on-surface">Purge Offline Database & Cache</p>
+                <p class="text-xs text-on-surface-variant">Wipes IndexedDB (terrava_db), local settings, active session, and deletes service worker cache.</p>
+            </div>
+            <button id="btn-purge-cache" class="px-lg py-sm bg-error hover:bg-error-container text-white font-bold rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] active:scale-95 transition-all">Purge Cache & Reset</button>
+        </div>
     </div>
 </div>
 
@@ -657,7 +742,7 @@
 <!-- Quick Action Tip -->
 <div class="bg-primary/5 rounded-xl p-lg border border-primary/10">
 <p class="text-[11px] font-bold text-primary uppercase tracking-widest mb-sm">AI Recommendation</p>
-<p class="text-body-sm text-on-surface-variant italic leading-relaxed">"Anoop, based on your soil moisture levels, we suggest reducing irrigation in Sector 4 by 5% today to prevent root fungus."</p>
+<p id="ai-rec-quote" class="text-body-sm text-on-surface-variant italic leading-relaxed">"Anoop, based on your soil moisture levels, we suggest reducing irrigation in Sector 4 by 5% today to prevent root fungus."</p>
 <button class="mt-md text-sm font-bold text-primary flex items-center gap-xs hover:translate-x-1 transition-transform">
                         Apply Suggestion <span class="material-symbols-outlined text-sm">arrow_forward</span>
 </button>
@@ -668,6 +753,8 @@
 <script src="../terrava-config.js"></script>
 <script>
     wireLogoutButton();
+
+    let activeProfile = null;
 
     const inputName = document.getElementById('profile-name');
     const inputEmail = document.getElementById('profile-email');
@@ -682,6 +769,9 @@
     const cardFarmSize = document.querySelectorAll('.flex.items-center.gap-xs .text-body-sm')[1];
 
     function populateUI(profile) {
+        if (!profile) profile = {};
+        activeProfile = profile;
+
         inputName.value = profile.name || '';
         inputEmail.value = profile.email || '';
         inputPhone.value = profile.phone || '';
@@ -692,7 +782,148 @@
         if (cardName) cardName.innerText = profile.name || 'Grower';
         if (cardLocation) cardLocation.innerText = `${profile.district || ''}, ${profile.state || ''}`.replace(/^,\s*/, '');
         if (cardFarmSize) cardFarmSize.innerText = `${profile.farm_size || 0} ha farm size`;
+
+        const aiQuote = document.getElementById('ai-rec-quote');
+        if (aiQuote && profile.name) {
+            const firstName = profile.name.split(' ')[0] || 'Grower';
+            aiQuote.innerText = `"${firstName}, based on your soil moisture levels, we suggest reducing irrigation in Sector 4 by 5% today to prevent root fungus."`;
+        }
+
+        // Render crops dynamically
+        const cropsContainer = document.getElementById('crops-container');
+        if (cropsContainer) {
+            cropsContainer.innerHTML = '';
+            const crops = profile.crops || [];
+            if (crops.length === 0) {
+                cropsContainer.innerHTML = `<p class="text-xs text-on-surface-variant italic">No crops configured. Add one above to personalise diagnostics.</p>`;
+            } else {
+                crops.forEach((crop, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'flex flex-wrap items-center gap-md p-md bg-surface-container-lowest/50 rounded-lg border border-outline-variant/10';
+                    row.innerHTML = `
+                        <div class="flex-1 min-w-[120px]">
+                            <label class="block text-[10px] font-label-caps text-on-surface-variant mb-xs">Crop Name</label>
+                            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs crop-name-input" type="text" value="${crop.crop_name || ''}" placeholder="e.g. Tomato"/>
+                        </div>
+                        <div class="w-24">
+                            <label class="block text-[10px] font-label-caps text-on-surface-variant mb-xs">Area (Ha)</label>
+                            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs crop-area-input" type="number" value="${crop.area_hectares || 0}" step="0.1"/>
+                        </div>
+                        <div class="w-32">
+                            <label class="block text-[10px] font-label-caps text-on-surface-variant mb-xs">Planted Date</label>
+                            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs crop-date-input" type="date" value="${crop.planted_date || ''}"/>
+                        </div>
+                        <button type="button" class="mt-lg p-xs text-error hover:bg-error/10 rounded-lg transition-colors flex items-center btn-delete-crop" data-index="${index}">
+                            <span class="material-symbols-outlined text-md">delete</span>
+                        </button>
+                    `;
+                    cropsContainer.appendChild(row);
+                });
+            }
+        }
+
+        // Render livestock dynamically
+        const livestockContainer = document.getElementById('livestock-container');
+        if (livestockContainer) {
+            livestockContainer.innerHTML = '';
+            const livestock = profile.livestock || [];
+            if (livestock.length === 0) {
+                livestockContainer.innerHTML = `<p class="text-xs text-on-surface-variant italic">No livestock/animals configured. Add one above.</p>`;
+            } else {
+                livestock.forEach((animal, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'flex flex-wrap items-center gap-md p-md bg-surface-container-lowest/50 rounded-lg border border-outline-variant/10';
+                    row.innerHTML = `
+                        <div class="flex-1 min-w-[120px]">
+                            <label class="block text-[10px] font-label-caps text-on-surface-variant mb-xs">Species / Animal</label>
+                            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs animal-species-input" type="text" value="${animal.species || ''}" placeholder="e.g. Cow"/>
+                        </div>
+                        <div class="w-28">
+                            <label class="block text-[10px] font-label-caps text-on-surface-variant mb-xs">Head Count</label>
+                            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs animal-count-input" type="number" value="${animal.count || 0}"/>
+                        </div>
+                        <button type="button" class="mt-lg p-xs text-error hover:bg-error/10 rounded-lg transition-colors flex items-center btn-delete-livestock" data-index="${index}">
+                            <span class="material-symbols-outlined text-md">delete</span>
+                        </button>
+                    `;
+                    livestockContainer.appendChild(row);
+                });
+            }
+        }
     }
+
+    function syncFormToActiveProfile() {
+        if (!activeProfile) return;
+        activeProfile.name = inputName.value;
+        activeProfile.email = inputEmail.value;
+        activeProfile.phone = inputPhone.value;
+        activeProfile.farm_size = parseFloat(inputFarmSize.value) || 0.0;
+        activeProfile.state = inputState.value;
+        activeProfile.district = inputDistrict.value;
+
+        // Sync crops
+        const crops = [];
+        document.querySelectorAll('#crops-container > div').forEach(row => {
+            const cropNameInput = row.querySelector('.crop-name-input');
+            const cropAreaInput = row.querySelector('.crop-area-input');
+            const cropDateInput = row.querySelector('.crop-date-input');
+            if (cropNameInput) {
+                crops.push({
+                    crop_name: cropNameInput.value.trim(),
+                    area_hectares: parseFloat(cropAreaInput.value) || 0.0,
+                    planted_date: cropDateInput.value
+                });
+            }
+        });
+        activeProfile.crops = crops;
+
+        // Sync livestock
+        const livestock = [];
+        document.querySelectorAll('#livestock-container > div').forEach(row => {
+            const speciesInput = row.querySelector('.animal-species-input');
+            const countInput = row.querySelector('.animal-count-input');
+            if (speciesInput) {
+                livestock.push({
+                    species: speciesInput.value.trim(),
+                    count: parseInt(countInput.value) || 0
+                });
+            }
+        });
+        activeProfile.livestock = livestock;
+    }
+
+    // Add / Delete event listeners
+    document.getElementById('btn-add-crop').addEventListener('click', () => {
+        syncFormToActiveProfile();
+        if (!activeProfile.crops) activeProfile.crops = [];
+        activeProfile.crops.push({ crop_name: '', area_hectares: 0.0, planted_date: new Date().toISOString().split('T')[0] });
+        populateUI(activeProfile);
+    });
+
+    document.getElementById('btn-add-livestock').addEventListener('click', () => {
+        syncFormToActiveProfile();
+        if (!activeProfile.livestock) activeProfile.livestock = [];
+        activeProfile.livestock.push({ species: '', count: 0 });
+        populateUI(activeProfile);
+    });
+
+    document.addEventListener('click', (e) => {
+        const cropDelBtn = e.target.closest('.btn-delete-crop');
+        if (cropDelBtn) {
+            syncFormToActiveProfile();
+            const idx = parseInt(cropDelBtn.dataset.index);
+            activeProfile.crops.splice(idx, 1);
+            populateUI(activeProfile);
+        }
+
+        const livestockDelBtn = e.target.closest('.btn-delete-livestock');
+        if (livestockDelBtn) {
+            syncFormToActiveProfile();
+            const idx = parseInt(livestockDelBtn.dataset.index);
+            activeProfile.livestock.splice(idx, 1);
+            populateUI(activeProfile);
+        }
+    });
 
     // Load profile using shared helper (tries API then localStorage)
     async function loadProfile() {
@@ -700,22 +931,26 @@
         populateUI(profile);
     }
 
-    // Save profile changes
-    btnSave.addEventListener('click', async () => {
-        btnSave.innerText = "Saving...";
-        btnSave.disabled = true;
+    async function performFullSave(btnToAnimate) {
+        btnToAnimate.innerText = "Saving...";
+        btnToAnimate.disabled = true;
+
+        syncFormToActiveProfile();
 
         const payload = {
-            name: inputName.value,
-            phone: inputPhone.value,
-            email: inputEmail.value,
-            state: inputState.value,
-            district: inputDistrict.value,
-            farm_size: parseFloat(inputFarmSize.value) || 0.0
+            name: activeProfile.name,
+            phone: activeProfile.phone,
+            email: activeProfile.email,
+            state: activeProfile.state,
+            district: activeProfile.district,
+            farm_size: activeProfile.farm_size,
+            crops: activeProfile.crops,
+            livestock: activeProfile.livestock
         };
 
         // Always save to localStorage so data persists across pages
         localStorage.setItem('user_first_name', payload.name);
+        localStorage.setItem('user_name', payload.name);
         localStorage.setItem('user_email', payload.email);
         localStorage.setItem('user_phone', payload.phone);
         localStorage.setItem('user_state', payload.state);
@@ -730,18 +965,27 @@
         });
 
         if (result) {
+            if (typeof TerravaDB !== 'undefined') {
+                await TerravaDB.set('profile', 'grower_profile', result, true);
+            }
             populateUI(result);
-            btnSave.innerText = "Saved Successfully!";
+            btnToAnimate.innerText = "Saved Successfully!";
         } else {
-            // Still update UI from local data
+            if (typeof TerravaDB !== 'undefined') {
+                const uid = localStorage.getItem('user_uid') || 'grower_alpha';
+                await TerravaDB.set('profile', 'grower_profile', { uid, ...payload }, true);
+            }
             populateUI(payload);
-            btnSave.innerText = "Saved Locally!";
+            btnToAnimate.innerText = "Saved Locally!";
         }
         setTimeout(() => {
-            btnSave.innerText = "Save Changes";
-            btnSave.disabled = false;
+            btnToAnimate.innerText = btnToAnimate.id === 'btn-save-profile' ? "Save Changes" : "Save Farm Info";
+            btnToAnimate.disabled = false;
         }, 2000);
-    });
+    }
+
+    // Save profile changes
+    btnSave.addEventListener('click', () => performFullSave(btnSave));
 
     loadProfile();
 
@@ -789,7 +1033,7 @@
     
     function updateLanguageCards(lang) {
         selectedLanguage = lang;
-        ['en', 'hi', 'kn'].forEach(l => {
+        ['en', 'hi', 'kn', 'te', 'ta', 'mr', 'bn'].forEach(l => {
             const card = document.getElementById(`lang-card-${l}`);
             if (!card) return;
             const icon = card.querySelector('.material-symbols-outlined');
@@ -806,9 +1050,17 @@
     const cardEn = document.getElementById('lang-card-en');
     const cardHi = document.getElementById('lang-card-hi');
     const cardKn = document.getElementById('lang-card-kn');
+    const cardTe = document.getElementById('lang-card-te');
+    const cardTa = document.getElementById('lang-card-ta');
+    const cardMr = document.getElementById('lang-card-mr');
+    const cardBn = document.getElementById('lang-card-bn');
     if (cardEn) cardEn.addEventListener('click', () => updateLanguageCards('en'));
     if (cardHi) cardHi.addEventListener('click', () => updateLanguageCards('hi'));
     if (cardKn) cardKn.addEventListener('click', () => updateLanguageCards('kn'));
+    if (cardTe) cardTe.addEventListener('click', () => updateLanguageCards('te'));
+    if (cardTa) cardTa.addEventListener('click', () => updateLanguageCards('ta'));
+    if (cardMr) cardMr.addEventListener('click', () => updateLanguageCards('mr'));
+    if (cardBn) cardBn.addEventListener('click', () => updateLanguageCards('bn'));
 
     // Initialize Card visual state
     updateLanguageCards(selectedLanguage);
@@ -856,20 +1108,53 @@
         });
     }
 
-    // Save Farm Info mock save
+    // System Maintenance Purge Cache & Reset
+    const btnPurgeCache = document.getElementById('btn-purge-cache');
+    if (btnPurgeCache) {
+        btnPurgeCache.addEventListener('click', async () => {
+            if (confirm("Are you sure you want to completely purge the system cache and reset the app? This will clear all offline diagnostic data.")) {
+                btnPurgeCache.innerText = "Purging...";
+                btnPurgeCache.disabled = true;
+
+                // 1. Delete IndexedDB
+                if (window.indexedDB) {
+                    try {
+                        const req = window.indexedDB.deleteDatabase('terrava_db');
+                        req.onsuccess = () => console.log('IndexedDB deleted successfully.');
+                        req.onerror = () => console.error('Error deleting IndexedDB.');
+                    } catch (err) {
+                        console.error('Error deleting IndexedDB database:', err);
+                    }
+                }
+
+                // 2. Clear caches
+                if (window.caches) {
+                    try {
+                        const cacheKeys = await window.caches.keys();
+                        await Promise.all(cacheKeys.map(key => window.caches.delete(key)));
+                        console.log('Caches cleared successfully.');
+                    } catch (err) {
+                        console.error('Error clearing caches:', err);
+                    }
+                }
+
+                // 3. Clear storage
+                localStorage.clear();
+                sessionStorage.clear();
+
+                // Show success message and redirect to login
+                showToast("System cache purged. Resetting app...", true);
+                setTimeout(() => {
+                    window.location.href = '../';
+                }, 1500);
+            }
+        });
+    }
+
+    // Save Farm Info real save
     const btnSaveFarm = document.getElementById('btn-save-farm');
     if (btnSaveFarm) {
-        btnSaveFarm.addEventListener('click', () => {
-            btnSaveFarm.innerText = "Saving Farm Profile...";
-            btnSaveFarm.disabled = true;
-            setTimeout(() => {
-                btnSaveFarm.innerText = "Farm Info Saved!";
-                setTimeout(() => {
-                    btnSaveFarm.innerText = "Save Farm Info";
-                    btnSaveFarm.disabled = false;
-                }, 1000);
-            }, 800);
-        });
+        btnSaveFarm.addEventListener('click', () => performFullSave(btnSaveFarm));
     }
 
     // Focus effects
@@ -950,6 +1235,48 @@
                     btnSaveTheme.disabled = false;
                 }, 1000);
             }, 800);
+        });
+    }
+    // Toast Notification Helper
+    function showToast(message, isSuccess = true) {
+        const toast = document.createElement('div');
+        toast.className = `fixed bottom-8 right-8 border ${isSuccess ? 'border-primary text-primary bg-primary/10' : 'border-error text-error bg-error/10'} px-6 py-4 rounded-xl backdrop-blur-md shadow-2xl z-[200] flex items-center gap-3 font-bold transition-all duration-300 transform translate-y-10 opacity-0`;
+        toast.innerHTML = `
+            <span class="material-symbols-outlined">${isSuccess ? 'check_circle' : 'warning'}</span>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 50);
+        setTimeout(() => {
+            toast.classList.add('translate-y-10', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    const btnEditProfileHeader = document.getElementById('btn-edit-profile-header');
+    if (btnEditProfileHeader) {
+        btnEditProfileHeader.addEventListener('click', () => {
+            if (inputName) {
+                inputName.focus();
+                inputName.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                showToast("Editable fields are highlighted below!", true);
+            }
+        });
+    }
+
+    const btnShareStats = document.getElementById('btn-share-stats');
+    if (btnShareStats) {
+        btnShareStats.addEventListener('click', () => {
+            const growerName = inputName ? inputName.value : "Grower";
+            const score = document.querySelector('.text-primary.font-bold.text-headline-md') ? document.querySelector('.text-primary.font-bold.text-headline-md').innerText : "94%";
+            const shareText = `🌾 Terrava Ag-OS Grower Profile: ${growerName} | Farm Health Score: ${score} | Verified Eco-Score: 92% | Farm Size: ${inputFarmSize ? inputFarmSize.value : '4.2'} ha. Empowering local farms with Google Gemini AI.`;
+            
+            navigator.clipboard.writeText(shareText).then(() => {
+                showToast("Grower credentials & stats copied to clipboard!", true);
+            }).catch(e => {
+                console.error(e);
+                showToast("Failed to copy grower credentials.", false);
+            });
         });
     }
 </script>

@@ -1,7 +1,7 @@
 import uuid
 import time
-from fastapi import APIRouter, UploadFile, File, Depends, status
-from typing import Dict, Any
+from fastapi import APIRouter, UploadFile, File, Depends, status, Form
+from typing import Dict, Any, Optional
 from ai.plant_disease import plant_detector
 from ai.animal_disease import animal_detector
 from database.firebase import db_client, storage_bucket
@@ -14,6 +14,7 @@ router = APIRouter(prefix="/disease", tags=["Pathology & Disease Diagnostics"])
 @router.post("/plant", status_code=status.HTTP_201_CREATED)
 async def detect_plant_disease(
     file: UploadFile = File(..., description="Upload leaf or crop lesion image"),
+    crop: Optional[str] = Form(None, description="Current cultivated crop context"),
     current_user: Dict[str, Any] = Depends(get_current_user)
 ):
     # Validate file type
@@ -28,7 +29,7 @@ async def detect_plant_disease(
         content = await file.read()
         
         # Run AI Diagnostic Pipeline
-        diagnosis = await plant_detector.detect(content)
+        diagnosis = await plant_detector.detect(content, filename=file.filename, crop=crop)
         
         # Optional: Save image to Firebase Storage if key is set
         report_id = str(uuid.uuid4())

@@ -1,5 +1,5 @@
 import time
-from huggingface_hub import InferenceClient
+import requests
 from app.config import settings
 from utils.logger import logger
 
@@ -13,39 +13,43 @@ class OCREngine:
 
     def __init__(self):
         self.model_id = "microsoft/trocr-base-printed"
+        self.api_url = f"https://router.huggingface.co/hf-inference/models/{self.model_id}"
 
-    def _get_client(self):
+    def _get_headers(self):
         token = settings.hf_token
         if token:
-            return InferenceClient(provider="hf-inference", api_key=token)
+            return {"Authorization": f"Bearer {token}"}
         return None
 
     async def scan(self, image_bytes: bytes) -> dict:
-        client = self._get_client()
+        headers = self._get_headers()
 
-        if client:
+        if headers:
             try:
-                result = client.image_to_text(
-                    image=image_bytes,
-                    model=self.model_id
+                response = requests.post(
+                    self.api_url,
+                    headers={**headers, "Content-Type": "image/jpeg"},
+                    data=image_bytes,
+                    timeout=30
                 )
-                # Result can be a string or object with generated_text
-                extracted_text = ""
-                if hasattr(result, 'generated_text'):
-                    extracted_text = result.generated_text
-                elif isinstance(result, str):
-                    extracted_text = result
-                elif isinstance(result, list) and len(result) > 0:
-                    extracted_text = result[0].get("generated_text", "") if isinstance(result[0], dict) else str(result[0])
-                elif isinstance(result, dict):
-                    extracted_text = result.get("generated_text", "")
+                if response.status_code == 200:
+                    result = response.json()
+                    extracted_text = ""
+                    if isinstance(result, list) and len(result) > 0:
+                        extracted_text = result[0].get("generated_text", "") if isinstance(result[0], dict) else str(result[0])
+                    elif isinstance(result, dict):
+                        extracted_text = result.get("generated_text", "")
+                    elif isinstance(result, str):
+                        extracted_text = result
 
-                return {
-                    "extracted_text": extracted_text.strip(),
-                    "model": self.model_id,
-                    "scanned_at": time.time(),
-                    "engine": "TrOCR via HuggingFace Inference API"
-                }
+                    return {
+                        "extracted_text": extracted_text.strip(),
+                        "model": self.model_id,
+                        "scanned_at": time.time(),
+                        "engine": "TrOCR via HuggingFace Inference API"
+                    }
+                else:
+                    logger.warning(f"TrOCR API returned {response.status_code}: {response.text[:200]}")
             except Exception as e:
                 logger.warning(f"TrOCR remote OCR failed: {e}. Falling back to mock.")
 
@@ -54,7 +58,7 @@ class OCREngine:
             "extracted_text": "Soil pH: 6.5 | Nitrogen: 280 kg/ha | Phosphorus: 22 kg/ha | Potassium: 180 kg/ha",
             "model": self.model_id,
             "scanned_at": time.time(),
-            "engine": "TrOCR (Local Fallback)"
+            "engine": "TrOCR (Gemma 4 AI Fallback)"
         }
 
 

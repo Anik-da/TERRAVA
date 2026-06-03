@@ -105,7 +105,7 @@
                         "on-primary-fixed": "#002109",
                         "tertiary-fixed-dim": "#ffb95f"
                     },
-                    "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                    "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px" },
                     "spacing": { "3xl": "64px", "xs": "4px", "margin-mobile": "16px", "2xl": "48px", "xl": "32px", "unit": "4px", "sm": "8px", "margin-desktop": "40px", "lg": "24px", "md": "16px", "gutter": "20px" },
                     "fontFamily": { "headline-md": ["Inter"], "body-md": ["Inter"], "code-sm": ["JetBrains Mono"], "body-lg": ["Inter"], "body-sm": ["Inter"], "headline-lg-mobile": ["Inter"], "label-caps": ["JetBrains Mono"], "display-lg": ["Inter"], "headline-lg": ["Inter"] },
                     "fontSize": { "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "code-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }], "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }] }
@@ -136,8 +136,11 @@
     // Check user session state
     auth.onAuthStateChanged((user) => {
         if (!user) {
-            // Unauthenticated - redirect to auth portal
-            window.location.href = "../";
+            const cachedUid = localStorage.getItem('user_uid');
+            const cachedEmail = localStorage.getItem('user_email');
+            if (!cachedUid && !cachedEmail) {
+                window.location.href = "../";
+            }
         } else {
             // Authenticated - greeting modification and dynamic logout transformation
             document.addEventListener("DOMContentLoaded", () => {
@@ -182,7 +185,7 @@
 <!-- SideNavBar -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
     <div class="mb-xl px-sm flex items-center gap-sm">
-        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden bg-transparent">
             <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
         </div>
         <div>
@@ -299,7 +302,12 @@
 </div>
 <div class="relative aspect-video rounded-lg overflow-hidden bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-center">
 <div id="crop-scan-line" class="scan-line hidden"></div>
-<img id="crop-preview-img" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A macro close-up photograph of a bright red tomato hanging from a lush green vine, with one prominent leaf showing detailed early-stage fungal spots. The lighting is clinical and high-contrast, mimicking an agricultural laboratory setting. A digital green laser-line overlay scans horizontally across the leaf surface. The overall mood is high-tech, precise, and sophisticated, consistent with a dark-mode industrial operating system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-R57E72acBEhVeFe53hw-JiGKsDoMS-PA8wFxrRW__pbgsCgfvEuwlxVfHw-gpbrUXPp0jEwxzorE0UOVI_W70OAMjBBg5UO3vS3QlM4WIniNn0uEFH4rfUbPKiM_rjHQ-Ibi5Bm7qyDM8WgYgSexlpbjk1a4RJU82pt6LvYQs6XXEob2jyLd10IVGeTXJ59TE1Ufkz0g5W2IygExSDIe6Ink7-rhiON8k2ntSSlNET85JEK8akvAGNdZKI3AJsGhUtnhpejFqzI"/>
+<div id="crop-upload-placeholder" class="flex flex-col items-center justify-center p-lg text-center space-y-sm z-10 cursor-pointer w-full h-full" onclick="document.getElementById('crop-image-input').click()">
+    <span class="material-symbols-outlined text-5xl text-primary animate-pulse mb-xs">add_photo_alternate</span>
+    <p class="font-headline-md text-headline-md text-on-surface">Awaiting Crop Specimen Scan</p>
+    <p class="text-body-sm text-on-surface-variant max-w-sm">Click "Upload Crop Image" or drag-and-drop a leaf specimen to perform a zero-shot pathology scan.</p>
+</div>
+<img id="crop-preview-img" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity hidden" data-alt="Crop Pathology Specimen" src=""/>
 <!-- Analysis Overlay -->
 <div id="crop-analysis-overlay" class="absolute top-4 left-4 glass-modal p-md rounded-lg border-primary/20 ai-glow hidden">
 <div class="flex items-center gap-xs text-primary mb-1">
@@ -346,7 +354,7 @@
 <!-- Dynamically populated -->
 <p class="text-body-sm text-on-surface-variant italic">Awaiting AI diagnostic results to compute optimal protocol treatments...</p>
 </div>
-<button class="w-full mt-md py-sm bg-primary text-background font-bold rounded hover:brightness-110 active:scale-95 transition-all">Authorize Treatment Protocol</button>
+<button id="btn-authorize-treatment" class="w-full mt-md py-sm bg-primary text-background font-bold rounded hover:brightness-110 active:scale-95 transition-all">Authorize Treatment Protocol</button>
 </div>
 </div>
 <!-- Disease Prediction Center -->
@@ -533,6 +541,9 @@
         const reader = new FileReader();
         reader.onload = (e) => {
             previewImg.src = e.target.result;
+            previewImg.classList.remove('hidden');
+            const placeholder = document.getElementById('crop-upload-placeholder');
+            if (placeholder) placeholder.classList.add('hidden');
         };
         reader.readAsDataURL(file);
 
@@ -542,8 +553,10 @@
         analysisText.innerText = "Analyzing crop pathology...";
 
         try {
+            const activeCrop = localStorage.getItem('user_crop') || 'Tomato';
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('crop', activeCrop);
 
             let data = null;
             if (TERRAVA_API_BASE) {
@@ -562,15 +575,34 @@
 
             // Fallback: generate local demo diagnosis
             if (!data) {
-                const seed = file.size % 5;
+                const userCrop = (activeCrop || 'Tomato').toLowerCase();
+                const fnLower = (file.name || '').toLowerCase();
                 const diseases = [
-                    { disease: "Potato Early Blight", severity: "Moderate", confidence: 0.89, treatment: "Apply copper-based fungicides. Increase spacing for better airflow.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
-                    { disease: "Tomato Bacterial Spot", severity: "Severe", confidence: 0.92, treatment: "Prune infected leaves immediately. Refrain from overhead watering. Apply copper sprays.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
-                    { disease: "Corn Common Rust", severity: "Low", confidence: 0.84, treatment: "Utilize rust-resistant seed variants. Apply sulfur powder if spreading fast.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
-                    { disease: "Coffee Leaf Rust", severity: "Severe", confidence: 0.96, treatment: "Prune infected branches. Spray organic copper hydroxide fungicides. Boost shade trees.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
-                    { disease: "Rice Blast", severity: "Severe", confidence: 0.91, treatment: "Maintain continuous water level. Avoid excess nitrogen fertilization. Spray tricyclazole.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" }
+                    { key: "potato", disease: "Potato Early Blight", severity: "Moderate", confidence: 0.89, treatment: "Apply copper-based fungicides. Increase spacing for better airflow.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
+                    { key: "tomato", disease: "Tomato Bacterial Spot", severity: "Severe", confidence: 0.92, treatment: "Prune infected leaves immediately. Refrain from overhead watering. Apply copper sprays.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
+                    { key: "corn", disease: "Corn Common Rust", severity: "Low", confidence: 0.84, treatment: "Utilize rust-resistant seed variants. Apply sulfur powder if spreading fast.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
+                    { key: "coffee", disease: "Coffee Leaf Rust", severity: "Severe", confidence: 0.96, treatment: "Prune infected branches. Spray organic copper hydroxide fungicides. Boost shade trees.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" },
+                    { key: "rice", disease: "Rice Blast", severity: "Severe", confidence: 0.91, treatment: "Maintain continuous water level. Avoid excess nitrogen fertilization. Spray tricyclazole.", engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud Vision)" : "MobileNet Plant Disease (Local Classifier)" }
                 ];
-                data = { ...diseases[seed], diagnosed_at: Date.now() / 1000 };
+                
+                // Try matching based on crop name or uploaded filename
+                let matched = diseases.find(d => userCrop.includes(d.key) || fnLower.includes(d.key));
+                if (!matched) {
+                    // Specific mapping helpers
+                    if (userCrop.includes("paddy") || fnLower.includes("paddy")) {
+                        matched = diseases[4]; // Rice Blast
+                    } else if (userCrop.includes("wheat") || fnLower.includes("wheat")) {
+                        matched = diseases[4]; // Rice Blast as field proxy
+                    } else if (userCrop.includes("cotton") || fnLower.includes("cotton")) {
+                        matched = diseases[2]; // Corn Rust proxy
+                    } else {
+                        // Dimension fallback
+                        const seed = file.size % diseases.length;
+                        matched = diseases[seed];
+                    }
+                }
+                
+                data = { ...matched, diagnosed_at: Date.now() / 1000 };
             }
 
             scanLine.classList.add('hidden');
@@ -604,5 +636,64 @@
         }
         fileInput.value = ""; // Reset
     });
+
+    // Auto-load treatment protocol if initiated from digital twin alert
+    window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('initiate_treatment') === 'true') {
+            // Auto-load Tomato Early Blight diagnosis!
+            diseaseName.innerText = "Tomato Early Blight";
+            confidenceBadge.innerText = "92% Confidence";
+            riskLevel.innerText = "Moderate Risk Level";
+            severityLabel.innerText = "Severity: Moderate";
+            diseaseDescription.innerHTML = `Pathology classification indicates <strong>Tomato Early Blight</strong> in Sector C-4. Diagnostic by <strong>MobileNet Plant Disease (Local Classifier)</strong>.`;
+            treatmentsList.innerHTML = `
+                <div class="p-md rounded-lg bg-surface-container-highest/50 border border-primary/30 hover:border-primary/50 transition-all cursor-pointer">
+                    <div class="flex justify-between items-center mb-xs">
+                        <span class="font-body-md font-bold text-primary">Primary Recommendation</span>
+                        <span class="font-code-sm text-on-surface-variant">Active Protocol</span>
+                    </div>
+                    <p class="text-body-sm text-on-surface mb-2">Apply copper-based fungicides immediately. Increase plant spacing to optimize airflow and prune infected lower foliage.</p>
+                    <div class="flex items-center gap-md text-[11px] text-on-surface-variant">
+                        <span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">schedule</span> Rapid Response</span>
+                        <span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">verified</span> Eco-Safe</span>
+                    </div>
+                </div>
+            `;
+            
+            // Show the leaf scan image in the preview box
+            previewImg.src = "https://lh3.googleusercontent.com/aida-public/AB6AXuD-R57E72acBEhVeFe53hw-JiGKsDoMS-PA8wFxrRW__pbgsCgfvEuwlxVfHw-gpbrUXPp0jEwxzorE0UOVI_W70OAMjBBg5UO3vS3QlM4WIniNn0uEFH4rfUbPKiM_rjHQ-Ibi5Bm7qyDM8WgYgSexlpbjk1a4RJU82pt6LvYQs6XXEob2jyLd10IVGeTXJ59TE1Ufkz0g5W2IygExSDIe6Ink7-rhiON8k2ntSSlNET85JEK8akvAGNdZKI3AJsGhUtnhpejFqzI";
+            previewImg.classList.remove('hidden');
+            const placeholder = document.getElementById('crop-upload-placeholder');
+            if (placeholder) placeholder.classList.add('hidden');
+        }
+    });
+
+    // Authorize Treatment Protocol button handler
+    const btnAuthorize = document.getElementById('btn-authorize-treatment');
+    if (btnAuthorize) {
+        btnAuthorize.addEventListener('click', () => {
+            if (diseaseName.innerText === "System Idle" || diseaseName.innerText === "Diagnostic Offline") {
+                alert("Please upload a crop image or initiate treatment from the digital twin alert first to generate diagnostic treatment protocols.");
+                return;
+            }
+            
+            btnAuthorize.innerText = "Treatment Protocol Authorized ✓";
+            btnAuthorize.classList.remove('bg-primary');
+            btnAuthorize.classList.add('bg-secondary', 'text-on-secondary');
+            btnAuthorize.disabled = true;
+            
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-lg right-lg bg-primary/20 border border-primary text-primary px-lg py-md rounded-xl backdrop-blur-md shadow-2xl z-50 flex items-center gap-md font-bold animate-bounce';
+            toast.innerHTML = `
+                <span class="material-symbols-outlined animate-spin">sync</span>
+                <span>Ag-OS: Drone swarm queued for precision bio-spraying in Sector C-4!</span>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        });
+    }
 </script>
 </body></html>

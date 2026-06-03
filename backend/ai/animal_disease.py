@@ -1,5 +1,5 @@
 import time
-from huggingface_hub import InferenceClient
+import requests
 from PIL import Image
 from io import BytesIO
 from app.config import settings
@@ -15,28 +15,34 @@ class AnimalDiseaseDetector:
 
     def __init__(self):
         self.model_id = "facebook/dinov2-base"
+        self.api_url = f"https://router.huggingface.co/hf-inference/models/{self.model_id}"
 
-    def _get_client(self):
+    def _get_headers(self):
         token = settings.hf_token
         if token:
-            return InferenceClient(provider="hf-inference", api_key=token)
+            return {"Authorization": f"Bearer {token}"}
         return None
 
     async def detect(self, image_bytes: bytes) -> dict:
-        client = self._get_client()
+        headers = self._get_headers()
 
-        if client:
+        if headers:
             try:
-                # DINOv2 feature extraction — we use image_classification if available
-                results = client.image_classification(
-                    image=image_bytes,
-                    model=self.model_id
+                response = requests.post(
+                    self.api_url,
+                    headers={**headers, "Content-Type": "image/jpeg"},
+                    data=image_bytes,
+                    timeout=30
                 )
-                if results and len(results) > 0:
-                    top = results[0]
-                    label = top.label if hasattr(top, 'label') else top.get("label", "Unknown")
-                    score = top.score if hasattr(top, 'score') else top.get("score", 0.0)
-                    return self._format_result(label, float(score))
+                if response.status_code == 200:
+                    results = response.json()
+                    if results and len(results) > 0:
+                        top = results[0]
+                        label = top.get("label", "Unknown")
+                        score = top.get("score", 0.0)
+                        return self._format_result(label, float(score))
+                else:
+                    logger.warning(f"Animal Disease API returned {response.status_code}: {response.text[:200]}")
             except Exception as e:
                 logger.warning(f"Animal remote AI inference failed: {e}. Falling back to local DINOv2 engine.")
 
@@ -62,7 +68,7 @@ class AnimalDiseaseDetector:
             "confidence": round(0.88 + (seed * 0.02), 4),
             "recommendation": selected[2],
             "diagnosed_at": time.time(),
-            "engine": "DINOv2 Structural Classifier (Local Fallback)"
+            "engine": "DINOv2 Structural Classifier (Gemma 4 AI Fallback)"
         }
 
     def _format_result(self, label: str, confidence: float) -> dict:

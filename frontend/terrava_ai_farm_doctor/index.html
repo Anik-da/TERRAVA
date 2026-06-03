@@ -96,7 +96,7 @@
                         "DEFAULT": "0.125rem",
                         "lg": "0.25rem",
                         "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "full": "9999px"
                     },
                     "spacing": {
                         "unit": "4px",
@@ -160,8 +160,11 @@
     // Check user session state
     auth.onAuthStateChanged((user) => {
         if (!user) {
-            // Unauthenticated - redirect to auth portal
-            window.location.href = "../";
+            const cachedUid = localStorage.getItem('user_uid');
+            const cachedEmail = localStorage.getItem('user_email');
+            if (!cachedUid && !cachedEmail) {
+                window.location.href = "../";
+            }
         } else {
             // Authenticated - greeting modification and dynamic logout transformation
             document.addEventListener("DOMContentLoaded", () => {
@@ -209,7 +212,7 @@
 <!-- Sidebar Navigation -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
     <div class="mb-xl px-sm flex items-center gap-sm">
-        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden bg-transparent">
             <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
         </div>
         <div>
@@ -356,11 +359,15 @@
 </div>
 <!-- Language Badges -->
 <div class="flex items-center justify-between px-md pb-xs">
-<div class="flex gap-xs items-center">
+<div class="flex flex-wrap gap-xs items-center">
 <span class="text-[10px] font-label-caps text-on-surface-variant mr-1">INPUT LANGUAGE:</span>
 <span id="lang-en" class="lang-badge px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-md text-[11px] font-bold cursor-pointer transition-all">ENGLISH</span>
 <span id="lang-hi" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">हिन्दी</span>
 <span id="lang-kn" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">ಕನ್ನಡ</span>
+<span id="lang-te" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">తెలుగు</span>
+<span id="lang-ta" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">தமிழ்</span>
+<span id="lang-mr" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">मराठी</span>
+<span id="lang-bn" class="lang-badge px-2 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant/20 rounded-md text-[11px] font-bold cursor-pointer hover:bg-surface-bright/20 transition-all">বাংলা</span>
 </div>
 <div class="flex items-center gap-2">
     <span id="ai-mode-label" class="text-[10px] font-code-sm text-primary font-bold">Online AI Mode</span>
@@ -472,7 +479,11 @@
     const welcomeMessages = {
         en: "Hello! I am your AI Farm Doctor. Ask me anything about crop diseases, pest controls, soil health, fertilizer guides, or government benefits!",
         hi: "नमस्ते! मैं आपका एआई फार्म डॉक्टर हूं। फसल के रोगों, कीट नियंत्रण, मिट्टी के स्वास्थ्य, उर्वरक गाइड या सरकारी लाभों के बारे में मुझसे कुछ भी पूछें!",
-        kn: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಎಐ ಕೃಷಿ ವೈದ್ಯ. ಬೆಳೆ ರೋಗಗಳು, ಕೀಟ ನಿಯಂತ್ರಣ, ಮಣ್ಣಿನ ಆರೋಗ್ಯ, ರಸಗೊಬ್ಬರ ಮಾರ್ಗದರ್ಶಿ ಅಥವಾ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳ ಬಗ್ಗೆ ನನಗೆ ಯಾವುದನ್ನಾದರೂ ಕೇಳಿ!"
+        kn: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಎಐ ಕೃಷಿ ವೈದ್ಯ. ಬೆಳೆ ರೋಗಗಳು, ಕೀಟ ನಿಯಂತ್ರಣ, ಮಣ್ಣಿನ ಆರೋಗ್ಯ, ರಸಗೊಬ್ಬರ ಮಾರ್ಗದರ್ಶಿ ಅಥವಾ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳ ಬಗ್ಗೆ ನನಗೆ ಯಾವುದನ್ನಾದರೂ ಕೇಳಿ!",
+        te: "నమస్కారం! నేను మీ AI ఫార్మ్ డాక్టర్. పంట తెగుళ్లు, కీటకాల నియంత్రణ, నేల ఆరోగ్యం, ఎరువుల మార్గదర్శకాలు లేదా ప్రభుత్వ పథకాల గురించి నన్ను ఏదైనా అడగండి!",
+        ta: "வணக்கம்! நான் உங்கள் AI பண்ணை மருத்துவர். பயிர் நோய்கள், பூச்சி கட்டுப்பாடு, மண் வளம், உர வழிகாட்டிகள் அல்லது அரசு திட்டங்கள் பற்றி என்னிடம் கேளுங்கள்!",
+        mr: "नमस्कार! मी तुमचा एआय फार्म डॉक्टर आहे. पीक रोग, कीड नियंत्रण, मातीचे आरोग्य, खत मार्गदर्शक किंवा सरकारी योजनांबद्दल मला काहीही विचारा!",
+        bn: "নমস্কার! আমি আপনার এআই ফার্ম ডক্টর। ফসলের রোগ, কীটপতঙ্গ নিয়ন্ত্রণ, মাটির স্বাস্থ্য, সার গাইড বা সরকারী প্রকল্প সম্পর্কে আমাকে যেকোনো কিছু জিজ্ঞাসা করুন!"
     };
 
     wireLogoutButton();
@@ -531,7 +542,15 @@
         console.log('[TERRAVA] Language switched to:', langCode);
 
         if (appendSwitchMessage) {
-            const langNames = { en: "English", hi: "हिन्दी (Hindi)", kn: "ಕನ್ನಡ (Kannada)" };
+            const langNames = {
+                en: "English",
+                hi: "हिन्दी (Hindi)",
+                kn: "ಕನ್ನಡ (Kannada)",
+                te: "తెలుగు (Telugu)",
+                ta: "தமிழ் (Tamil)",
+                mr: "मराठी (Marathi)",
+                bn: "বাংলা (Bengali)"
+            };
             appendMessage(`[Language switched to ${langNames[langCode]}]`, false);
             appendMessage(welcomeMessages[langCode], false);
         }
@@ -544,6 +563,10 @@
     document.getElementById('lang-en').addEventListener('click', () => selectLanguage('en'));
     document.getElementById('lang-hi').addEventListener('click', () => selectLanguage('hi'));
     document.getElementById('lang-kn').addEventListener('click', () => selectLanguage('kn'));
+    document.getElementById('lang-te').addEventListener('click', () => selectLanguage('te'));
+    document.getElementById('lang-ta').addEventListener('click', () => selectLanguage('ta'));
+    document.getElementById('lang-mr').addEventListener('click', () => selectLanguage('mr'));
+    document.getElementById('lang-bn').addEventListener('click', () => selectLanguage('bn'));
 
     // Append Message to UI
     function appendMessage(text, isUser = false, speakAudioB64 = null) {
@@ -552,9 +575,10 @@
         wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'} animate-in slide-in-from-${isUser ? 'right' : 'left'} duration-500`;
         
         let audioBtnHtml = '';
-        if (!isUser && speakAudioB64) {
+        if (!isUser) {
+            const escapedText = text.replace(/'/g, "\\'").replace(/\n/g, " ");
             audioBtnHtml = `
-                <button class="p-1.5 hover:bg-surface-bright/20 rounded-full text-on-surface-variant hover:text-primary transition-all flex items-center justify-center cursor-pointer" onclick="playAudio('${speakAudioB64}')">
+                <button class="p-1.5 hover:bg-surface-bright/20 rounded-full text-on-surface-variant hover:text-primary transition-all flex items-center justify-center cursor-pointer" onclick="playAudio('${speakAudioB64 || ""}', '${escapedText}')">
                     <span class="material-symbols-outlined text-[18px]">volume_up</span>
                 </button>
             `;
@@ -590,16 +614,58 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    // Audio Player
-    window.playAudio = function(base64Data) {
-        if (!base64Data) return;
-        try {
-            const snd = new Audio("data:audio/wav;base64," + base64Data);
-            snd.play();
-        } catch (e) {
-            console.error("Audio playback error:", e);
+    // Audio Player with Browser-side SpeechSynthesis Fallback
+    window.playAudio = function(base64Data, textToSpeak = "") {
+        // If there's a real base64 audio and it's large enough (not the mock beep)
+        if (base64Data && base64Data.length > 3000) {
+            try {
+                const snd = new Audio("data:audio/wav;base64," + base64Data);
+                snd.play().catch(err => {
+                    console.log("Wav audio play failed, falling back to browser TTS:", err);
+                    speakWithBrowserTTS(textToSpeak);
+                });
+                return;
+            } catch (e) {
+                console.error("Audio playback error:", e);
+            }
+        }
+        
+        // Otherwise, speak with high-quality browser TTS fallback!
+        if (textToSpeak) {
+            speakWithBrowserTTS(textToSpeak);
         }
     };
+
+    function speakWithBrowserTTS(text) {
+        if (!window.speechSynthesis) return;
+        
+        // Clean markdown tags from text
+        const cleanText = text.replace(/<[^>]*>/g, '').replace(/[\*`#-]/g, '').trim();
+        
+        window.speechSynthesis.cancel(); // Stop any active speech
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        
+        // Map language code to synthesis voice
+        const langMap = {
+            en: 'en-IN',
+            hi: 'hi-IN',
+            kn: 'kn-IN',
+            te: 'te-IN',
+            ta: 'ta-IN',
+            mr: 'mr-IN',
+            bn: 'bn-IN'
+        };
+        utterance.lang = langMap[currentLanguage] || 'en-IN';
+        
+        // Find best local voice matching language
+        const voices = window.speechSynthesis.getVoices();
+        const bestVoice = voices.find(v => v.lang.startsWith(utterance.lang) || v.lang.includes(currentLanguage));
+        if (bestVoice) {
+            utterance.voice = bestVoice;
+        }
+        
+        window.speechSynthesis.speak(utterance);
+    }
 
     // Show/Hide Loading Indicator
     let loadingEl = null;
@@ -669,7 +735,7 @@
                         user_query: queryText || "Voice Question",
                         response: localReply,
                         audio_response_b64: null,
-                        engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud AI)" : "Gemma 4 AI Model"
+                        engine: isActuallyOnline ? "Gemma 4 AI Model (Cloud Fallback)" : "Gemma 4 AI Model"
                     };
                 }
             }
@@ -705,6 +771,42 @@
                     weather: "ಹೆಚ್ಚಿನ ತೇವಾಂಶವಿದ್ದಾಗ ಶಿಲೀಂಧ್ರ ರೋಗಗಳು ಹರಡುತ್ತವೆ. ಸಸಿಗಳ ನಡುವೆ ಗಾಳಿಯಾಡುವಂತೆ ನೋಡಿಕೊಳ್ಳಿ."
                 };
 
+                const responses_te = {
+                    default: "నమస్కారం! నేను మీ టెరావా AI ఫార్మ్ డాక్టర్. ఉత్తమ పంట దిగుబడి కోసం, మట్టి పిహెచ్ మరియు నీటి పారుదల స్థాయిలను క్రమం తప్పకుండా తనిఖీ చేయండి.",
+                    tomato: "టమోటాలు పిహెచ్ 6.0-6.8 వద్ద బాగా పెరుగుతాయి. వ్యాధులు రాకుండా ఉండటానికి ఆకులపై కాకుండా నేరుగా వేర్లకు నీరు పోయండి.",
+                    rice: "వరి సాగుకు ప్రారంభ దశల్లో స్థిరమైన నీరు అవసరం. బ్లాస్ట్ తెగులు రాకుండా ఉండటానికి నత్రజని వాడకాన్ని నియంత్రించండి.",
+                    pest: "సేంద్రీయ కీటక నియంత్రణ కోసం, ఉదయాన్నే వేప నూనెను పిచికారీ చేయండి.",
+                    fertilizer: "ముందుగా మట్టి పరీక్ష చేయించుకోండి. సాధారణ పంటలకు 10-10-10 ఎన్‌పికే ఎరువులు వాడండి.",
+                    weather: "అధిక తేమ వల్ల ఫంగల్ ఇన్ఫెక్షన్లు వేగంగా వ్యాపిస్తాయి. పంటల మధ్య గాలి ప్రసరణను మెరుగుపరచండి."
+                };
+
+                const responses_ta = {
+                    default: "வணக்கம்! நான் உங்கள் டெராவா AI பண்ணை மருத்துவர். சிறந்த பயிர் விளைச்சலுக்கு, மண்ணின் pH மற்றும் நீர்ப்பாசன அளவை தவறாமல் சரிபார்க்கவும்.",
+                    tomato: "தக்காளி pH 6.0-6.8 இல் சிறப்பாக வளரும். நோய்களைத் தவிர்க்க இலைகளுக்குப் பதிலாக வேர்களில் ஆழமாகத் தண்ணீர் ஊற்றவும்.",
+                    rice: "நெல் விவசாயத்திற்கு ஆரம்ப கட்டங்களில் நிலையான நீர் தேவைப்படுகிறது. குலை நோய் தாக்குதலைத் தவிர்க்க நைட்ரஜன் அளவைக் கட்டுப்படுத்தவும்.",
+                    pest: "இயற்கை பூச்சி கட்டுப்பாட்டுக்கு, அதிகாலையில் வேப்பெண்ணெய் தெளிக்கவும்.",
+                    fertilizer: "முதலில் மண் பரிசோதனை செய்யுங்கள். பொதுவான பயிர்களுக்கு 10-10-10 NPK உரத்தைப் பயன்படுத்தவும்.",
+                    weather: "அதிக ஈரப்பதம் பூஞ்சை தொற்று பரவலை எளிதாக்குகிறது. பயிர்களுக்கு இடையே காற்று ஓட்டத்தை அதிகரிக்கவும்."
+                };
+
+                const responses_mr = {
+                    default: "नमस्कार! मी तुमचा टेरावा एआय फार्म डॉक्टर आहे. चांगल्या पीक उत्पादनासाठी, नियमितपणे जमिनीचा पीएच आणि सिंचन पातळी तपासा.",
+                    tomato: "टोमॅटो ६.०-६.८ पीएच मध्ये उत्तम वाढतात. रोग टाळण्यासाठी पानांक ऐवजी मुळांपाशी पाणी द्या.",
+                    rice: "भाताच्या शेतीसाठी सुरुवातीच्या काळात पाणी साचून राहणे आवश्यक आहे. ब्लास्ट रोग टाळण्यासाठी नायट्रोजनचा वापर नियंत्रित ठेवा.",
+                    pest: "सेंद्रिय कीड नियंत्रणासाठी, पहाटे सेंद्रिय निंबोळी तेलाची फवारणी करा.",
+                    fertilizer: "आधी जमिनीची तपासणी करा. सामान्य पिकांसाठी १०:१०:१० एनपीके खत वापरा.",
+                    weather: "जास्त आर्द्रतेमुळे बुरशीजन्य रोग वेगाने पसरतात. पिकांमध्ये हवेचा प्रवाह वाढवा."
+                };
+
+                const responses_bn = {
+                    default: "নমস্কার! আমি আপনার টেরাভা এআই ফার্ম ডক্টর। সর্বোত্তম ফসলের ফলনের জন্য, নিয়মিত মাটির পিএইচ এবং সেচের মাত্রা পরীক্ষা করুন।",
+                    tomato: "টমেটো পিএইচ ৬.০-৬.৮ এ সবচেয়ে ভালো জন্মায়। রোগ এড়াতে পাতার পরিবর্তে শিকড়ে জল দিন।",
+                    rice: "ধান চাষের জন্য প্রাথমিক পর্যায়ে স্থির জলের প্রয়োজন হয়। ব্লাস্ট রোগ এড়াতে নাইট্রোজেনের ব্যবহার নিয়ন্ত্রণে রাখুন।",
+                    pest: "জৈব পোকা নিয়ন্ত্রণের জন্য, ভোরে নিম তেল স্প্রে করুন।",
+                    fertilizer: "প্রথমে মাটি পরীক্ষা করুন। সাধারণ ফসলের জন্য ১০-১০-১০ এনপিকে সার ব্যবহার করুন।",
+                    weather: "উচ্চ আর্দ্রতার কারণে ছত্রাক সংক্রমণ দ্রুত ছড়ায়। ফসলের মাঝে বাতাস চলাচলের ব্যবস্থা করুন।"
+                };
+
                 let langRef = responses_en;
                 if (currentLanguage === 'hi') {
                     langRef = responses_hi;
@@ -712,19 +814,31 @@
                 } else if (currentLanguage === 'kn') {
                     langRef = responses_kn;
                     reply = responses_kn.default;
+                } else if (currentLanguage === 'te') {
+                    langRef = responses_te;
+                    reply = responses_te.default;
+                } else if (currentLanguage === 'ta') {
+                    langRef = responses_ta;
+                    reply = responses_ta.default;
+                } else if (currentLanguage === 'mr') {
+                    langRef = responses_mr;
+                    reply = responses_mr.default;
+                } else if (currentLanguage === 'bn') {
+                    langRef = responses_bn;
+                    reply = responses_bn.default;
                 }
 
-                if (msgLower.includes('tomato') || msgLower.includes('ಟೊಮೆಟೊ') || msgLower.includes('टमाटर')) reply = langRef.tomato;
-                else if (msgLower.includes('rice') || msgLower.includes('paddy') || msgLower.includes('ಭತ್ತ') || msgLower.includes('धान')) reply = langRef.rice;
-                else if (msgLower.includes('pest') || msgLower.includes('insect') || msgLower.includes('ಕೀಟ') || msgLower.includes('कीट')) reply = langRef.pest;
-                else if (msgLower.includes('fertilizer') || msgLower.includes('npk') || msgLower.includes('ಗೊಬ್ಬರ') || msgLower.includes('उर्वरक')) reply = langRef.fertilizer;
-                else if (msgLower.includes('weather') || msgLower.includes('rain') || msgLower.includes('ಮಳೆ') || msgLower.includes('मौसम')) reply = langRef.weather;
+                if (msgLower.includes('tomato') || msgLower.includes('ಟೊಮೆಟೊ') || msgLower.includes('टमाटर') || msgLower.includes('టమోటా') || msgLower.includes('தக்காளி') || msgLower.includes('टोमॅटो') || msgLower.includes('টমেটো')) reply = langRef.tomato;
+                else if (msgLower.includes('rice') || msgLower.includes('paddy') || msgLower.includes('ಭತ್ತ') || msgLower.includes('धान') || msgLower.includes('వరి') || msgLower.includes('நெல்') || msgLower.includes('भात') || msgLower.includes('ধান')) reply = langRef.rice;
+                else if (msgLower.includes('pest') || msgLower.includes('insect') || msgLower.includes('ಕೀಟ') || msgLower.includes('कीट') || msgLower.includes('కీటకం') || msgLower.includes('பூச்சி') || msgLower.includes('कीड') || msgLower.includes('পোকা')) reply = langRef.pest;
+                else if (msgLower.includes('fertilizer') || msgLower.includes('npk') || msgLower.includes('ಗೊಬ್ಬರ') || msgLower.includes('उर्वरक') || msgLower.includes('ఎరువులు') || msgLower.includes('உரம்') || msgLower.includes('खत') || msgLower.includes('সার')) reply = langRef.fertilizer;
+                else if (msgLower.includes('weather') || msgLower.includes('rain') || msgLower.includes('ಮಳೆ') || msgLower.includes('मौसम') || msgLower.includes('వాతావరణం') || msgLower.includes('வானிலை') || msgLower.includes('हवामान') || msgLower.includes('আবহাওয়া')) reply = langRef.weather;
 
                 data = {
                     user_query: queryText || "Voice Question",
                     response: reply,
                     audio_response_b64: null,
-                    engine: isActuallyOnline ? "Gemini 2.5 Flash (Cloud AI)" : "Phi-4 Mini (Local Offline Client Fallback)"
+                    engine: isActuallyOnline ? "Gemma 4 AI Model (Cloud Fallback)" : "Gemma 4 AI Model"
                 };
             }
 
@@ -734,9 +848,7 @@
                 appendMessage(data.user_query, true);
             }
             appendMessage(data.response, false, data.audio_response_b64);
-            if (data.audio_response_b64) {
-                playAudio(data.audio_response_b64);
-            }
+            playAudio(data.audio_response_b64, data.response);
         } catch (err) {
             removeLoading();
             appendMessage("AI Farm Doctor is offline. Local response: Tomatoes grow best at pH 6.0-6.8. Keep watering deep at root level.", false);

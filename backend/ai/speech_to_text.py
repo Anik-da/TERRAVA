@@ -1,4 +1,4 @@
-from huggingface_hub import InferenceClient
+import requests
 from app.config import settings
 from utils.logger import logger
 
@@ -11,29 +11,33 @@ class SpeechToText:
 
     def __init__(self):
         self.model_id = "openai/whisper-large-v3-turbo"
+        self.api_url = f"https://router.huggingface.co/hf-inference/models/{self.model_id}"
 
-    def _get_client(self):
+    def _get_headers(self):
         token = settings.hf_token
         if token:
-            return InferenceClient(provider="hf-inference", api_key=token)
+            return {"Authorization": f"Bearer {token}"}
         return None
 
     async def transcribe(self, audio_bytes: bytes) -> str:
-        client = self._get_client()
+        headers = self._get_headers()
 
-        if client:
+        if headers:
             try:
-                result = client.automatic_speech_recognition(
-                    audio=audio_bytes,
-                    model=self.model_id
+                response = requests.post(
+                    self.api_url,
+                    headers={**headers, "Content-Type": "audio/wav"},
+                    data=audio_bytes,
+                    timeout=30
                 )
-                # Result can be a string or an object with .text attribute
-                if hasattr(result, 'text'):
-                    return result.text
-                elif isinstance(result, dict):
-                    return result.get("text", "")
-                elif isinstance(result, str):
-                    return result
+                if response.status_code == 200:
+                    result = response.json()
+                    if isinstance(result, dict):
+                        return result.get("text", "")
+                    elif isinstance(result, str):
+                        return result
+                else:
+                    logger.warning(f"Whisper STT API returned {response.status_code}: {response.text[:200]}")
             except Exception as e:
                 logger.warning(f"Whisper STT remote inference failed: {e}. Falling back to default.")
 

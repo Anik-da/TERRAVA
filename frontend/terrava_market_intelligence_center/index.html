@@ -90,7 +90,7 @@
                         "DEFAULT": "0.125rem",
                         "lg": "0.25rem",
                         "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "full": "9999px"
                     },
                     "spacing": {
                         "lg": "24px",
@@ -139,8 +139,11 @@
     // Check user session state
     auth.onAuthStateChanged((user) => {
         if (!user) {
-            // Unauthenticated - redirect to auth portal
-            window.location.href = "../";
+            const cachedUid = localStorage.getItem('user_uid');
+            const cachedEmail = localStorage.getItem('user_email');
+            if (!cachedUid && !cachedEmail) {
+                window.location.href = "../";
+            }
         } else {
             // Authenticated - greeting modification and dynamic logout transformation
             document.addEventListener("DOMContentLoaded", () => {
@@ -185,7 +188,7 @@
 <!-- Left Sidebar -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
     <div class="mb-xl px-sm flex items-center gap-sm">
-        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden bg-transparent">
             <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
         </div>
         <div>
@@ -405,29 +408,31 @@
 <div class="space-y-md">
 <div>
 <label class="text-label-caps text-[10px] text-on-surface-variant block mb-1">SELECTED CROP</label>
-<select class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary">
-<option>Tomato (Hybrid)</option>
-<option>Onion (Red)</option>
-<option>Rice (Basmati)</option>
+<select id="market-crop-select" class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary">
+<option value="Tomato">Tomato (Hybrid)</option>
+<option value="Onion">Onion (Red)</option>
+<option value="Rice">Rice (Basmati)</option>
+<option value="Wheat">Wheat (Rabi)</option>
+<option value="Sustainable Coffee">Sustainable Coffee</option>
 </select>
 </div>
 <div class="grid grid-cols-2 gap-md">
 <div>
 <label class="text-label-caps text-[10px] text-on-surface-variant block mb-1">EST. YIELD (TONS)</label>
-<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary" type="number" value="10"/>
+<input id="market-yield-input" class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary" type="number" value="10"/>
 </div>
 <div>
 <label class="text-label-caps text-[10px] text-on-surface-variant block mb-1">TARGET ROI (%)</label>
-<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary" type="number" value="20"/>
+<input id="market-target-roi" class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-md py-2 outline-none focus:border-primary" type="number" value="20"/>
 </div>
 </div>
 <div class="pt-md border-t border-outline-variant/20">
 <div class="flex justify-between items-center mb-1">
 <span class="text-body-sm text-on-surface-variant">Real-time ROI Projection</span>
-<span class="text-primary font-bold">24.8%</span>
+<span id="market-roi-projection-text" class="text-primary font-bold">24.8%</span>
 </div>
 <div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
-<div class="bg-primary h-full" style="width: 24.8%;"></div>
+<div id="market-roi-bar" class="bg-primary h-full transition-all duration-500 shadow-[0_0_8px_#22c55e]" style="width: 24.8%;"></div>
 </div>
 </div>
 </div>
@@ -503,7 +508,7 @@
 <span class="material-symbols-outlined text-primary" data-icon="smart_toy">smart_toy</span>
 <h4 class="font-bold">AI Market Advisor</h4>
 </div>
-<div class="space-y-md">
+<div id="market-ai-advisor-container" class="space-y-md">
 <div class="bg-surface-container-low p-md rounded border-l-2 border-primary group hover:bg-surface-container-high transition-colors">
 <p class="text-headline-md font-bold text-primary mb-1">Sell Tomatoes now</p>
 <p class="text-body-sm text-on-surface-variant leading-tight">Prices in the Pune market cluster have peaked. Liquidity is high for the next 48 hours.</p>
@@ -578,9 +583,9 @@
 </div>
 </main>
 <!-- Floating Action for Quick Optimization (Contextual) -->
-<button class="fixed bottom-lg right-lg bg-primary text-on-primary p-lg rounded-full shadow-2xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all z-50">
+<button id="btn-run-simulation" class="fixed bottom-lg right-lg bg-primary text-on-primary p-lg rounded-full shadow-2xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all z-50">
 <span class="material-symbols-outlined" data-icon="bolt">bolt</span>
-<span class="font-bold">Run AI Simulation</span>
+<span id="btn-run-simulation-text" class="font-bold">Run AI Simulation</span>
 </button>
 <script>
         // Micro-interactions and hover effects
@@ -595,13 +600,115 @@
             });
         });
 
+        // Dynamic Market Advisor & Simulator Logic
+        const cropSelect = document.getElementById('market-crop-select');
+        const yieldInput = document.getElementById('market-yield-input');
+        const targetRoiInput = document.getElementById('market-target-roi');
+        const roiText = document.getElementById('market-roi-projection-text');
+        const roiBar = document.getElementById('market-roi-bar');
+        const aiAdvisorContainer = document.getElementById('market-ai-advisor-container');
+        const btnRunSimulation = document.getElementById('btn-run-simulation');
+        const btnSimulationText = document.getElementById('btn-run-simulation-text');
+
+        async function executeMarketSimulation() {
+            if (!cropSelect) return;
+            const crop = cropSelect.value;
+            const yieldVal = parseFloat(yieldInput ? yieldInput.value : '10');
+            const targetRoi = parseFloat(targetRoiInput ? targetRoiInput.value : '20');
+
+            if (btnSimulationText) btnSimulationText.innerText = "Running AI Analysis...";
+            if (btnRunSimulation) btnRunSimulation.classList.add('animate-pulse');
+
+            try {
+                // Call dynamic backend endpoints
+                const data = await terraFetch(`/market-prices/forecast?crop=${encodeURIComponent(crop)}`);
+                if (data) {
+                    // Update Profit Simulator with real margins
+                    const estProfit = data.estimated_profit_inr || 24000;
+                    const revenue = data.estimated_revenue_inr || 40000;
+                    const profitPercentage = ((estProfit / revenue) * 100).toFixed(1);
+
+                    if (roiText) roiText.innerText = profitPercentage + "%";
+                    if (roiBar) {
+                        roiBar.style.width = Math.min(parseFloat(profitPercentage), 100) + "%";
+                        if (parseFloat(profitPercentage) >= targetRoi) {
+                            roiBar.className = "bg-primary h-full transition-all duration-500 shadow-[0_0_8px_#22c55e]";
+                        } else {
+                            roiBar.className = "bg-tertiary h-full transition-all duration-500 shadow-[0_0_8px_#f59e0b]";
+                        }
+                    }
+
+                    // Update AI Market Advisor suggestions in real-time
+                    if (aiAdvisorContainer && data.ai_advisory) {
+                        aiAdvisorContainer.innerHTML = '';
+                        data.ai_advisory.forEach(tip => {
+                            let borderClass = 'border-on-surface-variant';
+                            let textClass = 'text-on-surface-variant';
+                            if (tip.type === 'primary') {
+                                borderClass = 'border-primary';
+                                textClass = 'text-primary';
+                            } else if (tip.type === 'tertiary') {
+                                borderClass = 'border-tertiary';
+                                textClass = 'text-tertiary';
+                            }
+
+                            const card = document.createElement('div');
+                            card.className = `bg-surface-container-low p-md rounded border-l-2 ${borderClass} group hover:bg-surface-container-high transition-colors`;
+                            card.innerHTML = `
+                                <p class="text-headline-md font-bold ${textClass} mb-1">${tip.title}</p>
+                                <p class="text-body-sm text-on-surface-variant leading-tight">${tip.description}</p>
+                            `;
+                            aiAdvisorContainer.appendChild(card);
+                        });
+                    }
+
+                    // Update Main Price Ticker
+                    const currentPriceText = document.querySelector('text[y="150"]');
+                    if (currentPriceText && data.current_market_price_inr) {
+                        currentPriceText.textContent = `CURRENT: ₹${(data.current_market_price_inr / 100).toFixed(2)}/KG`;
+                    }
+                    const forecastPriceText = document.querySelector('text[y="90"]');
+                    if (forecastPriceText && data.forecasted_market_price_inr) {
+                        forecastPriceText.textContent = `AI FORECAST: ₹${(data.forecasted_market_price_inr / 100).toFixed(2)}/KG`;
+                    }
+                    
+                    // Update Chart title
+                    const chartTitle = document.querySelector('.glass-panel h4');
+                    if (chartTitle) chartTitle.innerText = `${crop} Price Forecast Center`;
+                }
+            } catch(e) {
+                console.error("Simulation failed:", e);
+            } finally {
+                if (btnSimulationText) btnSimulationText.innerText = "Run AI Simulation";
+                if (btnRunSimulation) btnRunSimulation.classList.remove('animate-pulse');
+            }
+        }
+
+        if (btnRunSimulation) {
+            btnRunSimulation.addEventListener('click', executeMarketSimulation);
+        }
+        if (cropSelect) {
+            cropSelect.addEventListener('change', executeMarketSimulation);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedCrop = localStorage.getItem('user_crop') || 'Tomato';
+            if (cropSelect) {
+                cropSelect.value = savedCrop;
+            }
+            setTimeout(executeMarketSimulation, 500);
+        });
+
         // Simple Ticker Animation for live statuses
         const updateMarketIndices = () => {
             const indices = document.querySelectorAll('.font-mono');
             indices.forEach(el => {
                 const currentVal = parseFloat(el.innerText);
-                const variance = (Math.random() - 0.5) * 0.1;
-                el.innerText = (currentVal + variance).toFixed(2);
+                if (!isNaN(currentVal)) {
+                    const variance = (Math.random() - 0.5) * 0.1;
+                    el.innerText = (currentVal + variance).toFixed(2);
+                }
             });
         }
         setInterval(updateMarketIndices, 3000);

@@ -45,12 +45,21 @@ async def chat_with_farm_doctor(
         )
 
         # Phase 3: Synthesize reply back to speech (Text To Speech)
-        # Convert language ISO standard if needed (e.g., en -> eng, hi -> hin, kn -> kan)
+        # Convert language ISO standard if needed (e.g., en -> eng, hi -> hin, kn -> kan, te -> tel, ta -> tam, mr -> mar, bn -> ben)
         tts_lang = "eng"
-        if lang.lower() in ["hi", "hindi"]:
+        lang_lower = lang.lower()
+        if lang_lower in ["hi", "hindi"]:
             tts_lang = "hin"
-        elif lang.lower() in ["kn", "kannada"]:
+        elif lang_lower in ["kn", "kannada"]:
             tts_lang = "kan"
+        elif lang_lower in ["te", "telugu"]:
+            tts_lang = "tel"
+        elif lang_lower in ["ta", "tamil"]:
+            tts_lang = "tam"
+        elif lang_lower in ["mr", "marathi"]:
+            tts_lang = "mar"
+        elif lang_lower in ["bn", "bengali"]:
+            tts_lang = "ben"
             
         speech_bytes = await text_to_speech.synthesize(doctor_reply["response"], lang=tts_lang)
         base64_audio = base64.b64encode(speech_bytes).decode("utf-8")

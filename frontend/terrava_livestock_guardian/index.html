@@ -96,7 +96,7 @@
                 "DEFAULT": "0.125rem",
                 "lg": "0.25rem",
                 "xl": "0.5rem",
-                "full": "0.75rem"
+                "full": "9999px"
               },
               "spacing": {
                 "xl": "32px",
@@ -160,8 +160,11 @@
     // Check user session state
     auth.onAuthStateChanged((user) => {
         if (!user) {
-            // Unauthenticated - redirect to auth portal
-            window.location.href = "../";
+            const cachedUid = localStorage.getItem('user_uid');
+            const cachedEmail = localStorage.getItem('user_email');
+            if (!cachedUid && !cachedEmail) {
+                window.location.href = "../";
+            }
         } else {
             // Authenticated - greeting modification and dynamic logout transformation
             document.addEventListener("DOMContentLoaded", () => {
@@ -206,7 +209,7 @@
 <!-- Sidebar -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
     <div class="mb-xl px-sm flex items-center gap-sm">
-        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden bg-transparent">
             <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
         </div>
         <div>
@@ -296,129 +299,18 @@
 <!-- Main Content -->
 <main class="ml-64 mt-16 p-margin-desktop mr-[320px]">
 <!-- Header Section -->
-<header class="mb-xl">
-<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Livestock Guardian</h2>
-<p class="text-body-lg text-on-surface-variant">Monitor and protect livestock health using AI.</p>
+<header class="mb-xl flex justify-between items-center">
+    <div>
+        <h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Livestock Guardian</h2>
+        <p class="text-body-lg text-on-surface-variant">Monitor and protect livestock health using AI.</p>
+    </div>
+    <button id="btn-configure-livestock" class="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 px-lg py-md rounded-xl font-bold flex items-center gap-sm transition-all haptic-hover">
+        <span class="material-symbols-outlined text-sm">settings</span> Manage Livestock
+    </button>
 </header>
 <!-- Section 1: Livestock Overview -->
-<section class="grid grid-cols-5 gap-gutter mb-xl">
-<!-- Animal Card Component -->
-<div class="glass-panel rounded-xl p-md flex flex-col items-center text-center hover:bg-surface-container-high transition-colors cursor-pointer group">
-<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-sm group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-primary">pets</span>
-</div>
-<p class="font-bold text-on-surface">Cow</p>
-<div class="my-md relative inline-flex">
-<svg class="w-16 h-16 transform -rotate-90">
-<circle class="text-outline-variant/20" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
-<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="14" stroke-width="4"></circle>
-</svg>
-<span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">92%</span>
-</div>
-<div class="grid grid-cols-2 gap-xs w-full text-[10px]">
-<div class="bg-surface/40 p-xs rounded">
-<p class="text-on-surface-variant">Total</p>
-<p class="font-bold">1,240</p>
-</div>
-<div class="bg-error/10 p-xs rounded">
-<p class="text-error">At Risk</p>
-<p class="font-bold text-error">12</p>
-</div>
-</div>
-</div>
-<!-- Repeat for other animals -->
-<div class="glass-panel rounded-xl p-md flex flex-col items-center text-center hover:bg-surface-container-high transition-colors cursor-pointer group">
-<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-sm group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-primary">cruelty_free</span>
-</div>
-<p class="font-bold text-on-surface">Goat</p>
-<div class="my-md relative inline-flex">
-<svg class="w-16 h-16 transform -rotate-90">
-<circle class="text-outline-variant/20" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
-<circle class="text-secondary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="35" stroke-width="4"></circle>
-</svg>
-<span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">80%</span>
-</div>
-<div class="grid grid-cols-2 gap-xs w-full text-[10px]">
-<div class="bg-surface/40 p-xs rounded">
-<p class="text-on-surface-variant">Total</p>
-<p class="font-bold">450</p>
-</div>
-<div class="bg-error/10 p-xs rounded">
-<p class="text-error">At Risk</p>
-<p class="font-bold text-error">4</p>
-</div>
-</div>
-</div>
-<div class="glass-panel rounded-xl p-md flex flex-col items-center text-center hover:bg-surface-container-high transition-colors cursor-pointer group">
-<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-sm group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-primary">water_drop</span>
-</div>
-<p class="font-bold text-on-surface">Buffalo</p>
-<div class="my-md relative inline-flex">
-<svg class="w-16 h-16 transform -rotate-90">
-<circle class="text-outline-variant/20" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
-<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="8" stroke-width="4"></circle>
-</svg>
-<span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">95%</span>
-</div>
-<div class="grid grid-cols-2 gap-xs w-full text-[10px]">
-<div class="bg-surface/40 p-xs rounded">
-<p class="text-on-surface-variant">Total</p>
-<p class="font-bold">320</p>
-</div>
-<div class="bg-error/10 p-xs rounded">
-<p class="text-error">At Risk</p>
-<p class="font-bold text-error">1</p>
-</div>
-</div>
-</div>
-<div class="glass-panel rounded-xl p-md flex flex-col items-center text-center hover:bg-surface-container-high transition-colors cursor-pointer group">
-<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-sm group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-primary">landscape</span>
-</div>
-<p class="font-bold text-on-surface">Sheep</p>
-<div class="my-md relative inline-flex">
-<svg class="w-16 h-16 transform -rotate-90">
-<circle class="text-outline-variant/20" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
-<circle class="text-tertiary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="60" stroke-width="4"></circle>
-</svg>
-<span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">65%</span>
-</div>
-<div class="grid grid-cols-2 gap-xs w-full text-[10px]">
-<div class="bg-surface/40 p-xs rounded">
-<p class="text-on-surface-variant">Total</p>
-<p class="font-bold">2,100</p>
-</div>
-<div class="bg-error/10 p-xs rounded">
-<p class="text-error">At Risk</p>
-<p class="font-bold text-error">82</p>
-</div>
-</div>
-</div>
-<div class="glass-panel rounded-xl p-md flex flex-col items-center text-center hover:bg-surface-container-high transition-colors cursor-pointer group">
-<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-sm group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-primary">egg</span>
-</div>
-<p class="font-bold text-on-surface">Poultry</p>
-<div class="my-md relative inline-flex">
-<svg class="w-16 h-16 transform -rotate-90">
-<circle class="text-outline-variant/20" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
-<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="10" stroke-width="4"></circle>
-</svg>
-<span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">94%</span>
-</div>
-<div class="grid grid-cols-2 gap-xs w-full text-[10px]">
-<div class="bg-surface/40 p-xs rounded">
-<p class="text-on-surface-variant">Total</p>
-<p class="font-bold">12,500</p>
-</div>
-<div class="bg-error/10 p-xs rounded">
-<p class="text-error">At Risk</p>
-<p class="font-bold text-error">45</p>
-</div>
-</div>
-</div>
+<section id="livestock-overview-container" class="grid grid-cols-5 gap-gutter mb-xl">
+    <!-- Dynamic livestock cards or empty state will be injected here by JS -->
 </section>
 <!-- Section 2: Image Analysis & Disease Detection -->
 <section class="grid grid-cols-12 gap-gutter mb-xl">
@@ -509,7 +401,7 @@
 <div id="animal-protocol-details" class="space-y-md">
 <p class="text-body-sm text-on-surface-variant italic">Awaiting AI diagnostic results to compute active bio-security protocols...</p>
 </div>
-<button class="w-full mt-xl py-md bg-surface-bright border border-primary/30 text-primary rounded-xl font-bold hover:bg-primary hover:text-on-primary transition-all">
+<button id="btn-generate-vet-order" class="w-full mt-xl py-md bg-surface-bright border border-primary/30 text-primary rounded-xl font-bold hover:bg-primary hover:text-on-primary transition-all">
                     Generate Veterinary Order
                 </button>
 </div>
@@ -600,9 +492,9 @@
 <!-- Section 5: Vaccination & Emergency -->
 <section class="grid grid-cols-12 gap-gutter mb-xl">
 <!-- Vaccination Tracker -->
-<div class="col-span-8 glass-panel rounded-2xl p-lg">
+<div id="vaccination-timeline" class="col-span-8 glass-panel rounded-2xl p-lg">
 <h3 class="font-headline-md text-on-surface mb-lg">Vaccination Timeline</h3>
-<div class="relative pl-8 space-y-lg before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant/30">
+<div id="vaccination-timeline-list" class="relative pl-8 space-y-lg before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant/30">
 <div class="relative">
 <div class="absolute -left-[28px] top-1 w-4 h-4 rounded-full bg-primary ring-4 ring-primary/20"></div>
 <div class="flex justify-between items-start">
@@ -627,7 +519,7 @@
 </div>
 <!-- Emergency SOS -->
 <div class="col-span-4 flex flex-col gap-gutter">
-<button class="flex-1 bg-error rounded-2xl p-lg flex flex-col items-center justify-center text-on-error hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-error/20">
+<button onclick="window.location.href='../terrava_emergency_sos_rural_support_center_3/index.html'" class="flex-1 bg-error rounded-2xl p-lg flex flex-col items-center justify-center text-on-error hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-error/20">
 <span class="material-symbols-outlined text-6xl mb-md">emergency_share</span>
 <h3 class="font-headline-lg text-on-error uppercase tracking-widest">Emergency SOS</h3>
 <p class="text-on-error/80 text-center text-xs mt-sm font-medium">Triggers immediate veterinary dispatch and herd location sharing</p>
@@ -658,10 +550,10 @@
 <p class="text-xs font-bold uppercase tracking-wider">Vaccination Reminder</p>
 </div>
 <p class="text-on-surface text-sm font-bold">Anthrax vaccination for Buffalo herd due in 4 days.</p>
-<button class="mt-md w-full py-sm bg-primary/20 text-primary text-xs font-bold rounded-lg hover:bg-primary/30">Review Schedule</button>
+<button onclick="document.getElementById('vaccination-timeline').scrollIntoView({ behavior: 'smooth' })" class="mt-md w-full py-sm bg-primary/20 text-primary text-xs font-bold rounded-lg hover:bg-primary/30">Review Schedule</button>
 </div>
 <!-- Recommendation Card -->
-<div class="bg-surface p-md rounded-xl border border-outline-variant/20">
+<div id="breeding-rec-card" class="bg-surface p-md rounded-xl border border-outline-variant/20 transition-all duration-300">
 <div class="flex items-center gap-sm text-tertiary mb-sm">
 <span class="material-symbols-outlined text-sm">science</span>
 <p class="text-xs font-bold uppercase tracking-wider">Breeding Recommendation</p>
@@ -669,8 +561,8 @@
 <p class="text-on-surface text-sm font-bold">Genetic match found for Holstein Cow #842.</p>
 <p class="text-on-surface-variant text-xs mt-xs">Optimization suggests AI with Sire 'Titan' to improve milk yield by 12% in next generation.</p>
 <div class="mt-md flex gap-sm">
-<button class="flex-1 py-sm bg-surface-container-high rounded text-xs font-bold">Dismiss</button>
-<button class="flex-1 py-sm bg-tertiary text-on-tertiary rounded text-xs font-bold">Execute</button>
+<button id="btn-breeding-dismiss" class="flex-1 py-sm bg-surface-container-high rounded text-xs font-bold hover:bg-surface-container-highest transition-colors">Dismiss</button>
+<button id="btn-breeding-execute" class="flex-1 py-sm bg-tertiary text-on-tertiary rounded text-xs font-bold hover:brightness-110 transition-all">Execute</button>
 </div>
 </div>
 <!-- Breeding List Preview -->
@@ -827,6 +719,11 @@
                         </div>
                     </div>
                 `;
+                
+                // Update dynamic vaccination timeline with scan time
+                localStorage.setItem('livestock_updated_at', new Date(data.timestamp * 1000).toISOString());
+                const currentLivestock = (currentProfile && currentProfile.livestock) || [];
+                renderVaccinationTimeline(currentLivestock);
             } catch (e) {
                 animalScanLine.classList.add('hidden');
                 animalStatusText.innerText = "Click to Upload Diagnostic Image";
@@ -836,6 +733,534 @@
             }
             animalInput.value = ""; // Reset
         });
+
+        // Toast Notification System
+        function showNotification(message, isSuccess = true) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-8 right-8 bg-surface-container border ${isSuccess ? 'border-primary text-primary bg-primary/10' : 'border-outline-variant text-on-surface-variant bg-surface/30'} px-6 py-4 rounded-xl backdrop-blur-md shadow-2xl z-50 flex items-center gap-3 font-bold transition-all duration-300 transform translate-y-10 opacity-0`;
+            toast.innerHTML = `
+                <span class="material-symbols-outlined">${isSuccess ? 'check_circle' : 'info'}</span>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 50);
+
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Breeding Recommendation Actions
+        const btnDismiss = document.getElementById('btn-breeding-dismiss');
+        const btnExecute = document.getElementById('btn-breeding-execute');
+        const breedingCard = document.getElementById('breeding-rec-card');
+
+        if (btnDismiss && breedingCard) {
+            btnDismiss.addEventListener('click', () => {
+                breedingCard.style.opacity = '0';
+                breedingCard.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    breedingCard.style.display = 'none';
+                    showNotification("Breeding recommendation dismissed.", false);
+                }, 300);
+            });
+        }
+
+        if (btnExecute && breedingCard) {
+            btnExecute.addEventListener('click', () => {
+                btnExecute.disabled = true;
+                btnExecute.innerText = "Scheduled";
+                btnExecute.className = "flex-1 py-sm bg-primary/20 text-primary rounded text-xs font-bold cursor-not-allowed";
+                if (btnDismiss) btnDismiss.style.display = 'none';
+                showNotification("AI scheduled with Sire 'Titan' for Holstein Cow #842!", true);
+            });
+        }
+
+        // Veterinary Order Generation
+        const btnGenOrder = document.getElementById('btn-generate-vet-order');
+        if (btnGenOrder) {
+            btnGenOrder.addEventListener('click', async () => {
+                const disease = diseaseName ? diseaseName.innerText : "Awaiting Input";
+                if (disease === "Awaiting Input" || disease === "Diagnostic Offline") {
+                    showNotification("Please run an animal diagnostic scan first!", false);
+                    return;
+                }
+
+                btnGenOrder.innerHTML = `<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> Generating Order...`;
+                btnGenOrder.disabled = true;
+
+                try {
+                    // Send to backend / simulator
+                    await terraFetch('/disease/animal', {
+                        method: 'POST',
+                        body: {
+                            generate_order: true,
+                            disease: disease,
+                            cost: costVal ? costVal.innerText : "$350.00"
+                        }
+                    });
+
+                    setTimeout(() => {
+                        btnGenOrder.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Veterinary Order Active`;
+                        btnGenOrder.className = "w-full mt-xl py-md bg-primary/20 text-primary border border-primary/30 rounded-xl font-bold cursor-not-allowed transition-all";
+                        showNotification("Veterinary order created & dispatched to local clinic!", true);
+                    }, 1200);
+
+                } catch (e) {
+                    console.error(e);
+                    btnGenOrder.innerHTML = "Generate Veterinary Order";
+                    btnGenOrder.disabled = false;
+                    showNotification("Failed to dispatch veterinary order.", false);
+                }
+            });
+        }
+
+        // ==============================================
+        // DYNAMIC LIVESTOCK SYSTEM INTEGRATION (LIVESTOCK GUARDIAN)
+        // ==============================================
+        let currentProfile = null;
+        
+        function renderVaccinationTimeline(livestock) {
+            const listContainer = document.getElementById('vaccination-timeline-list');
+            if (!listContainer) return;
+
+            const updatedAtStr = localStorage.getItem('livestock_updated_at') || new Date().toISOString();
+            const updatedAt = new Date(updatedAtStr);
+            const formattedDateCompleted = updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+            
+            const nextWeek = new Date(updatedAt.getTime() + 7 * 24 * 60 * 60 * 1000);
+            const formattedDatePending = nextWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+
+            if (!livestock || livestock.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="relative">
+                        <div class="absolute -left-[28px] top-1 w-4 h-4 rounded-full bg-primary ring-4 ring-primary/20"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-bold text-on-surface">FMD Booster - Herd A</p>
+                                <p class="text-body-sm text-on-surface-variant">Completed across 450 heads.</p>
+                            </div>
+                            <span class="text-xs font-code-sm text-on-surface-variant">${formattedDateCompleted}</span>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[28px] top-1 w-4 h-4 rounded-full bg-tertiary ring-4 ring-tertiary/20"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-bold text-on-surface">Brucellosis Screening</p>
+                                <p class="text-body-sm text-on-surface-variant">Pending - scheduled for next week.</p>
+                            </div>
+                            <span class="text-xs font-code-sm text-tertiary">${formattedDatePending}</span>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            const primaryAsset = livestock[0];
+            const primarySpecies = primaryAsset.species;
+            const primaryCount = primaryAsset.count || 0;
+            
+            html += `
+                <div class="relative">
+                    <div class="absolute -left-[28px] top-1 w-4 h-4 rounded-full bg-primary ring-4 ring-primary/20"></div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-bold text-on-surface">FMD Booster - ${primarySpecies}s</p>
+                            <p class="text-body-sm text-on-surface-variant">Completed across ${primaryCount} heads.</p>
+                        </div>
+                        <span class="text-xs font-code-sm text-on-surface-variant">${formattedDateCompleted}</span>
+                    </div>
+                </div>
+            `;
+
+            const secondaryAsset = livestock[1] || primaryAsset;
+            const secondarySpecies = secondaryAsset.species;
+            const secondaryCount = secondaryAsset.count || 0;
+            
+            html += `
+                <div class="relative">
+                    <div class="absolute -left-[28px] top-1 w-4 h-4 rounded-full bg-tertiary ring-4 ring-tertiary/20"></div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-bold text-on-surface">Brucellosis Screening - ${secondarySpecies}s</p>
+                            <p class="text-body-sm text-on-surface-variant">Pending - scheduled for next week (${secondaryCount} heads).</p>
+                        </div>
+                        <span class="text-xs font-code-sm text-tertiary">${formattedDatePending}</span>
+                    </div>
+                </div>
+            `;
+
+            listContainer.innerHTML = html;
+        }
+
+        async function fetchAndRenderLivestock() {
+            const container = document.getElementById('livestock-overview-container');
+            if (!container) return;
+            
+            container.innerHTML = `<div class="col-span-5 text-center py-md text-on-surface-variant font-bold">Loading livestock Twin telemetry...</div>`;
+            
+            currentProfile = await getTeravaProfile();
+            const livestock = currentProfile.livestock || [];
+            
+            // Map of animal icons
+            const speciesIcons = {
+                'cow': 'pets',
+                'goat': 'cruelty_free',
+                'buffalo': 'water_drop',
+                'sheep': 'landscape',
+                'poultry': 'egg'
+            };
+            
+            const speciesColors = {
+                'cow': 'text-primary',
+                'goat': 'text-secondary',
+                'buffalo': 'text-primary',
+                'sheep': 'text-tertiary',
+                'poultry': 'text-primary'
+            };
+            
+            if (livestock.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-5 glass-panel rounded-xl p-lg flex flex-col items-center justify-center text-center py-xl border-dashed border-outline-variant/30">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-md">
+                            <span class="material-symbols-outlined text-primary text-3xl">pets</span>
+                        </div>
+                        <h4 class="font-headline-md text-on-surface mb-sm">No Custom Livestock Defined</h4>
+                        <p class="text-body-sm text-on-surface-variant max-w-sm mb-lg">Configure your animal populations directly on this page to dynamically initialize health index, breeding, and hatchery diagnostics.</p>
+                        <button id="btn-add-livestock-empty" class="bg-primary text-on-primary px-lg py-md rounded-xl font-bold flex items-center gap-sm shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">
+                            <span class="material-symbols-outlined text-sm">add</span> Add Livestock Asset
+                        </button>
+                    </div>
+                `;
+                
+                const btnEmptyAdd = document.getElementById('btn-add-livestock-empty');
+                if (btnEmptyAdd) {
+                    btnEmptyAdd.addEventListener('click', openLivestockModal);
+                }
+                
+                // Hide breeding recommendations and hatchery status if empty
+                const breedingCard = document.getElementById('breeding-rec-card');
+                if (breedingCard) breedingCard.style.display = 'none';
+                
+                const hatcheryHeader = document.querySelector('p.text-label-caps.text-on-surface-variant');
+                if (hatcheryHeader && hatcheryHeader.innerText.includes('HATCHERY')) {
+                    hatcheryHeader.style.display = 'none';
+                    const listPrev = hatcheryHeader.nextElementSibling;
+                    if (listPrev) listPrev.style.display = 'none';
+                }
+                
+                // Update Health Index to 100/100 (Clean slate)
+                const healthIndexCircle = document.querySelector('.w-40.h-40');
+                if (healthIndexCircle) {
+                    healthIndexCircle.innerHTML = `<span class="text-5xl font-bold text-on-surface">100</span><span class="text-on-surface-variant text-sm">/100</span>`;
+                }
+                const healthIndexLabel = document.querySelector('.absolute.bottom-0.bg-tertiary') || document.querySelector('.absolute.bottom-0.bg-primary');
+                if (healthIndexLabel) {
+                    healthIndexLabel.innerText = "EXCELLENT";
+                    healthIndexLabel.className = "absolute bottom-0 bg-primary text-on-primary px-md py-1 rounded-full text-xs font-bold shadow-lg";
+                }
+                
+            } else {
+                container.innerHTML = '';
+                
+                // Keep track of total head counts and overall at-risk
+                let grandTotal = 0;
+                let grandAtRisk = 0;
+                
+                livestock.forEach(animal => {
+                    const speciesLower = animal.species.toLowerCase();
+                    const icon = speciesIcons[speciesLower] || 'pets';
+                    const colorClass = speciesColors[speciesLower] || 'text-primary';
+                    const totalCount = animal.count || 0;
+                    
+                    // Predict / simulate at-risk based on standard seeds
+                    let atRisk = 0;
+                    if (totalCount > 0) {
+                        const seed = (speciesLower.charCodeAt(0) || 7) % 5;
+                        atRisk = Math.max(0, Math.floor((totalCount * (seed + 1)) / 100));
+                        // Cap at risk
+                        if (atRisk >= totalCount) atRisk = Math.floor(totalCount / 5);
+                    }
+                    
+                    grandTotal += totalCount;
+                    grandAtRisk += atRisk;
+                    
+                    const healthPct = totalCount > 0 ? Math.round(((totalCount - atRisk) / totalCount) * 100) : 100;
+                    
+                    // Circular progress offset
+                    const strokeOffset = Math.round(175 - (175 * healthPct) / 100);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'glass-panel rounded-xl p-md flex flex-col items-center text-center hover:bg-surface-container-high transition-colors cursor-pointer group';
+                    card.innerHTML = `
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-sm group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary">${icon}</span>
+                        </div>
+                        <p class="font-bold text-on-surface">${animal.species}</p>
+                        <div class="my-md relative inline-flex">
+                            <svg class="w-16 h-16 transform -rotate-90">
+                                <circle class="text-outline-variant/20" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
+                                <circle class="${colorClass}" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="${strokeOffset}" stroke-width="4"></circle>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">${healthPct}%</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-xs w-full text-[10px]">
+                            <div class="bg-surface/40 p-xs rounded">
+                                <p class="text-on-surface-variant">Total</p>
+                                <p class="font-bold">${totalCount.toLocaleString()}</p>
+                            </div>
+                            <div class="${atRisk > 0 ? 'bg-error/10 text-error' : 'bg-surface/40 text-on-surface-variant'} p-xs rounded">
+                                <p class="${atRisk > 0 ? 'text-error' : 'text-on-surface-variant'}">At Risk</p>
+                                <p class="font-bold">${atRisk}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                
+                // Show/hide modules dynamically
+                const hasCow = livestock.some(a => a.species.toLowerCase() === 'cow');
+                const breedingCard = document.getElementById('breeding-rec-card');
+                if (breedingCard) {
+                    breedingCard.style.display = hasCow ? 'block' : 'none';
+                }
+                
+                const hasPoultry = livestock.some(a => a.species.toLowerCase() === 'poultry');
+                const hatcheryHeader = document.querySelector('p.text-label-caps.text-on-surface-variant');
+                if (hatcheryHeader && hatcheryHeader.innerText.includes('HATCHERY')) {
+                    hatcheryHeader.style.display = hasPoultry ? 'block' : 'none';
+                    const listPrev = hatcheryHeader.nextElementSibling;
+                    if (listPrev) listPrev.style.display = hasPoultry ? 'block' : 'none';
+                }
+                
+                // Update Health Index Score
+                const overallHealth = grandTotal > 0 ? Math.round(((grandTotal - grandAtRisk) / grandTotal) * 100) : 100;
+                const healthIndexCircle = document.querySelector('.w-40.h-40');
+                if (healthIndexCircle) {
+                    healthIndexCircle.innerHTML = `<span class="text-5xl font-bold text-on-surface">${overallHealth}</span><span class="text-on-surface-variant text-sm">/100</span>`;
+                }
+                
+                const healthIndexLabel = document.querySelector('.absolute.bottom-0.bg-tertiary') || document.querySelector('.absolute.bottom-0.bg-primary');
+                if (healthIndexLabel) {
+                    if (overallHealth >= 90) {
+                        healthIndexLabel.innerText = "EXCELLENT";
+                        healthIndexLabel.className = "absolute bottom-0 bg-primary text-on-primary px-md py-1 rounded-full text-xs font-bold shadow-lg";
+                    } else if (overallHealth >= 75) {
+                        healthIndexLabel.innerText = "STABLE";
+                        healthIndexLabel.className = "absolute bottom-0 bg-primary text-on-primary px-md py-1 rounded-full text-xs font-bold shadow-lg";
+                    } else {
+                        healthIndexLabel.innerText = "MODERATE RISK";
+                        healthIndexLabel.className = "absolute bottom-0 bg-tertiary text-on-tertiary px-md py-1 rounded-full text-xs font-bold shadow-lg";
+                    }
+                }
+            }
+
+            // Render dynamic vaccination timeline
+            renderVaccinationTimeline(livestock);
+        }
+        
+        function openLivestockModal() {
+            const modal = document.getElementById('livestock-modal');
+            const listContainer = document.getElementById('modal-livestock-list');
+            if (!modal || !listContainer) return;
+            
+            listContainer.innerHTML = '';
+            
+            const livestock = (currentProfile && currentProfile.livestock) || [];
+            
+            if (livestock.length === 0) {
+                // Prepopulate with a default row
+                addModalRow('', 10);
+            } else {
+                livestock.forEach(animal => {
+                    addModalRow(animal.species, animal.count);
+                });
+            }
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.transform').classList.remove('scale-95');
+            modal.querySelector('.transform').classList.add('scale-100');
+        }
+        
+        function closeLivestockModal() {
+            const modal = document.getElementById('livestock-modal');
+            if (!modal) return;
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.transform').classList.remove('scale-100');
+            modal.querySelector('.transform').classList.add('scale-95');
+        }
+        
+        function addModalRow(species = '', count = 10) {
+            const listContainer = document.getElementById('modal-livestock-list');
+            if (!listContainer) return;
+            
+            const standardSpecies = ['Cow', 'Goat', 'Buffalo', 'Sheep', 'Poultry'];
+            const isStandard = standardSpecies.includes(species) || species === '';
+            
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-md p-md bg-surface-container/30 rounded-xl border border-outline-variant/10 group';
+            row.innerHTML = `
+                <div class="flex-1">
+                    <label class="block text-[10px] font-label-caps text-on-surface-variant mb-xs">Animal Species</label>
+                    <select class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs species-select">
+                        <option value="Cow" ${species === 'Cow' ? 'selected' : ''}>Cow</option>
+                        <option value="Goat" ${species === 'Goat' ? 'selected' : ''}>Goat</option>
+                        <option value="Buffalo" ${species === 'Buffalo' ? 'selected' : ''}>Buffalo</option>
+                        <option value="Sheep" ${species === 'Sheep' ? 'selected' : ''}>Sheep</option>
+                        <option value="Poultry" ${species === 'Poultry' ? 'selected' : ''}>Poultry</option>
+                        <option value="Other" ${!isStandard && species !== '' ? 'selected' : ''}>Custom Species...</option>
+                    </select>
+                    <input type="text" class="w-full mt-xs bg-surface-container-low border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs species-custom-input ${isStandard ? 'hidden' : ''}" placeholder="Type custom species name..." value="${!isStandard ? species : ''}"/>
+                </div>
+                <div class="w-32">
+                    <label class="block text-[10px] font-label-caps text-on-surface-variant mb-xs">Head Count</label>
+                    <input type="number" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg px-sm py-xs text-on-surface text-xs count-input" value="${count}" min="1"/>
+                </div>
+                <button type="button" class="mt-lg p-xs text-error hover:bg-error/10 rounded-lg transition-colors flex items-center btn-modal-delete-row">
+                    <span class="material-symbols-outlined text-md">delete</span>
+                </button>
+            `;
+            
+            // Wire events inside row
+            const select = row.querySelector('.species-select');
+            const customInput = row.querySelector('.species-custom-input');
+            select.addEventListener('change', () => {
+                if (select.value === 'Other') {
+                    customInput.classList.remove('hidden');
+                } else {
+                    customInput.classList.add('hidden');
+                }
+            });
+            
+            row.querySelector('.btn-modal-delete-row').addEventListener('click', () => {
+                row.remove();
+            });
+            
+            listContainer.appendChild(row);
+        }
+        
+        // Save handler inside modal
+        async function saveModalChanges() {
+            const btnSave = document.getElementById('btn-modal-save');
+            btnSave.innerText = "Saving...";
+            btnSave.disabled = true;
+            
+            const rows = document.querySelectorAll('#modal-livestock-list > div');
+            const newLivestockList = [];
+            
+            rows.forEach(row => {
+                const select = row.querySelector('.species-select');
+                const customInput = row.querySelector('.species-custom-input');
+                const countInput = row.querySelector('.count-input');
+                
+                let species = select.value;
+                if (species === 'Other') {
+                    species = customInput.value.trim();
+                }
+                const count = parseInt(countInput.value) || 0;
+                
+                if (species) {
+                    newLivestockList.push({ species, count });
+                }
+            });
+            
+            // Update local profile representation
+            currentProfile.livestock = newLivestockList;
+            
+            const payload = {
+                name: currentProfile.name,
+                phone: currentProfile.phone,
+                email: currentProfile.email,
+                state: currentProfile.state,
+                district: currentProfile.district,
+                farm_size: currentProfile.farm_size,
+                crops: currentProfile.crops,
+                livestock: newLivestockList
+            };
+            
+            // Try saving to backend
+            const result = await terraFetch('/profile', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (result) {
+                if (typeof TerravaDB !== 'undefined') {
+                    await TerravaDB.set('profile', 'grower_profile', result, true);
+                }
+                showNotification("Livestock assets saved successfully!", true);
+            } else {
+                if (typeof TerravaDB !== 'undefined') {
+                    const uid = localStorage.getItem('user_uid') || 'grower_alpha';
+                    await TerravaDB.set('profile', 'grower_profile', { uid, ...payload }, true);
+                }
+                showNotification("Livestock assets saved locally!", true);
+            }
+            localStorage.setItem('livestock_updated_at', new Date().toISOString());
+            await fetchAndRenderLivestock();
+            closeLivestockModal();
+            
+            btnSave.innerText = "Save Changes";
+            btnSave.disabled = false;
+        }
+        
+        // Global wires
+        const btnConfigure = document.getElementById('btn-configure-livestock');
+        if (btnConfigure) {
+            btnConfigure.addEventListener('click', openLivestockModal);
+        }
+        
+        const btnClose = document.getElementById('btn-close-modal');
+        if (btnClose) btnClose.addEventListener('click', closeLivestockModal);
+        
+        const btnCancel = document.getElementById('btn-modal-cancel');
+        if (btnCancel) btnCancel.addEventListener('click', closeLivestockModal);
+        
+        const btnAddRow = document.getElementById('btn-modal-add-row');
+        if (btnAddRow) btnAddRow.addEventListener('click', () => addModalRow('', 10));
+        
+        const btnSaveModal = document.getElementById('btn-modal-save');
+        if (btnSaveModal) btnSaveModal.addEventListener('click', saveModalChanges);
+        
+        fetchAndRenderLivestock();
     });
 </script>
+
+<!-- Configure Livestock Modal -->
+<div id="livestock-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+    <div class="glass-panel w-full max-w-lg rounded-2xl p-lg border border-outline-variant/30 transform scale-95 transition-transform duration-300">
+        <div class="flex justify-between items-center mb-lg border-b border-outline-variant/20 pb-md">
+            <div class="flex items-center gap-sm">
+                <span class="material-symbols-outlined text-primary">pets</span>
+                <h3 class="font-headline-md text-on-surface">Manage Livestock Assets</h3>
+            </div>
+            <button id="btn-close-modal" class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        
+        <div class="space-y-md max-h-96 overflow-y-auto pr-xs no-scrollbar" id="modal-livestock-list">
+            <!-- Dynamic rows will be injected here -->
+        </div>
+        
+        <button id="btn-modal-add-row" class="w-full mt-md py-sm bg-surface-bright border border-primary/20 text-primary rounded-xl font-bold flex items-center justify-center gap-xs hover:bg-primary hover:text-on-primary transition-all">
+            <span class="material-symbols-outlined text-sm">add</span> Add Custom Species
+        </button>
+        
+        <div class="flex justify-end gap-md mt-xl pt-md border-t border-outline-variant/20">
+            <button id="btn-modal-cancel" class="px-lg py-md bg-surface-container rounded-xl font-bold text-xs hover:bg-surface-container-highest transition-colors">Cancel</button>
+            <button id="btn-modal-save" class="px-lg py-md bg-primary text-on-primary rounded-xl font-bold text-xs shadow-lg shadow-primary/20 hover:brightness-110 transition-all">Save Changes</button>
+        </div>
+    </div>
+</div>
+
 </body></html>

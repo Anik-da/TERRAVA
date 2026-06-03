@@ -29,3 +29,7 @@ Thumbs.db
 .idea/
 .gemini/
 antigravity/
+
+# Test / scratch files (may contain secrets)
+backend/test_*.py
+backend/scratch_*.py

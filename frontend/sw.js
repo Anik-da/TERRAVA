@@ -1,5 +1,5 @@
-const CACHE_NAME = 'terrava-cache-v1';
-const DYNAMIC_CACHE_NAME = 'terrava-dynamic-v1';
+const CACHE_NAME = 'terrava-cache-v8';
+const DYNAMIC_CACHE_NAME = 'terrava-dynamic-v8';
 
 // Static assets to cache immediately on SW install
 const STATIC_ASSETS = [
@@ -7,6 +7,7 @@ const STATIC_ASSETS = [
   './index.html',
   './manifest.json',
   './terrava-logo.png',
+  './drone_satellite_farm_view.png',
   './terrava-config.js',
   './terrava_ag_os_dashboard/index.html',
   './terrava_ai_farm_doctor/index.html',
@@ -25,7 +26,14 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[TERRAVA-SW] Pre-caching Core Offline Assets...');
-      return cache.addAll(STATIC_ASSETS);
+      // Safe addAll to prevent one missing file from blocking the entire service worker installation
+      return Promise.allSettled(
+        STATIC_ASSETS.map((asset) => {
+          return cache.add(asset)
+            .then(() => console.log(`[TERRAVA-SW] Cached successfully: ${asset}`))
+            .catch((err) => console.warn(`[TERRAVA-SW] Failed to pre-cache asset: ${asset}. Proceeding anyway.`, err));
+        })
+      );
     }).then(() => self.skipWaiting())
   );
 });
@@ -45,6 +53,33 @@ self.addEventListener('activate', (event) => {
     }).then(() => self.clients.claim())
   );
 });
+
+// Helper to match request, checking for directory index fallbacks (e.g. /path/ -> /path/index.html)
+function matchCacheRequest(request) {
+  const url = new URL(request.url);
+  let pathsToTry = [request.url];
+
+  // If path ends with / or is a directory route (no file extension), try appending index.html
+  if (url.pathname.endsWith('/')) {
+    pathsToTry.push(url.origin + url.pathname + 'index.html');
+  } else if (!url.pathname.split('/').pop().includes('.')) {
+    pathsToTry.push(url.origin + url.pathname + '/index.html');
+    pathsToTry.push(url.origin + url.pathname + 'index.html');
+  }
+
+  // Try matching paths sequentially
+  const tryNext = (index) => {
+    if (index >= pathsToTry.length) {
+      return Promise.resolve(null);
+    }
+    return caches.match(pathsToTry[index]).then((response) => {
+      if (response) return response;
+      return tryNext(index + 1);
+    });
+  };
+
+  return tryNext(0);
+}
 
 // Fetch Interceptor — Dual-Strategy Router
 self.addEventListener('fetch', (event) => {
@@ -72,7 +107,7 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           // Off-grid fallback: match request from dynamic cache
           console.warn('[TERRAVA-SW] Off-grid. Accessing dynamic cache fallback for:', requestUrl.pathname);
-          return caches.match(event.request).then((cachedResponse) => {
+          return matchCacheRequest(event.request).then((cachedResponse) => {
             if (cachedResponse) return cachedResponse;
             
             // Construct a fallback JSON response if not cached
@@ -89,9 +124,38 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Strategy A.2: Network-First with Cache Fallback for HTML navigation requests
+  // This avoids serving stale pages when navigating between tabs/sections of the platform.
+  if (event.request.mode === 'navigate' || (event.request.headers.get('Accept') && event.request.headers.get('Accept').includes('text/html'))) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              // Cache under the original request object so offline lookup still succeeds
+              cache.put(event.request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          return matchCacheRequest(event.request).then((cachedResponse) => {
+            if (cachedResponse) return cachedResponse;
+            // General fallback
+            return caches.match('./index.html').then((indexResponse) => {
+              if (indexResponse) return indexResponse;
+              return caches.match('../index.html');
+            });
+          });
+        })
+    );
+    return;
+  }
+
   // Strategy B: Cache-First for local static assets and images
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
+    matchCacheRequest(event.request).then((cachedResponse) => {
       if (cachedResponse) {
         // Return from cache immediately, then fetch and update cache in background (Stale-While-Revalidate)
         fetch(event.request).then((networkResponse) => {

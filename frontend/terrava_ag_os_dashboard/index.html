@@ -66,7 +66,7 @@
                         "DEFAULT": "0.125rem",
                         "lg": "0.25rem",
                         "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "full": "9999px"
                     },
                     "spacing": {
                         "3xl": "64px",
@@ -169,8 +169,12 @@
     // Check user session state
     auth.onAuthStateChanged((user) => {
         if (!user) {
-            // Unauthenticated - redirect to auth portal
-            window.location.href = "../";
+            // Offline session check: allow cached session to persist without redirect loop
+            const cachedUid = localStorage.getItem('user_uid');
+            const cachedEmail = localStorage.getItem('user_email');
+            if (!cachedUid && !cachedEmail) {
+                window.location.href = "../";
+            }
         } else {
             // Authenticated - greeting modification and dynamic logout transformation
             document.addEventListener("DOMContentLoaded", () => {
@@ -223,14 +227,16 @@
                                 icon = "thunderstorm";
                             }
                             
-                            const tempSpan = document.getElementById("dash-weather-temp");
-                            const iconSpan = document.getElementById("dash-weather-icon");
-                            if (tempSpan) {
-                                tempSpan.innerText = `${temp}°C — ${desc} (${response.location})`;
-                            }
-                            if (iconSpan) {
-                                iconSpan.innerText = icon;
-                            }
+                            const weatherText = `${temp}°C — ${desc} (${response.location})`;
+                            // Update both topbar and hero weather elements
+                            ['dash-weather-temp', 'hero-weather-temp'].forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) el.innerText = weatherText;
+                            });
+                            ['dash-weather-icon', 'hero-weather-icon'].forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) el.innerText = icon;
+                            });
                             
                             // Update AI suggestion or insights if present
                             if (response.ai_crop_suggestions) {
@@ -257,7 +263,7 @@
 <!-- SideNavBar -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-2xl flex flex-col py-md px-sm z-50">
     <div class="mb-xl px-sm flex items-center gap-sm">
-        <div class="w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/10 rounded-lg overflow-hidden bg-white">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden bg-transparent">
             <img src="../terrava-logo.png" alt="Terrava Logo" class="w-full h-full object-contain p-1" onerror="this.src='/terrava-logo.png';">
         </div>
         <div>
@@ -408,8 +414,8 @@
 <p class="text-on-surface-variant text-body-lg max-w-xl">Overall farm performance is <span class="text-primary font-bold">Stable</span>. Markets are showing a 4% uptick in Rice futures. Your current health score is <span class="text-primary">89%</span>.</p>
 <div class="mt-md flex gap-lg">
 <div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-primary" id="dash-weather-icon">rainy</span>
-<span class="font-code-sm" id="dash-weather-temp">Loading Weather...</span>
+<span class="material-symbols-outlined text-primary" id="hero-weather-icon">rainy</span>
+<span class="font-code-sm" id="hero-weather-temp">Loading Weather...</span>
 </div>
 <div class="flex items-center gap-sm">
 <span class="material-symbols-outlined text-tertiary">trending_up</span>
@@ -707,14 +713,18 @@
         }
 
         function updateWeatherUI(w, isOffline) {
-            const tempSpan = document.getElementById("dash-weather-temp");
-            const iconSpan = document.getElementById("dash-weather-icon");
-            if (tempSpan) {
-                tempSpan.innerText = `${w.temp}°C — ${w.desc}${isOffline ? ' (Offline)' : ''}`;
-            }
-            if (iconSpan) {
-                iconSpan.innerText = w.icon;
-            }
+            // Update BOTH topbar and hero weather displays
+            const weatherText = `${w.temp}°C — ${w.desc}${isOffline ? ' (Offline)' : ''}`;
+            
+            const topbarTemp = document.getElementById("dash-weather-temp");
+            const topbarIcon = document.getElementById("dash-weather-icon");
+            const heroTemp = document.getElementById("hero-weather-temp");
+            const heroIcon = document.getElementById("hero-weather-icon");
+            
+            if (topbarTemp) topbarTemp.innerText = weatherText;
+            if (topbarIcon) topbarIcon.innerText = w.icon;
+            if (heroTemp) heroTemp.innerText = weatherText;
+            if (heroIcon) heroIcon.innerText = w.icon;
             
             // Format Last Synced Timestamp
             const lastSyncedSpan = document.getElementById("last-synced-timestamp");

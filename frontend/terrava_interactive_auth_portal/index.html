@@ -67,7 +67,7 @@
                     "DEFAULT": "0.125rem",
                     "lg": "0.25rem",
                     "xl": "0.5rem",
-                    "full": "0.75rem"
+                    "full": "9999px"
             },
             "spacing": {
                     "lg": "24px",
@@ -320,7 +320,7 @@
 <div>
 <div class="flex justify-between items-center mb-xs">
 <label class="text-label-caps text-slate-600">Password</label>
-<a class="text-xs font-semibold text-primary hover:underline" href="#">Forgot Password?</a>
+<a class="text-xs font-semibold text-primary hover:underline" href="#" onclick="navigateTo('otp-login')">Forgot Password? / OTP Login</a>
 </div>
 <input id="login-password" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-md px-md focus:outline-none haptic-hover text-surface-container-lowest placeholder:text-slate-400" placeholder="••••••••" type="password"/>
 </div>
@@ -340,6 +340,50 @@
                         Don't have an account? 
                         <button class="text-primary font-bold hover:underline" onclick="navigateTo('register-step-1')">Create Account</button>
 </p>
+</div>
+<!-- OTP / Mobile Login State -->
+<div class="auth-section hidden transition-all duration-500 transform translate-x-12 opacity-0" id="otp-login-section">
+    <div class="mb-xl">
+        <div class="flex items-center gap-sm mb-md">
+            <button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors" onclick="navigateTo('login')">arrow_back</button>
+            <h1 class="font-headline-md text-headline-md text-surface-container-lowest font-bold">Secure OTP Login</h1>
+        </div>
+        <p class="text-body-md text-slate-500">Log in securely with your mobile number</p>
+    </div>
+    
+    <div class="space-y-lg">
+        <!-- Phone Number Input Group -->
+        <div id="phone-input-group" class="space-y-sm">
+            <label class="block text-label-caps text-slate-600 mb-xs">Mobile Number</label>
+            <div class="flex gap-sm">
+                <span class="bg-white border border-slate-200 rounded-lg py-md px-md text-slate-500 font-bold flex items-center justify-center">+91</span>
+                <input id="login-phone" class="auth-input flex-1 bg-white border border-slate-200 rounded-lg py-md px-md focus:outline-none haptic-hover text-surface-container-lowest placeholder:text-slate-400" placeholder="98765 43210" type="tel" maxlength="10"/>
+            </div>
+            <p class="text-[11px] text-slate-400 italic">Forgot Password? No problem. We will verify you instantly.</p>
+            <button type="button" id="btn-send-otp" class="w-full bg-primary-container text-white font-bold py-md rounded-lg shadow-lg shadow-primary/20 hover:shadow-xl haptic-hover transition-all">
+                Send Verification OTP
+            </button>
+        </div>
+
+        <!-- OTP Code Input Group -->
+        <div id="otp-input-group" class="space-y-sm hidden">
+            <label class="block text-label-caps text-slate-600 mb-xs">Enter 6-Digit OTP</label>
+            <input id="login-otp-code" class="auth-input w-full bg-white border border-slate-200 rounded-lg py-md px-md focus:outline-none haptic-hover text-center font-mono text-xl tracking-[1em] text-surface-container-lowest placeholder:text-slate-300" placeholder="••••••" type="text" maxlength="6"/>
+            <div id="otp-timer-msg" class="text-xs text-slate-500 flex justify-between items-center px-xs">
+                <span>OTP sent to <span id="display-otp-phone" class="font-bold"></span></span>
+                <span id="otp-countdown" class="text-primary font-mono">01:59</span>
+            </div>
+            <div class="bg-primary/5 border border-primary/20 rounded-lg p-md text-xs text-primary font-bold text-center flex items-center justify-center gap-xs">
+                <span class="material-symbols-outlined text-sm">info</span> Simulate OTP Code: <span id="simulated-otp" class="underline">123456</span>
+            </div>
+            <button type="button" id="btn-verify-otp" class="w-full bg-primary-container text-white font-bold py-md rounded-lg shadow-lg shadow-primary/20 hover:shadow-xl haptic-hover transition-all">
+                Verify &amp; Continue
+            </button>
+            <button type="button" id="btn-resend-otp" class="w-full text-slate-400 font-semibold py-xs text-xs hover:text-primary transition-colors">
+                Resend OTP
+            </button>
+        </div>
+    </div>
 </div>
 <!-- Registration Flow -->
 <div class="auth-section hidden transition-all duration-500 transform translate-x-12 opacity-0" id="registration-section">
@@ -505,13 +549,31 @@ try {
 
         if (target === 'login') {
             regSection.classList.add('opacity-0', 'translate-x-12');
+            var otpSection = document.getElementById('otp-login-section');
+            if (otpSection) otpSection.classList.add('opacity-0', 'translate-x-12');
             setTimeout(function() {
                 regSection.classList.add('hidden');
+                if (otpSection) otpSection.classList.add('hidden');
                 loginSection.classList.remove('hidden');
                 setTimeout(function() {
                     loginSection.classList.remove('opacity-0', 'translate-x-[-24px]', 'scale-95');
                     loginSection.classList.add('opacity-100', 'translate-x-0', 'scale-100');
                 }, 50);
+            }, 300);
+        } else if (target === 'otp-login') {
+            loginSection.classList.add('opacity-0', 'translate-x-[-24px]', 'scale-95');
+            setTimeout(function() {
+                loginSection.classList.add('hidden');
+                var otpSection = document.getElementById('otp-login-section');
+                if (otpSection) {
+                    otpSection.classList.remove('hidden');
+                    document.getElementById('phone-input-group').classList.remove('hidden');
+                    document.getElementById('otp-input-group').classList.add('hidden');
+                    setTimeout(function() {
+                        otpSection.classList.remove('opacity-0', 'translate-x-12');
+                        otpSection.classList.add('opacity-100', 'translate-x-0');
+                    }, 50);
+                }
             }, 300);
         } else if (target.indexOf('register-step') === 0) {
             var stepNum = parseInt(target.split('-').pop());
@@ -642,6 +704,10 @@ try {
             var termsEl = document.getElementById('reg-terms');
             var terms = termsEl ? termsEl.checked : false;
             
+            var regState = document.getElementById('reg-state').value;
+            var regFarmSize = parseFloat(document.getElementById('reg-farm-size').value) || 0.0;
+            var regCrop = document.getElementById('reg-crop').value;
+            
             if (!email || !password || !firstName) {
                 alert('Please complete all required registration fields (name, email, password).');
                 return;
@@ -664,7 +730,43 @@ try {
                     }).then(function() {
                         localStorage.setItem('user_first_name', firstName);
                         localStorage.setItem('user_last_name', lastName);
-                        console.log('[TERRAVA] Profile updated with name:', firstName, lastName);
+                        localStorage.setItem('user_name', firstName + ' ' + lastName);
+                        localStorage.setItem('user_state', regState);
+                        localStorage.setItem('user_farm_size', regFarmSize);
+                        localStorage.setItem('user_email', email);
+                        localStorage.setItem('user_uid', userCredential.user.uid);
+                        localStorage.setItem('user_primary_crop', regCrop);
+
+                        // Call backend profile creation endpoint
+                        var apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || !window.location.hostname || window.location.protocol === 'file:' 
+                            ? 'http://localhost:8000/api/v1' 
+                            : 'https://terrava-farm-backend.onrender.com/api/v1';
+
+                        return userCredential.user.getIdToken().then(function(token) {
+                            return fetch(apiBase + '/profile', {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + token
+                                },
+                                body: JSON.stringify({
+                                    name: firstName + ' ' + lastName,
+                                    email: email,
+                                    phone: '',
+                                    state: regState,
+                                    district: '',
+                                    farm_size: regFarmSize,
+                                    crops: [{
+                                        crop_name: regCrop,
+                                        area_hectares: regFarmSize,
+                                        planted_date: new Date().toISOString().split('T')[0]
+                                    }],
+                                    livestock: []
+                                })
+                            }).then(function(res) {
+                                console.log('[TERRAVA] Backend profile sync complete during sign-up:', res.status);
+                            });
+                        });
                     });
                 })
                 .catch(function(error) {
@@ -673,6 +775,179 @@ try {
                     btnRegister.disabled = false;
                     btnRegister.innerText = 'Initialize Operating System';
                 });
+        });
+    }
+
+    // OTP / Mobile Login Functionality
+    var btnSendOtp = document.getElementById('btn-send-otp');
+    var btnVerifyOtp = document.getElementById('btn-verify-otp');
+    var btnResendOtp = document.getElementById('btn-resend-otp');
+    var simulatedOtpCode = "";
+    var otpTimerInterval = null;
+
+    if (btnSendOtp) {
+        btnSendOtp.addEventListener('click', function(e) {
+            e.preventDefault();
+            var phone = document.getElementById('login-phone').value.trim();
+            if (!phone || phone.length !== 10 || isNaN(phone)) {
+                alert('Please enter a valid 10-digit mobile number.');
+                return;
+            }
+
+            btnSendOtp.disabled = true;
+            btnSendOtp.innerText = 'Sending OTP...';
+
+            setTimeout(function() {
+                // Generate a random 6-digit code for high fidelity simulation
+                simulatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                document.getElementById('simulated-otp').innerText = simulatedOtpCode;
+                document.getElementById('display-otp-phone').innerText = "+91 " + phone;
+
+                // Toggle groups
+                document.getElementById('phone-input-group').classList.add('hidden');
+                document.getElementById('otp-input-group').classList.remove('hidden');
+
+                // Countdown Timer Logic
+                var duration = 119;
+                var display = document.getElementById('otp-countdown');
+                if (otpTimerInterval) clearInterval(otpTimerInterval);
+                
+                otpTimerInterval = setInterval(function () {
+                    var minutes = parseInt(duration / 60, 10);
+                    var seconds = parseInt(duration % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    display.textContent = minutes + ":" + seconds;
+
+                    if (--duration < 0) {
+                        clearInterval(otpTimerInterval);
+                        display.textContent = "Expired";
+                    }
+                }, 1000);
+
+                btnSendOtp.disabled = false;
+                btnSendOtp.innerText = 'Send Verification OTP';
+            }, 800);
+        });
+    }
+
+    if (btnVerifyOtp) {
+        btnVerifyOtp.addEventListener('click', function(e) {
+            e.preventDefault();
+            var enteredCode = document.getElementById('login-otp-code').value.trim();
+            var phone = document.getElementById('login-phone').value.trim();
+
+            if (!enteredCode) {
+                alert('Please enter the 6-digit OTP code.');
+                return;
+            }
+
+            if (enteredCode !== simulatedOtpCode) {
+                alert('Invalid OTP code. Please enter the correct simulated OTP code.');
+                return;
+            }
+
+            btnVerifyOtp.disabled = true;
+            btnVerifyOtp.innerText = 'Verifying...';
+
+            // Sign in under the hood using a pre-established OTP Demo session
+            var demoEmail = "otp_grower_" + phone + "@terrava.ai";
+            var demoPass = "OtpGrowerSecure123!";
+
+            console.log('[TERRAVA] Logging in secure OTP user:', demoEmail);
+
+            // Attemp login, or create one instantly if they are a first time OTP login user!
+            auth.signInWithEmailAndPassword(demoEmail, demoPass)
+                .then(function(cred) {
+                    console.log('[TERRAVA] OTP Auth success:', cred.user.email);
+                    localStorage.setItem('user_phone', phone);
+                    if (otpTimerInterval) clearInterval(otpTimerInterval);
+                })
+                .catch(function(err) {
+                    if (err.code === 'auth/user-not-found') {
+                        // Create the account instantly!
+                        auth.createUserWithEmailAndPassword(demoEmail, demoPass)
+                            .then(function(userCredential) {
+                                console.log('[TERRAVA] New OTP User Created successfully.');
+                                return userCredential.user.updateProfile({
+                                    displayName: 'OTP Grower'
+                                }).then(function() {
+                                    localStorage.setItem('user_first_name', 'Grower');
+                                    localStorage.setItem('user_name', 'OTP Grower');
+                                    localStorage.setItem('user_phone', phone);
+                                    localStorage.setItem('user_email', demoEmail);
+                                    localStorage.setItem('user_uid', userCredential.user.uid);
+                                    
+                                    // Sync to backend profile database
+                                    var apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || !window.location.hostname || window.location.protocol === 'file:' 
+                                        ? 'http://localhost:8000/api/v1' 
+                                        : 'https://terrava-farm-backend.onrender.com/api/v1';
+
+                                    return userCredential.user.getIdToken().then(function(token) {
+                                        return fetch(apiBase + '/profile', {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': 'Bearer ' + token
+                                            },
+                                            body: JSON.stringify({
+                                                name: 'OTP Grower',
+                                                email: demoEmail,
+                                                phone: phone,
+                                                state: 'Karnataka',
+                                                district: '',
+                                                farm_size: 4.2,
+                                                crops: [],
+                                                livestock: []
+                                            })
+                                        }).then(function(res) {
+                                            console.log('[TERRAVA] OTP profile DB setup complete:', res.status);
+                                        });
+                                    });
+                                });
+                            })
+                            .catch(function(regErr) {
+                                alert('OTP verification failed: ' + regErr.message);
+                                btnVerifyOtp.disabled = false;
+                                btnVerifyOtp.innerText = 'Verify & Continue';
+                            });
+                    } else {
+                        alert('OTP login failed: ' + err.message);
+                        btnVerifyOtp.disabled = false;
+                        btnVerifyOtp.innerText = 'Verify & Continue';
+                    }
+                });
+        });
+    }
+
+    if (btnResendOtp) {
+        btnResendOtp.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (otpTimerInterval) clearInterval(otpTimerInterval);
+            simulatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+            document.getElementById('simulated-otp').innerText = simulatedOtpCode;
+            
+            var duration = 119;
+            var display = document.getElementById('otp-countdown');
+            
+            otpTimerInterval = setInterval(function () {
+                var minutes = parseInt(duration / 60, 10);
+                var seconds = parseInt(duration % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--duration < 0) {
+                    clearInterval(otpTimerInterval);
+                    display.textContent = "Expired";
+                }
+            }, 1000);
+            
+            alert('A new OTP has been simulated below.');
         });
     }
 

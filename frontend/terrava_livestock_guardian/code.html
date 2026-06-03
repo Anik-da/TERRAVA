@@ -96,7 +96,7 @@
                 "DEFAULT": "0.125rem",
                 "lg": "0.25rem",
                 "xl": "0.5rem",
-                "full": "0.75rem"
+                "full": "9999px"
               },
               "spacing": {
                 "xl": "32px",
@@ -636,7 +636,7 @@
 <!-- Section 5: Vaccination & Emergency -->
 <section class="grid grid-cols-12 gap-gutter mb-xl">
 <!-- Vaccination Tracker -->
-<div class="col-span-8 glass-panel rounded-2xl p-lg">
+<div id="vaccination-timeline" class="col-span-8 glass-panel rounded-2xl p-lg">
 <h3 class="font-headline-md text-on-surface mb-lg">Vaccination Timeline</h3>
 <div class="relative pl-8 space-y-lg before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant/30">
 <div class="relative">
@@ -663,7 +663,7 @@
 </div>
 <!-- Emergency SOS -->
 <div class="col-span-4 flex flex-col gap-gutter">
-<button class="flex-1 bg-error rounded-2xl p-lg flex flex-col items-center justify-center text-on-error hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-error/20">
+<button onclick="window.location.href='../terrava_emergency_sos_rural_support_center_3/index.html'" class="flex-1 bg-error rounded-2xl p-lg flex flex-col items-center justify-center text-on-error hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-error/20">
 <span class="material-symbols-outlined text-6xl mb-md">emergency_share</span>
 <h3 class="font-headline-lg text-on-error uppercase tracking-widest">Emergency SOS</h3>
 <p class="text-on-error/80 text-center text-xs mt-sm font-medium">Triggers immediate veterinary dispatch and herd location sharing</p>
@@ -694,10 +694,10 @@
 <p class="text-xs font-bold uppercase tracking-wider">Vaccination Reminder</p>
 </div>
 <p class="text-on-surface text-sm font-bold">Anthrax vaccination for Buffalo herd due in 4 days.</p>
-<button class="mt-md w-full py-sm bg-primary/20 text-primary text-xs font-bold rounded-lg hover:bg-primary/30">Review Schedule</button>
+<button onclick="document.getElementById('vaccination-timeline').scrollIntoView({ behavior: 'smooth' })" class="mt-md w-full py-sm bg-primary/20 text-primary text-xs font-bold rounded-lg hover:bg-primary/30">Review Schedule</button>
 </div>
 <!-- Recommendation Card -->
-<div class="bg-surface p-md rounded-xl border border-outline-variant/20">
+<div id="breeding-rec-card" class="bg-surface p-md rounded-xl border border-outline-variant/20 transition-all duration-300">
 <div class="flex items-center gap-sm text-tertiary mb-sm">
 <span class="material-symbols-outlined text-sm">science</span>
 <p class="text-xs font-bold uppercase tracking-wider">Breeding Recommendation</p>
@@ -705,8 +705,8 @@
 <p class="text-on-surface text-sm font-bold">Genetic match found for Holstein Cow #842.</p>
 <p class="text-on-surface-variant text-xs mt-xs">Optimization suggests AI with Sire 'Titan' to improve milk yield by 12% in next generation.</p>
 <div class="mt-md flex gap-sm">
-<button class="flex-1 py-sm bg-surface-container-high rounded text-xs font-bold">Dismiss</button>
-<button class="flex-1 py-sm bg-tertiary text-on-tertiary rounded text-xs font-bold">Execute</button>
+<button id="btn-breeding-dismiss" class="flex-1 py-sm bg-surface-container-high rounded text-xs font-bold hover:bg-surface-container-highest transition-colors">Dismiss</button>
+<button id="btn-breeding-execute" class="flex-1 py-sm bg-tertiary text-on-tertiary rounded text-xs font-bold hover:brightness-110 transition-all">Execute</button>
 </div>
 </div>
 <!-- Breeding List Preview -->
@@ -738,6 +738,56 @@
                     card.style.transform = 'translateY(0)';
                 });
             });
+
+            // Toast Notification System
+            function showNotification(message, isSuccess = true) {
+                const toast = document.createElement('div');
+                toast.className = `fixed bottom-8 right-8 bg-surface-container border ${isSuccess ? 'border-primary text-primary bg-primary/10' : 'border-outline-variant text-on-surface-variant bg-surface/30'} px-6 py-4 rounded-xl backdrop-blur-md shadow-2xl z-50 flex items-center gap-3 font-bold transition-all duration-300 transform translate-y-10 opacity-0`;
+                toast.innerHTML = `
+                    <span class="material-symbols-outlined">${isSuccess ? 'check_circle' : 'info'}</span>
+                    <span>${message}</span>
+                `;
+                document.body.appendChild(toast);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-10', 'opacity-0');
+                }, 50);
+
+                // Remove toast after 3 seconds
+                setTimeout(() => {
+                    toast.classList.add('translate-y-10', 'opacity-0');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 3000);
+            }
+
+            // Breeding Recommendation Actions
+            const btnDismiss = document.getElementById('btn-breeding-dismiss');
+            const btnExecute = document.getElementById('btn-breeding-execute');
+            const breedingCard = document.getElementById('breeding-rec-card');
+
+            if (btnDismiss && breedingCard) {
+                btnDismiss.addEventListener('click', () => {
+                    breedingCard.style.opacity = '0';
+                    breedingCard.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        breedingCard.style.display = 'none';
+                        showNotification("Breeding recommendation dismissed.", false);
+                    }, 300);
+                });
+            }
+
+            if (btnExecute && breedingCard) {
+                btnExecute.addEventListener('click', () => {
+                    btnExecute.disabled = true;
+                    btnExecute.innerText = "Scheduled";
+                    btnExecute.className = "flex-1 py-sm bg-primary/20 text-primary rounded text-xs font-bold cursor-not-allowed";
+                    if (btnDismiss) btnDismiss.style.display = 'none';
+                    showNotification("AI scheduled with Sire 'Titan' for Holstein Cow #842!", true);
+                });
+            }
         });
     </script>
 </body></html>
